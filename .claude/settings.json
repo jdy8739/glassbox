@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "rules": {
+    "permissions": {
+      "bash": {
+        "enabled": true,
+        "allowedCommands": ["*"]
+      },
+      "fileAccess": {
+        "enabled": true,
+        "allowRead": ["**/*"],
+        "allowWrite": ["**/*"],
+        "allowDelete": ["**/*"],
+        "blocked": []
+      },
+      "webSearch": {
+        "enabled": true,
+        "allowedDomains": ["*"],
+        "blockedDomains": []
+      }
+    },
+    "autoCommit": false,
+    "autoGitAdd": false
+  },
+  "mcpServers": {},
+  "customAgents": {
+    "senior-UIUX-designer": {
+      "enabled": true,
+      "description": "Senior UI/UX designer for Glass UI design work"
+    }
+  },
+  "preferences": {
+    "defaultModel": "sonnet",
+    "verboseLogging": false,
+    "confirmBeforeWrite": false
+  }
+}
