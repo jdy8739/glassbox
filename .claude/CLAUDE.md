@@ -57,6 +57,20 @@ All project documentation is organized in `.claude/` directory:
 
 ---
 
+### 📄 Page Structure & Features
+**File:** `.claude/rules/pages.md`
+
+**Contains:**
+- Web application page structure (7 pages)
+- Features and services for each page
+- Navigation structure (primary, contextual, footer)
+- User actions and page purposes
+- Service requirements per page
+
+**Read this for:** What pages to build, features per page, navigation flow
+
+---
+
 ### 🤖 Custom Agents
 **File:** `.claude/agents/senior-UIUX-designer.md`
 
@@ -80,6 +94,7 @@ All project documentation is organized in `.claude/` directory:
 - ✅ PRD documented → `.claude/rules/prd.md`
 - ✅ Architecture defined → `.claude/rules/architecture.md`
 - ✅ Glass UI design system → `.claude/rules/design.md`
+- ✅ Page structure & features → `.claude/rules/pages.md`
 - ⏳ Implementation pending
 
 ### Key Technologies
