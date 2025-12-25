@@ -177,30 +177,6 @@ Shares = Short $ / SPY_price
 
 ## 5) Architecture & Module Design
 
-### Module Structure
-
-```
-portfolio-optimizer/
-├── data/
-│   ├── fetchPrices.js        # Yahoo Finance API integration
-│   └── alignSeries.js        # Date alignment, missing data handling
-├── analytics/
-│   ├── returns.js            # Log/simple returns calculation
-│   ├── statistics.js         # Mean, covariance, annualization
-│   ├── portfolio.js          # Portfolio stats (return, vol, Sharpe)
-│   └── regression.js         # OLS beta calculation
-├── optimizer/
-│   ├── randomFrontier.js     # Sampling-based frontier (Approach B)
-│   └── qpFrontier.js         # QP-based frontier (Approach A, Phase 2)
-├── hedge/
-│   ├── beta.js              # Portfolio beta calculation
-│   ├── sizing.js            # Hedge notional calculation
-│   └── instruments.js       # SPY shares / futures contracts conversion
-├── app/
-│   └── cli.js               # CLI interface
-└── package.json
-```
-
 ### 1. data/
 
 **fetchPrices(tickers, start, end, interval)**
