@@ -1,39 +1,103 @@
-# Portfolio Optimization & Beta Hedging Tool - PRD
+# Portfolio Optimization & Beta Hedging Tool - Architecture
 
-## 0) Project Overview & Scope
-
-### Objectives
-Build a JavaScript-based portfolio optimization tool that provides:
-
-**Input:**
-- Stock tickers of interest (e.g., AAPL, MSFT, NVDA, ...)
-- **SGOV** ([iShares 0-3 Month Treasury Bond ETF](https://finance.yahoo.com/quote/SGOV/history/))
-
-**Output:**
-1. **Long-only Efficient Frontier Analysis**
-   - Efficient Frontier visualization
-   - Global Minimum Variance (GMV) portfolio weights
-   - Maximum Sharpe Ratio (Tangency) portfolio weights
-   - Target return portfolio weights
-
-2. **Portfolio Beta Analysis & Hedging**
-   - Portfolio beta calculation (against S&P 500)
-   - Required short position sizing to achieve target beta (0 or custom)
-   - Support for both SPY (ETF) and ES (futures) hedging methods
-
----
-
-## 1) Technology Stack (JavaScript)
+## Technology Stack
 
 | Component | Technology | Notes |
 |-----------|------------|-------|
-| **Runtime** | Node.js (18+) | |
+| **Runtime** | Node.js (18+) | JavaScript/TypeScript execution environment |
+| **Frontend** | Next.js 14+ | React framework with App Router, SSR/SSG support |
+| **Backend** | Nest.js 10+ | TypeScript-first Node.js framework with modular architecture |
 | **Market Data** | `yahoo-finance2` | For price history (Adj Close) - [npm package](https://www.npmjs.com/package/yahoo-finance2) |
 | **Numerical Computing** | `mathjs` or `ml-matrix` | For matrix operations |
 | **Optimization** | QP library or sampling | See optimization approaches below |
-| **UI** | CLI + JSON (MVP) | Extensible to Next.js/React for frontier charts |
+| **UI (MVP)** | CLI + JSON | Command-line interface for initial development |
+| **UI (Production)** | Next.js + Glass UI | Modern glassmorphism design with interactive charts |
 
-### Optimization Approaches
+### Frontend Stack (Next.js)
+- **Framework:** Next.js 14+ with App Router
+- **Language:** TypeScript
+- **Architecture Pattern:** FSD (Feature-Sliced Design) - *conceptual approach*
+- **Styling:** Tailwind CSS with custom glass utilities
+- **State Management:** React Context / Zustand
+- **Charts:** Chart.js or Recharts with transparent themes
+- **UI Components:** Radix UI with glass styling
+- **Animations:** Framer Motion
+
+### Backend Stack (Nest.js)
+- **Framework:** Nest.js 10+ with TypeScript
+- **Architecture Pattern:** DDD (Domain-Driven Design) - *conceptual approach*
+- **Architecture:** Modular (modules for data, analytics, optimizer, hedge)
+- **API:** RESTful API (future: GraphQL option)
+- **Validation:** class-validator, class-transformer
+- **Documentation:** Swagger/OpenAPI
+- **Testing:** Jest for unit tests, Supertest for integration tests
+
+---
+
+## Architectural Patterns (Conceptual)
+
+### Frontend: FSD (Feature-Sliced Design)
+
+**Concept:** Organize code by features and layers for better scalability and maintainability.
+
+**Proposed Structure:**
+```
+apps/frontend/
+├── app/                    # Next.js App Router
+├── src/
+│   ├── app/               # Application layer (providers, initialization)
+│   ├── processes/         # Complex inter-feature scenarios
+│   ├── pages/             # Page components
+│   ├── widgets/           # Large composite blocks
+│   ├── features/          # User interactions
+│   │   ├── portfolio-builder/
+│   │   ├── efficient-frontier/
+│   │   └── hedge-calculator/
+│   ├── entities/          # Business entities
+│   │   ├── portfolio/
+│   │   ├── ticker/
+│   │   └── hedge/
+│   └── shared/            # Shared UI, utils, API
+│       ├── ui/            # Glass UI components
+│       ├── lib/
+│       └── api/
+```
+
+**Note:** *This is a conceptual approach. Adapt as needed based on project complexity.*
+
+### Backend: DDD (Domain-Driven Design)
+
+**Concept:** Organize code around business domains with clear boundaries.
+
+**Proposed Structure:**
+```
+apps/backend/src/
+├── domain/                # Domain layer (business logic)
+│   ├── portfolio/
+│   │   ├── entities/
+│   │   ├── value-objects/
+│   │   └── repositories/
+│   ├── market-data/
+│   └── hedging/
+├── application/           # Application layer (use cases)
+│   ├── portfolio/
+│   │   ├── optimize-portfolio.use-case.ts
+│   │   └── calculate-efficient-frontier.use-case.ts
+│   └── hedging/
+│       └── calculate-hedge.use-case.ts
+├── infrastructure/        # Infrastructure layer (external services)
+│   ├── yahoo-finance/
+│   ├── database/
+│   └── cache/
+└── presentation/          # Presentation layer (API)
+    ├── controllers/
+    ├── dtos/
+    └── mappers/
+```
+
+**Note:** *This is a conceptual approach. Nest.js modules may map to DDD bounded contexts.*
+
+### Optimization Implementation Approaches
 
 **Recommended for MVP:** Constraint-aware sampling (faster implementation)
 - Long-only + sum=1 + optional bounds constraints
@@ -43,9 +107,9 @@ Build a JavaScript-based portfolio optimization tool that provides:
 
 ---
 
-## 2) Data Pipeline Design
+## Data Pipeline Design
 
-### 2-1. Price Data Requirements
+### Price Data Requirements
 
 **Assets:**
 - User-provided tickers
@@ -58,7 +122,7 @@ Build a JavaScript-based portfolio optimization tool that provides:
 
 **Period:** 2-5 years historical (configurable based on stability requirements)
 
-### 2-2. Returns Calculation
+### Returns Calculation
 
 **Price Type:** Use **Adjusted Close** prices (critical for SGOV dividends/distributions)
 
@@ -75,9 +139,9 @@ r_t = ln(P_t / P_{t-1})
 
 ---
 
-## 3) Requirement 1: Efficient Frontier for Optimal Asset Allocation
+## Efficient Frontier Calculation Methods
 
-### 3-1. Problem Definition (Long-only Base Case)
+### Problem Definition (Long-only Base Case)
 
 **Decision Variables:** Weights `w ∈ ℝ^N`
 
@@ -86,9 +150,7 @@ r_t = ln(P_t / P_{t-1})
 - Long-only: `w_i ≥ 0`
 - (Optional) Individual upper bounds: `w_i ≤ w_max` (concentration risk control)
 
-### 3-2. Frontier Calculation Methods
-
-#### Approach A: Canonical QP (Production Quality)
+### Approach A: Canonical QP (Production Quality)
 
 For each target return `R`:
 ```
@@ -101,7 +163,7 @@ subject to  w^T μ = R
 **Pros:** True efficient frontier
 **Cons:** Requires QP solver implementation
 
-#### Approach B: Random Sampling (MVP Recommended)
+### Approach B: Random Sampling (MVP Recommended)
 
 1. Generate 10,000-100,000 portfolios using Dirichlet distribution (ensures sum=1, positive)
 2. Calculate (volatility, expected return, Sharpe ratio) for each sample
@@ -112,25 +174,11 @@ subject to  w^T μ = R
 
 > **Recommendation:** Start with Approach B for MVP, implement Approach A in Phase 2 for accuracy.
 
-### 3-3. Output Deliverables
-
-**Key Portfolios:**
-1. **GMV (Global Minimum Variance)** portfolio
-2. **Max Sharpe (Tangency)** portfolio
-   - Risk-free rate: Use annualized average return of SGOV
-3. **Target volatility/return** portfolio (user-specified)
-
-**Visualizations:**
-- Efficient frontier chart (return vs. volatility)
-- Portfolio weights table
-
 ---
 
-## 4) Requirement 2: S&P 500 Beta Hedging Sizing
+## Portfolio Beta Calculation Methods
 
-### 4-1. Portfolio Beta Calculation
-
-**Method:** Direct regression (most transparent)
+### Method: Direct Regression
 
 For each asset:
 ```
@@ -141,14 +189,16 @@ r_asset = α + β × r_market + ε
 - Option 1: `β_portfolio = Σ w_i × β_i` (weighted average of individual betas)
 - Option 2: Regress portfolio return time series vs. market returns directly
 
-### 4-2. Hedge Sizing ("How Much to Short?")
+---
+
+## Hedge Sizing Calculations
 
 **Given:**
 - Portfolio value: `V_A`
 - Current portfolio beta: `β_p`
 - Target beta: `β*` (typically 0 for market-neutral)
 
-#### Method 1: Index Futures (e.g., ES)
+### Method 1: Index Futures (e.g., ES)
 
 Number of contracts required:
 ```
@@ -159,7 +209,7 @@ Where `V_F` = dollar exposure per contract (e.g., ES = index × multiplier)
 
 Reference: [Using Futures for Hedging](https://analystprep.com/study-notes/frm/part-1/financial-markets-and-products/hedging-strategies-using-futures/)
 
-#### Method 2: SPY ETF (Simplified)
+### Method 2: SPY ETF (Simplified)
 
 Short dollar amount:
 ```
@@ -175,9 +225,7 @@ Shares = Short $ / SPY_price
 
 ---
 
-## 5) Architecture & Module Design
-
-### Module Structure
+## Module Structure & Design
 
 ### 1. data/
 
@@ -249,35 +297,7 @@ node index.js \
 
 ---
 
-## 6) MVP Implementation Roadmap
-
-### Phase 1: Core Data Pipeline
-- [ ] Price collection from Yahoo Finance
-- [ ] Data alignment and cleaning
-- [ ] Returns calculation (log returns)
-- [ ] Mean and covariance computation
-
-### Phase 2: Efficient Frontier (Sampling Approach)
-- [ ] Random portfolio generation (Dirichlet distribution)
-- [ ] Portfolio statistics calculation
-- [ ] Identify GMV and Max Sharpe portfolios
-- [ ] Basic visualization/output
-
-### Phase 3: Beta Calculation & Hedging
-- [ ] Implement OLS regression for beta
-- [ ] Calculate portfolio beta from selected weights
-- [ ] Compute SPY short position sizing
-- [ ] Output hedge recommendations
-
-### Phase 4: Enhancement
-- [ ] (Optional) QP-based true efficient frontier
-- [ ] (Optional) Futures contract sizing (ES/NQ)
-- [ ] Web UI with charts (Next.js/React)
-- [ ] Backtesting capability
-
----
-
-## 7) Quick Start Package References
+## Quick Start Package References
 
 **Yahoo Finance Data:**
 - Package: [`yahoo-finance2`](https://www.npmjs.com/package/yahoo-finance2)
@@ -290,7 +310,7 @@ npm install yahoo-finance2 mathjs
 
 ---
 
-## 8) Technical Considerations
+## Technical Considerations
 
 ### Risk-Free Rate
 Use SGOV's annualized average return as risk-free rate proxy for Sharpe ratio calculations.
@@ -317,35 +337,66 @@ Use SGOV's annualized average return as risk-free rate proxy for Sharpe ratio ca
 
 ---
 
-## 9) Success Criteria
+## Project Structure
 
-**MVP Success:**
-- ✅ Successfully fetch and process price data for user tickers + SGOV
-- ✅ Generate efficient frontier with identifiable GMV and Max Sharpe portfolios
-- ✅ Calculate portfolio beta against S&P 500
-- ✅ Output required SPY short position for target beta
+### Monorepo Architecture
 
-**Production Ready:**
-- ✅ QP-based true efficient frontier
-- ✅ Futures contract sizing support
-- ✅ Web-based UI with interactive charts
-- ✅ Backtesting and performance attribution
-- ✅ Transaction cost modeling
+```
+glassbox/
+├── apps/
+│   ├── frontend/          # Next.js application
+│   │   ├── app/          # App Router pages
+│   │   ├── components/   # React components with Glass UI
+│   │   ├── lib/          # Frontend utilities
+│   │   ├── styles/       # Tailwind CSS + Glass utilities
+│   │   └── package.json
+│   │
+│   ├── backend/           # Nest.js application
+│   │   ├── src/
+│   │   │   ├── data/     # Data module (price fetching, alignment)
+│   │   │   ├── analytics/ # Analytics module (returns, covariance, stats)
+│   │   │   ├── optimizer/ # Optimizer module (efficient frontier)
+│   │   │   ├── hedge/    # Hedge module (beta calculation, hedging)
+│   │   │   ├── api/      # API controllers and DTOs
+│   │   │   └── main.ts   # Application entry point
+│   │   └── package.json
+│   │
+│   └── cli/               # CLI tool (MVP)
+│       ├── src/
+│       │   └── index.ts  # CLI implementation
+│       └── package.json
+│
+├── packages/              # Shared packages
+│   ├── types/            # Shared TypeScript types
+│   ├── utils/            # Shared utilities
+│   └── config/           # Shared configuration
+│
+├── .claude/              # Claude Code configuration
+├── package.json          # Root package.json (workspace)
+├── turbo.json            # Turborepo configuration (optional)
+└── tsconfig.json         # Root TypeScript configuration
+```
 
----
+### Module Organization (Nest.js Backend)
 
-## 10) Next Steps
+**Data Module (`apps/backend/src/data/`)**
+- `data.service.ts` - Price fetching and alignment logic
+- `data.controller.ts` - API endpoints for data operations
+- `yahoo-finance.provider.ts` - Yahoo Finance integration
 
-**Ready to start implementation:**
+**Analytics Module (`apps/backend/src/analytics/`)**
+- `analytics.service.ts` - Returns calculation, covariance, statistics
+- `analytics.controller.ts` - API endpoints for analytics
+- `portfolio-stats.service.ts` - Portfolio metrics calculation
 
-Choose your preferred approach:
-1. **Quick MVP (Recommended):** Sampling-based approach (Approach B) for fastest time-to-market
-2. **Production Quality:** QP-based approach (Approach A) for mathematical accuracy
+**Optimizer Module (`apps/backend/src/optimizer/`)**
+- `optimizer.service.ts` - Efficient frontier calculation
+- `optimizer.controller.ts` - API endpoints for optimization
+- `sampling.strategy.ts` - Random sampling approach
+- `qp.strategy.ts` - Quadratic programming approach (Phase 2)
 
-I can generate:
-- Project folder structure
-- `package.json` with dependencies
-- Core JavaScript module skeletons
-- Sample CLI implementation
-
-Let me know which approach you prefer and I'll scaffold the project!
+**Hedge Module (`apps/backend/src/hedge/`)**
+- `hedge.service.ts` - Beta calculation and hedge sizing
+- `hedge.controller.ts` - API endpoints for hedging
+- `beta.calculator.ts` - Portfolio beta calculation
+- `hedge.calculator.ts` - SPY/Futures hedge sizing
