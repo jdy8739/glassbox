@@ -259,3 +259,180 @@ export const cardGradients = {
   goldCyan: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%)',
   indigoGreen: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(47, 184, 102, 0.05) 100%)',
 };
+
+/**
+ * DARK MODE - Inverted theme for darker UI
+ * Darker backgrounds with lighter text and adjusted glassmorphism
+ */
+
+export const darkColors = {
+  // Primary Colors - Lighter Grass for Dark Mode
+  grass: {
+    50: '#144d2b',
+    100: '#185f33',
+    200: '#1d7a42',
+    300: '#22944f',
+    400: '#2fb866',
+    500: '#4aca80',
+    600: '#70d99f',
+    700: '#a8e6c1',
+    800: '#d1f0dd',
+    900: '#f0f9f4',
+  },
+
+  // Secondary Colors - Lighter Sky for Dark Mode
+  sky: {
+    50: '#2b3950',
+    100: '#334461',
+    200: '#3d5276',
+    300: '#4a6690',
+    400: '#5b80ad',
+    500: '#7a9bc4',
+    600: '#a7bdd8',
+    700: '#cbd8e9',
+    800: '#e5ecf4',
+    900: '#f4f7fb',
+  },
+
+  // Accent Colors - Lighter Earth for Dark Mode
+  earth: {
+    50: '#3a3023',
+    100: '#473b28',
+    200: '#584932',
+    300: '#6e5a3e',
+    400: '#8c7350',
+    500: '#a88f68',
+    600: '#c4ae8e',
+    700: '#dccfbb',
+    800: '#ede7dd',
+    900: '#f9f7f4',
+  },
+
+  // Neutral Colors - Inverted Rain/Mist for Dark Mode
+  rain: {
+    50: '#343d43',
+    100: '#424c54',
+    200: '#55606a',
+    300: '#6b7885',
+    400: '#8895a3',
+    500: '#b1bcc7',
+    600: '#cfd6dd',
+    700: '#e3e7eb',
+    800: '#f1f3f5',
+    900: '#fafbfc',
+  },
+
+  // Accent Colors - Brighter for Dark Mode (better contrast)
+  accent: {
+    purple: '#d8bffd',       // Lighter purple
+    coral: '#ff8a8a',        // Lighter coral
+    gold: '#fcd34d',         // Lighter gold
+    cyan: '#22d3ee',         // Lighter cyan
+    pink: '#f472b6',         // Lighter pink
+    indigo: '#a5b4fc',       // Lighter indigo
+  },
+
+  // Semantic Colors - Dark Mode
+  semantic: {
+    success: '#4aca80',      // Lighter grass
+    warning: '#a88f68',      // Earth
+    error: '#ff8a8a',        // Lighter coral
+    info: '#7a9bc4',         // Sky
+  },
+
+  // Utility
+  white: '#ffffff',
+  black: '#000000',
+  transparent: 'transparent',
+};
+
+// Dark Mode Gradients - Inverted
+export const darkGradients = {
+  page: 'linear-gradient(135deg, #0f1419 0%, #1a2a24 50%, #141a1f 100%)',
+  hero: 'linear-gradient(180deg, #151b22 0%, #1a2a24 100%)',
+  section: 'linear-gradient(135deg, #0f1419 0%, #1a1f24 100%)',
+  rain: 'linear-gradient(180deg, rgba(91, 128, 173, 0.1) 0%, rgba(177, 188, 199, 0.05) 100%)',
+};
+
+// Dark Mode Shadows - Adjusted for dark backgrounds
+export const darkShadows = {
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
+  DEFAULT: '0 2px 8px 0 rgba(0, 0, 0, 0.4)',
+  md: '0 4px 16px 0 rgba(0, 0, 0, 0.5)',
+  lg: '0 8px 24px 0 rgba(0, 0, 0, 0.6)',
+  xl: '0 12px 32px 0 rgba(0, 0, 0, 0.7)',
+  '2xl': '0 20px 48px 0 rgba(0, 0, 0, 0.8)',
+  rain: '0 4px 20px 0 rgba(26, 42, 36, 0.5)',
+  mist: '0 8px 32px 0 rgba(0, 0, 0, 0.6)',
+};
+
+// Dark Mode Glassmorphism - Dark background with light glass
+export const darkGlass = {
+  sm: {
+    background: 'rgba(255, 255, 255, 0.05)',
+    backdropFilter: 'blur(4px)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    shadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+  },
+  DEFAULT: {
+    background: 'rgba(255, 255, 255, 0.08)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    shadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+  },
+  lg: {
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(16px)',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    shadow: '0 12px 48px rgba(0, 0, 0, 0.5)',
+  },
+  xl: {
+    background: 'rgba(255, 255, 255, 0.12)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.18)',
+    shadow: '0 16px 64px rgba(0, 0, 0, 0.6)',
+  },
+};
+
+// Dark Mode Components
+export const darkComponents = {
+  button: {
+    primary: {
+      bg: darkColors.grass[400],
+      hover: darkColors.grass[500],
+      text: '#000000',
+    },
+    secondary: {
+      bg: darkColors.sky[500],
+      hover: darkColors.sky[600],
+      text: '#ffffff',
+    },
+    outline: {
+      border: 'rgba(255, 255, 255, 0.2)',
+      hover: 'rgba(255, 255, 255, 0.3)',
+      text: darkColors.grass[600],
+    },
+  },
+  panel: {
+    bg: 'rgba(255, 255, 255, 0.08)',
+    border: 'rgba(255, 255, 255, 0.12)',
+    text: '#ffffff',
+    backdropBlur: '10px',
+  },
+  input: {
+    bg: 'rgba(255, 255, 255, 0.05)',
+    border: 'rgba(255, 255, 255, 0.1)',
+    focus: darkColors.grass[600],
+    placeholder: 'rgba(255, 255, 255, 0.5)',
+    text: '#ffffff',
+    backdropBlur: '8px',
+  },
+};
+
+// Dark Mode Card Gradients - Lighter overlays for visibility
+export const darkCardGradients = {
+  purpleBlue: 'linear-gradient(135deg, rgba(168, 160, 253, 0.15) 0%, rgba(96, 165, 250, 0.08) 100%)',
+  coralPink: 'linear-gradient(135deg, rgba(255, 138, 138, 0.15) 0%, rgba(244, 114, 182, 0.08) 100%)',
+  goldCyan: 'linear-gradient(135deg, rgba(252, 211, 77, 0.15) 0%, rgba(34, 211, 238, 0.08) 100%)',
+  indigoGreen: 'linear-gradient(135deg, rgba(165, 180, 252, 0.15) 0%, rgba(106, 204, 128, 0.08) 100%)',
+};

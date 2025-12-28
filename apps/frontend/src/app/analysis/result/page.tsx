@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 interface AnalysisSnapshot {
@@ -25,7 +25,7 @@ interface SavedPortfolio {
   updatedAt: string;
 }
 
-export default function AnalysisResult() {
+function AnalysisResultContent() {
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
 
@@ -347,5 +347,13 @@ export default function AnalysisResult() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function AnalysisResult() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-6 flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
+      <AnalysisResultContent />
+    </Suspense>
   );
 }
