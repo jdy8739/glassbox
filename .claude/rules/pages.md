@@ -1,67 +1,104 @@
 # Glassbox - Web Application Pages (MVP)
 
+## Overview
+
+Four-page MVP application for portfolio optimization and analysis.
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Marketing landing page |
+| `/portfolio/new` | Portfolio builder and input |
+| `/analysis/result` | Optimization results & hedging recommendations |
+| `/portfolios` | Saved portfolios library |
+
+---
+
 ## Page 1: Landing (`/`)
 
-**What it serves:** Marketing and product introduction
+### UI Components
+- **Hero Section** - Value proposition with "Start Analysis" CTA button (links to Page 2)
+- **Feature Cards** - 3 cards highlighting Efficient Frontier, Beta Hedging, Glass UI design
 
-**Features:**
-- Hero section with value proposition
-- "Start Analysis" button → Portfolio Builder
-- 3 feature cards (Efficient Frontier, Beta Hedging, Glass UI)
+### Key Features
+- Static marketing content
+- Navigation to application
+
+### Tech Stack
+- Frontend: Next.js only
 
 ---
 
 ## Page 2: Portfolio Builder (`/portfolio/new`)
 
-**What it serves:** Input tickers and configure analysis
+### UI Components
+- **Search Bar** - Ticker search with autocomplete
+- **Quick-add Chips** - Preset tags (#Safe(TLT), #Bitcoin, #Gold) auto-fill on click
+- **Asset List** - Rows with Ticker | Quantity Input | Delete button
+- **Action Bar** - Floating or fixed "Analyze" button
 
-**Features:**
-- Ticker input with add/remove (SGOV auto-included)
-- Date range picker (start/end dates)
-- "Analyze" button
+### Key Features
+- Ticker validation via search
+- Quantity input for accurate weighting (not average price)
+- Client-side state management for asset list
 
-**Services:** Ticker validation, Portfolio save
+### Tech Stack
+- **API:** `GET /tickers/search?q=...` (NestJS proxying Yahoo Finance)
+- **State:** React useState → `[{ symbol: 'AAPL', qty: 10 }, ...]`
 
 ---
 
-## Page 3: Analysis Results (`/analysis/[id]`)
+## Page 3: Analysis Results (`/analysis/result`)
 
-**What it serves:** Show efficient frontier and hedge calculations
+### UI Components
 
-**Features:**
-- **Tab 1: Efficient Frontier**
-  - Scatter plot chart (risk vs return)
-  - 2 portfolio cards: GMV and Max Sharpe
-  - Weights table for each portfolio
+**Tab 1: Efficient Frontier**
+- Scatter plot (Risk X-axis, Return Y-axis) with "My Portfolio" marker
+- Metric cards showing GMV (Min Risk) & Max Sharpe (Max Efficiency)
+- Weights table with optimal asset allocation percentages
 
-- **Tab 2: Beta Hedging**
-  - Portfolio beta display
-  - SPY short position calculator
-  - Hedge recommendation (shares to short)
+**Tab 2: Beta Hedging**
+- Beta display showing current portfolio beta (e.g., 1.5)
+- Actionable insight (e.g., "Short 23 shares of SPY to hedge market risk")
+- "Save Portfolio" floating action button
 
-**Services:** Optimization engine, Beta calculation, Chart generation
+### Key Features
+- Visualize complex financial data
+- Save analysis results to database
+
+### Tech Stack
+- **API:** `POST /analyze` (NestJS ↔ Python Worker ↔ PyPortfolioOpt)
+- **Visualization:** Recharts or Chart.js
+- **DB:** `POST /portfolios` (saves ticker/qty data)
 
 ---
 
 ## Page 4: Portfolio Library (`/portfolios`)
 
-**What it serves:** List of saved portfolio analyses
+### UI Components
+- **Card Grid** - Portfolio Name, Date, Key Asset Badges
+- **Delete Action** - Trash icon on each card
 
-**Features:**
-- Portfolio cards grid (name, date, tickers)
-- Click card → view analysis
-- Delete button per card
+### Key Features
+- List retrieval (CRUD operations)
+- Re-analysis: Clicking card triggers fresh analysis (Page 3) with saved tickers
 
-**Services:** Portfolio list retrieval
+### Tech Stack
+- **API:** `GET /portfolios` (NestJS + Prisma)
+- **API:** `DELETE /portfolios/:id`
 
 ---
 
-## Navigation
+## System & Infrastructure
 
-**Top Bar:**
-- Logo → Home
-- New Analysis
-- My Portfolios
+### Navigation
+- Top bar with Logo, Analyze, Library, Login/Logout
 
-**Footer:**
-- About | Help | Privacy
+### Authentication
+- Google OAuth (Passport.js + JWT strategy)
+
+### Database
+- **Engine:** PostgreSQL
+- **Tables:** User, Portfolio, PortfolioItem
+
+### Architecture
+- REST API (NestJS) + Python Worker (data processing)
