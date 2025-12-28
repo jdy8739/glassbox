@@ -50,7 +50,7 @@ export default function PortfolioBuilder() {
       <div className="mx-auto max-w-4xl space-y-10">
         {/* Header Section */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
             <span className="text-sm font-medium text-black dark:text-black/80 dark:text-white/80">Step 1 of 3: Build Portfolio</span>
           </div>
@@ -159,7 +159,7 @@ export default function PortfolioBuilder() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 bg-white/5 rounded-lg px-4 py-2">
+                        <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-lg px-4 py-2">
                           <label className="text-sm text-black dark:text-black/70 dark:text-white/70 whitespace-nowrap">Qty:</label>
                           <input
                             type="number"
@@ -169,7 +169,7 @@ export default function PortfolioBuilder() {
                             }
                             min="0"
                             step="0.01"
-                            className="nature-input w-24 bg-white/10"
+                            className="nature-input w-24 bg-black/10 dark:bg-white/10"
                           />
                         </div>
                         <button
@@ -194,7 +194,7 @@ export default function PortfolioBuilder() {
               <p className="text-black dark:text-black/70 dark:text-white/70">Portfolio completeness</p>
               <p className="text-grass-400 font-semibold">{Math.min(items.length * 20, 100)}%</p>
             </div>
-            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-grass-400 to-cyan-300 transition-all duration-300"
                 style={{ width: `${Math.min(items.length * 20, 100)}%` }}

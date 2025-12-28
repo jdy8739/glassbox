@@ -116,7 +116,7 @@ function AnalysisResultContent() {
       <div className="mx-auto max-w-6xl space-y-12">
         {/* Header */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse"></span>
             <span className="text-sm font-medium text-black/80 dark:text-white/80">
               {isSnapshot ? 'Saved Portfolio' : 'Step 2 of 3: Review Analysis'}
@@ -292,7 +292,7 @@ function AnalysisResultContent() {
                       <span className="text-2xl">📈</span>
                       <h4 className="text-lg font-semibold text-black dark:text-white">SPY ETF Hedging</h4>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-5 space-y-3">
+                    <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">Short 42 shares</span>
@@ -314,7 +314,7 @@ function AnalysisResultContent() {
                       <span className="text-2xl">⚡</span>
                       <h4 className="text-lg font-semibold text-black dark:text-white">ES Futures Hedging</h4>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-5 space-y-3">
+                    <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">Short 7 contracts</span>

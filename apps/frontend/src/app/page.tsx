@@ -193,7 +193,7 @@ export default function Home() {
       </div>
 
       {/* How It Works Section */}
-      <div className="relative px-4 py-28 bg-white/5">
+      <div className="relative px-4 py-28 bg-black/5 dark:bg-white/5">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-5xl font-bold text-black dark:text-white text-center mb-20">
             How It <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">Works</span>

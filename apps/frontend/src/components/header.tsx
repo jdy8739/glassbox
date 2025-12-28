@@ -1,14 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { useTheme } from '@/app/providers';
 import { useEffect, useState } from 'react';
 
 export function Header() {
   const [mounted, setMounted] = useState(false);
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
+    // Load theme from localStorage and context after mount
+    const savedTheme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
+    setThemeState(savedTheme);
+
+    const isDark = savedTheme === 'dark' ||
+      (savedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setResolvedTheme(isDark ? 'dark' : 'light');
     setMounted(true);
   }, []);
 
@@ -18,7 +25,19 @@ export function Header() {
       dark: 'system',
       system: 'light',
     };
-    setTheme(themeMap[theme] || 'light');
+    const newTheme = themeMap[theme] || 'light';
+    setThemeState(newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // Apply theme immediately
+    const isDark = newTheme === 'dark' ||
+      (newTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setResolvedTheme(isDark ? 'dark' : 'light');
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   };
 
   const getThemeLabel = () => {

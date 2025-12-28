@@ -53,7 +53,7 @@ export default function PortfolioLibrary() {
       <div className="mx-auto max-w-6xl space-y-12">
         {/* Header */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
             <span className="text-sm font-medium text-black dark:text-black/80 dark:text-white/80">Your Saved Analyses</span>
           </div>
@@ -121,7 +121,7 @@ export default function PortfolioLibrary() {
                         </span>
                       ))}
                       {portfolio.tickers.length > 4 && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-black dark:text-black/70 dark:text-white/70">
+                        <span className="text-xs px-2 py-1 rounded-full bg-black/10 dark:bg-white/10 text-black dark:text-black/70 dark:text-white/70">
                           +{portfolio.tickers.length - 4} more
                         </span>
                       )}

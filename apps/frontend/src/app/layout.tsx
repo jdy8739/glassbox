@@ -3,10 +3,7 @@ import './globals.css';
 import { ThemeProvider } from './providers';
 import dynamic from 'next/dynamic';
 
-const Header = dynamic(() => import('@/components/header').then(mod => ({ default: mod.Header })), {
-  ssr: false,
-  loading: () => <div className="h-16" />,
-});
+const Header = dynamic(() => import('@/components/header').then(mod => ({ default: mod.Header })));
 
 export const metadata: Metadata = {
   title: 'Glassbox - Portfolio Optimization Tool',
