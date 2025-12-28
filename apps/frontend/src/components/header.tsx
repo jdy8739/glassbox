@@ -30,26 +30,8 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Glassmorphic Background - Consistent with nature-panel */}
-      <div
-        className="absolute inset-0 rounded-b-2xl mx-4 mt-2 mb-0 border"
-        style={{
-          background: 'rgba(255, 255, 255, 0.12)',
-          borderColor: 'rgba(255, 255, 255, 0.18)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-        }}
-      />
-
-      {/* Dark mode adjustment */}
-      <div className="absolute inset-0 rounded-b-2xl mx-4 mt-2 mb-0 dark:block hidden"
-        style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderColor: 'rgba(255, 255, 255, 0.12)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-        }}
-      />
+      {/* Glassmorphic Background */}
+      <div className="absolute inset-0 rounded-b-2xl mx-4 mt-2 mb-0 border header-glass" />
 
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 py-3.5 flex items-center justify-between">
@@ -58,9 +40,9 @@ export function Header() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-grass-400 to-cyan-300 flex items-center justify-center flex-shrink-0">
             <span className="text-lg font-bold">💎</span>
           </div>
-          <span className="font-bold text-base hidden sm:inline text-white">
-            <span className="text-grass-500 dark:text-grass-400">Glass</span>
-            <span className="dark:text-white">box</span>
+          <span className="font-bold text-base hidden sm:inline text-black dark:text-white">
+            <span className="text-grass-600 dark:text-grass-400">Glass</span>
+            <span className="text-black dark:text-white">box</span>
           </span>
         </Link>
 
@@ -68,13 +50,13 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-1">
           <Link
             href="/portfolio/new"
-            className="px-4 py-2 text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium"
+            className="px-4 py-2 text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
           >
             Analyze
           </Link>
           <Link
             href="/portfolios"
-            className="px-4 py-2 text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium"
+            className="px-4 py-2 text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
           >
             Portfolios
           </Link>
@@ -85,11 +67,7 @@ export function Header() {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg transition-all duration-300 text-white/70 hover:text-white group relative"
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            }}
+            className="theme-toggle-button"
             title={`Current: ${getThemeLabel()}. Click to cycle through themes.`}
             aria-label={`Theme: ${getThemeLabel()}. Click to cycle through light, dark, and system themes.`}
           >
@@ -110,7 +88,7 @@ export function Header() {
               </svg>
             )}
             {/* Tooltip */}
-            <div className="absolute top-full mt-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="theme-toggle-tooltip">
               {getThemeLabel()}
             </div>
           </button>
