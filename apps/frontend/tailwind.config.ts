@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss';
-import { colors, shadows, gradients, animations } from '@glassbox/design-tokens';
+import { colors, shadows, gradients, animations, darkColors, darkShadows } from '@glassbox/design-tokens';
 
 const config: Config = {
   content: [
@@ -7,14 +7,16 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Light mode colors (default)
         grass: colors.grass,
         sky: colors.sky,
         earth: colors.earth,
         rain: colors.rain,
-        // Accent colors
+        // Accent colors (light mode)
         purple: { 300: colors.accent.purple },
         coral: { 300: colors.accent.coral },
         gold: { 300: colors.accent.gold },
@@ -41,7 +43,24 @@ const config: Config = {
       keyframes: animations,
     },
   },
-  plugins: [],
+  plugins: [
+    // Dark mode color variants plugin
+    function ({ addVariant, matchVariant }: any) {
+      addVariant('light', 'html:not(.dark) &');
+      matchVariant(
+        'dark-bg',
+        (value: string) => {
+          return `html.dark [data-dark-bg="${value}"] &`;
+        },
+        {
+          values: {
+            primary: 'primary',
+            secondary: 'secondary',
+          },
+        }
+      );
+    },
+  ],
 };
 
 export default config;
