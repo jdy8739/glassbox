@@ -1,40 +1,40 @@
-# Glassbox Design System - Rainy Grass Field Theme
+# Glassbox Design System - Glassmorphic Nature Theme
 
 ## Core Philosophy
 
-Our design philosophy evokes a **peaceful grass field on a rainy day** — a moment of serene natural beauty. Every visual element reflects our commitment to creating a **calm, grounded, and trustworthy** experience for portfolio management.
+Our design philosophy combines **premium glassmorphism with nature-inspired grounding and vibrant accent colors**. Frosted glass cards with colorful gradient overlays float above dark nature-inspired backgrounds, creating a sophisticated yet dynamic interface that feels both professional and alive. Every visual element reflects our commitment to **transparency, clarity, natural beauty, and visual excitement** in portfolio management.
 
-**Mood**: Peaceful, organic, grounded, fresh after rain
-**Values**: Transparency, growth, natural stability, calm confidence
-**User Feeling**: Safe, grounded, connected to nature, at peace
+**Mood**: Premium, dynamic, grounded, sophisticated
+**Values**: Transparency, growth, natural stability, refined trust, creative expression
+**User Feeling**: Professional, inspired, confident, grounded in nature with creative flair
 
 ---
 
 ## Design Principles
 
-### 1. Natural Grounding
-- **Grass greens** (#2fb866) evoke growth, life, and positive momentum
-- **Sky blues** (#7a9bc4) bring calm and trust, like peaceful overcast days
-- **Earth browns** (#a88f68) provide stability and natural grounding
-- Colors are muted and organic, never harsh or artificial
+### 1. Glassmorphism with Depth
+- **Semi-transparent glass cards** with real `backdrop-filter: blur()` effects
+- **Frosted glass appearance** with subtle borders (rgba(255, 255, 255, 0.15-0.25))
+- **Layered depth** through multiple glass surfaces
+- **Real blur effects** that reveal content underneath while maintaining focus
 
-### 2. Softness & Diffusion
-- **Soft shadows** simulate overcast daylight (no harsh contrasts)
-- **Rounded corners** (xl, 2xl) feel organic and natural, not mechanical
-- **Generous spacing** creates breathing room and peace
-- **Subtle transitions** feel like watching clouds move in the sky
+### 2. Nature-Grounded Backgrounds
+- **Dark green-tinted gradients** (#1a3a2a to #2d5a45) simulating soil and grass
+- **Fixed backgrounds** that don't scroll, anchoring the experience
+- **Soft, muted tones** that feel natural and organic
+- **No harsh contrasts** — everything feels peaceful and welcoming
 
-### 3. Transparency & Trust
-- **Clear visual hierarchy** through natural depth (shadows, not opacity tricks)
-- **Honest data presentation** — no glass tricks, just clean white cards
-- **Accessible information** at a glance with proper contrast
-- **No hidden complexity** — everything feels grounded and real
+### 3. Bright Green Accents
+- **Grass green (#2fb866)** as primary action color — bright and energetic
+- **Clear, high-contrast CTAs** stand out against glass backgrounds
+- **Growth-oriented feel** with nature-inspired primary color
+- **Professional yet approachable** tone
 
-### 4. Growth Through Design
-- **Green primary color** suggests positive momentum and growth
-- **Uplifting animations** (gentle sway, organic grow) feel alive
-- **Progressive disclosure** reveals information naturally
-- **Connected elements** show relationships between data points
+### 4. Clean Typography & Hierarchy
+- **White text on glass** for maximum readability
+- **Green headings** to guide focus and show importance
+- **Transparent text layers** (white/60, white/70, white/80) for hierarchy
+- **Clear visual structure** through typography rather than decoration
 
 ---
 
@@ -78,7 +78,22 @@ sky-900: #2b3950   // Deepest sky
 
 **Use for**: Secondary CTAs, information, backgrounds, secondary actions
 
-### Accent Colors - Earth & Soil
+### Accent Colors - Point Colors
+
+Vibrant colors for visual interest and feature differentiation.
+
+```
+purple:  #a78bfa   // Elegant purple for premium features
+coral:   #ff6b6b   // Vibrant coral/red for risk/hedging
+gold:    #fbbf24   // Warm gold for premium features
+cyan:    #06b6d4   // Cool cyan for data/analysis
+pink:    #ec4899   // Vibrant pink for special highlights
+indigo:  #6366f1   // Deep indigo for advanced features
+```
+
+**Use for**: Feature cards, badges, gradient overlays, visual differentiation, accent elements
+
+### Secondary Accent Colors - Earth & Soil
 
 The earth palette providing grounding and natural stability.
 
@@ -197,55 +212,77 @@ px:  1px
 ### Buttons
 
 #### Primary Button (.nature-button)
-- **Color**: grass-500 background, white text
-- **Hover**: grass-600, elevated shadow
+- **Background**: grass-500 (#2fb866) — bright green accent
+- **Text**: white
+- **Hover**: grass-600 with elevated shadow
 - **Active**: scale down 95%
-- **Usage**: Main CTAs, "Analyze", "Start Analysis"
+- **Usage**: Main CTAs, "Analyze", "Start Analysis", "Add", "Save"
+- **Note**: Stands out clearly against glass backgrounds
 
 #### Secondary Button (.nature-button-secondary)
-- **Color**: sky-400 background, white text
-- **Hover**: sky-500, elevated shadow
+- **Background**: sky-400 (#7a9bc4) — secondary accent
+- **Text**: white
+- **Hover**: sky-500 with elevated shadow
 - **Active**: scale down 95%
 - **Usage**: Secondary actions, "View Portfolios"
 
 #### Outline Button (.nature-button-outline)
-- **Border**: rain-300, 2px
-- **Text**: grass-700
-- **Hover**: rain-50 background
+- **Background**: rgba(255, 255, 255, 0.1) with `backdrop-filter: blur(8px)`
+- **Border**: white/30, 2px
+- **Text**: white
+- **Hover**: border white/50 with increased shadow
 - **Usage**: Tertiary actions, "Export Results"
 
 ### Cards & Panels
 
 #### Panel (.nature-panel)
-- **Background**: white (#FFFFFF)
-- **Border**: rain-200, 1px
-- **Border Radius**: rounded-xl (1.5rem)
-- **Shadow**: lg (0 8px 24px rgba(27, 58, 45, 0.12))
-- **Hover**: shadow-xl, translate up -0.5
+- **Background**: rgba(255, 255, 255, 0.15) with `backdrop-filter: blur(10px)`
+- **Border**: white/20, 1px
+- **Border Radius**: rounded-2xl (2rem)
+- **Shadow**: 0 8px 32px rgba(0, 0, 0, 0.1)
+- **Hover**: border white/30, shadow-xl, translate up -0.5
 - **Usage**: Major containers, headers, sections
 
 #### Card (.nature-card)
-- **Background**: white
-- **Border**: rain-200
+- **Background**: rgba(255, 255, 255, 0.15) with `backdrop-filter: blur(10px)`
+- **Border**: white/20, 1px
 - **Padding**: p-6 (1.5rem)
-- **Radius**: rounded-xl
-- **Shadow**: lg
-- **Hover**: shadow-xl, translate up -0.25
+- **Radius**: rounded-2xl
+- **Shadow**: 0 8px 32px rgba(0, 0, 0, 0.1)
+- **Hover**: border white/30, shadow-xl, translate up -1
 - **Usage**: Feature cards, portfolio items, data cards
 
 #### Badge (.nature-badge)
-- **Background**: grass-100
-- **Text**: grass-700
+- **Background**: rgba(47, 184, 102, 0.3) with `backdrop-filter: blur(4px)`
+- **Border**: white/20, 1px
+- **Text**: white
 - **Padding**: px-3 py-1
 - **Radius**: rounded-full
 - **Usage**: Tags, asset labels, status indicators
 
+##### Badge Variants
+- `.nature-badge.purple` - Purple tinted badge
+- `.nature-badge.coral` - Coral/red tinted badge
+- `.nature-badge.gold` - Gold tinted badge
+- `.nature-badge.cyan` - Cyan tinted badge
+
+#### Card with Gradient (.nature-card-gradient)
+- Extends `.nature-card` with colorful gradient overlay
+- Overlay opacity: 0.4 for subtle effect
+- **Variants**:
+  - `.purple-blue` - Purple to blue gradient
+  - `.coral-pink` - Coral to pink gradient
+  - `.gold-cyan` - Gold to cyan gradient
+  - `.indigo-green` - Indigo to green gradient
+- **Usage**: Feature cards, differentiated content cards, visual hierarchy
+
 ### Forms
 
 #### Input (.nature-input)
-- **Background**: white
-- **Border**: rain-300, 1px
-- **Placeholder**: rain-400
+- **Background**: rgba(255, 255, 255, 0.1) with `backdrop-filter: blur(8px)`
+- **Border**: white/20, 1px
+- **Text**: rain-900 (dark text for readability)
+- **Placeholder**: white/50
 - **Focus**:
   - Border: grass-400
   - Ring: grass-400/20 (2px)
@@ -257,36 +294,63 @@ px:  1px
 
 ## Shadows
 
-Soft, diffused shadows simulating overcast daylight.
+Soft shadows for glassmorphic depth — subtle and dark-tinted.
 
 ```
-sm:     0 1px 2px rgba(0, 0, 0, 0.05)
-default: 0 2px 8px rgba(27, 58, 45, 0.08)
-md:     0 4px 16px rgba(27, 58, 45, 0.10)
-lg:     0 8px 24px rgba(27, 58, 45, 0.12)
-xl:     0 12px 32px rgba(27, 58, 45, 0.15)
-2xl:    0 20px 48px rgba(27, 58, 45, 0.20)
-
-rain:   0 4px 20px rgba(123, 155, 196, 0.15)  // Rainy glow
-mist:   0 8px 32px rgba(177, 188, 199, 0.20)  // Misty effect
+sm:     0 4px 6px rgba(0, 0, 0, 0.07)
+default: 0 8px 32px rgba(0, 0, 0, 0.1)
+md:     0 12px 48px rgba(0, 0, 0, 0.15)
+lg:     0 8px 32px rgba(0, 0, 0, 0.1)
+xl:     0 16px 64px rgba(0, 0, 0, 0.2)
 ```
 
-**Principle**: Shadows are greenish-tinted (nature-inspired) rather than black.
+**Principle**: Shadows create depth for floating glass cards without feeling heavy. Dark shadows on dark backgrounds maintain the premium aesthetic.
 
 ---
 
-## Gradients
-
-### Background Gradients
+## Page Background
 
 ```
-Page:     linear-gradient(135deg, #e5ecf4 0%, #d1f0dd 50%, #cbd8e9 100%)
-Hero:     linear-gradient(180deg, #f4f7fb 0%, #f0f9f4 100%)
-Section:  linear-gradient(135deg, #fafbfc 0%, #f9f7f4 100%)
-Rain:     linear-gradient(180deg, rgba(123, 155, 196, 0.1) 0%, rgba(177, 188, 199, 0.05) 100%)
+Base Gradient: linear-gradient(135deg, #1a3a2a 0%, #2d5a45 50%, #1a3a2a 100%)
+Fixed: background-attachment: fixed (doesn't scroll)
+Color Intent: Dark green gradient evoking soil and grass roots
 ```
 
-**Principle**: All gradients blend grass, sky, and earth tones for harmony.
+**Principle**: The fixed, dark background anchors the entire experience while frosted glass cards float above it. This creates visual depth and sophistication while maintaining nature grounding.
+
+---
+
+## Typography Hierarchy
+
+### Heading Scale
+```
+h1: text-5xl sm:text-6xl font-bold
+h2: text-4xl font-bold
+h3: text-2xl font-bold
+h4: text-xl font-semibold
+```
+
+### Text Colors
+- **Primary Headings**: White (#FFFFFF)
+- **Secondary Text**: white/70 or white/80
+- **Muted Text**: white/60
+- **Accent Headings**: Colored spans (cyan, purple, gold, coral)
+
+### Hero Heading Pattern
+```
+Large h1 with white base text
++ colored span with accent color
+Creates visual interest while maintaining readability
+```
+
+**Example**: "Build Your **Portfolio**" (Portfolio in cyan-300)
+
+### Section Titles
+```
+.section-title: text-4xl font-bold text-white
+.section-subtitle: text-lg text-white/70
+Always paired together for clarity
+```
 
 ---
 
@@ -334,28 +398,45 @@ Entrance animation for elements.
 
 ## Layout Patterns
 
+### Hero Section
+```
+py-24 sm:py-32 (generous vertical padding)
+max-w-4xl mx-auto (centered, narrow for text)
+text-center (centered alignment)
+space-y-6-8 (large vertical spacing)
+
+Heading Structure:
+- Large h1 with gradient text span
+- Supporting paragraph in white/70
+- CTA buttons below heading
+```
+
+### Feature Grid Section
+```
+py-20 sm:py-28 (large vertical padding)
+max-w-6xl mx-auto (wide container)
+grid gap-6 (consistent spacing)
+md:grid-cols-2 lg:grid-cols-3 (responsive)
+
+Each feature card uses .nature-card-gradient
+Cards have emoji icon, heading, description, badges
+```
+
 ### Page Layout
 ```
 min-h-screen (full viewport height)
-bg-gradient-to-br (diagonal gradient background)
-px-6 py-12 (organic padding)
-max-w-4xl mx-auto (centered content)
-space-y-6 (vertical rhythm)
+p-6 (horizontal padding)
+mx-auto max-w-4xl or max-w-6xl (centered container)
+space-y-6-8 (vertical section spacing)
 ```
 
-### Card Grids
+### Navigation (Top Bar)
 ```
-grid gap-6
-md:grid-cols-2 (2 columns on tablet)
-lg:grid-cols-3 (3 columns on desktop)
-```
-
-### Navigation
-```
-nature-panel (white card)
+nature-panel (glassmorphic header)
 flex items-center justify-between
 px-6 py-4 (comfortable padding)
-sticky top-0 (optional stickiness)
+mx-4 mt-4 (inset from edges)
+White text, green primary button
 ```
 
 ---
@@ -393,29 +474,39 @@ When dark mode is implemented, invert:
 
 ## Brand Voice Through Design
 
-### Purity
-- Clean, minimal interface
-- No unnecessary decoration
-- Whitespace as a design element
-- Clear, honest data presentation
+### Premium & Sophisticated
+- Glassmorphic design with real blur effects
+- Layered depth and visual hierarchy
+- Gradient overlays for visual interest
+- Professional, refined aesthetic
 
-### Growth
-- Green primary color
-- Uplifting animations (grow, sway)
-- Positive language in UI copy
+### Growth & Positivity
+- Green primary color for actions and success
+- Uplifting, forward-moving design
+- Energetic accent colors (purple, coral, gold)
 - Progressive revelation of information
+- Dynamic visual hierarchy
 
-### Grounded Trust
-- Soft shadows and muted colors
-- Stability through earth-inspired accents
-- Consistent, predictable patterns
-- Professional yet approachable
+### Grounded & Trustworthy
+- Dark nature-inspired background
+- Stable, consistent component patterns
+- Clear visual structure
+- Professional yet approachable tone
+- Transparent, honest presentation
+
+### Creative & Expressive
+- Point accent colors (purple, coral, gold, cyan)
+- Gradient overlays on feature cards
+- Colorful badges and labels
+- Visual diversity without chaos
+- Playful yet professional
 
 ### Natural Beauty
-- Organic shapes and rounded corners
-- Nature-inspired colors and gradients
-- Gentle, flowing animations
-- Peaceful, calm aesthetic
+- Nature-inspired color palette
+- Organic, rounded shapes (rounded-2xl)
+- Gentle animations and transitions
+- Peaceful base aesthetic
+- Peaceful dark background grounded in nature
 
 ---
 

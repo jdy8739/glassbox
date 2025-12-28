@@ -14,6 +14,13 @@ const config: Config = {
         sky: colors.sky,
         earth: colors.earth,
         rain: colors.rain,
+        // Accent colors
+        purple: { 300: colors.accent.purple },
+        coral: { 300: colors.accent.coral },
+        gold: { 300: colors.accent.gold },
+        cyan: { 300: colors.accent.cyan },
+        pink: { 300: colors.accent.pink },
+        indigo: { 300: colors.accent.indigo },
       },
       boxShadow: {
         sm: shadows.sm,

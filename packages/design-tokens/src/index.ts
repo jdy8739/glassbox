@@ -1,6 +1,7 @@
 /**
- * Glassbox Design Tokens - Rainy Grass Field Theme
- * Evokes a peaceful, grounded feeling like a grass field on a rainy day
+ * Glassbox Design Tokens - Glassmorphic Nature Theme
+ * Transparent glass cards over nature backgrounds with grass accents
+ * Evokes premium, clean, professional feel with natural grounding
  */
 
 export const colors = {
@@ -60,11 +61,21 @@ export const colors = {
     900: '#343d43',
   },
 
+  // Accent Colors - Point Colors
+  accent: {
+    purple: '#a78bfa',       // Elegant purple
+    coral: '#ff6b6b',        // Vibrant coral/red
+    gold: '#fbbf24',         // Warm gold
+    cyan: '#06b6d4',         // Cool cyan
+    pink: '#ec4899',         // Vibrant pink
+    indigo: '#6366f1',       // Deep indigo
+  },
+
   // Semantic Colors
   semantic: {
     success: '#2fb866',      // grass[500] - Growth, positive
     warning: '#a88f68',      // earth[400] - Caution
-    error: '#c74444',        // Muted red (autumn leaf)
+    error: '#ff6b6b',        // Coral red
     info: '#7a9bc4',         // sky[400] - Information
   },
 
@@ -198,15 +209,53 @@ export const components = {
     },
   },
   panel: {
-    bg: colors.white,
-    border: colors.rain[200],
+    bg: 'rgba(255, 255, 255, 0.15)',
+    border: 'rgba(255, 255, 255, 0.2)',
     text: colors.rain[900],
+    backdropBlur: '10px',
   },
   input: {
-    bg: colors.white,
-    border: colors.rain[300],
+    bg: 'rgba(255, 255, 255, 0.1)',
+    border: 'rgba(255, 255, 255, 0.2)',
     focus: colors.grass[400],
     placeholder: colors.rain[400],
     text: colors.rain[900],
+    backdropBlur: '8px',
   },
+};
+
+// Glassmorphism Effects
+export const glass = {
+  sm: {
+    background: 'rgba(255, 255, 255, 0.08)',
+    backdropFilter: 'blur(4px)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    shadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+  },
+  DEFAULT: {
+    background: 'rgba(255, 255, 255, 0.12)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.18)',
+    shadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  },
+  lg: {
+    background: 'rgba(255, 255, 255, 0.15)',
+    backdropFilter: 'blur(16px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    shadow: '0 12px 48px rgba(0, 0, 0, 0.15)',
+  },
+  xl: {
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.25)',
+    shadow: '0 16px 64px rgba(0, 0, 0, 0.2)',
+  },
+};
+
+// Gradient Overlays for Cards
+export const cardGradients = {
+  purpleBlue: 'linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
+  coralPink: 'linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%)',
+  goldCyan: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%)',
+  indigoGreen: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(47, 184, 102, 0.05) 100%)',
 };

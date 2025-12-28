@@ -2,67 +2,187 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1 {
+    @apply text-5xl font-bold tracking-tight;
+  }
+  h2 {
+    @apply text-4xl font-bold tracking-tight;
+  }
+  h3 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  h4 {
+    @apply text-xl font-semibold;
+  }
+  p {
+    @apply text-base leading-relaxed;
+  }
+}
+
 @layer components {
-  /* Nature Panel/Card Component */
+  /* Glassmorphic Panel/Card Component */
   .nature-panel {
-    @apply rounded-xl border border-rain-200 bg-white shadow-lg transition-all duration-300;
-    @apply hover:shadow-xl hover:-translate-y-0.5;
+    @apply rounded-2xl border shadow-lg transition-all duration-300;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    @apply hover:shadow-xl hover:border-white/25 hover:-translate-y-1;
   }
 
-  /* Primary Button */
+  /* Primary Button - Bright Green */
   .nature-button {
-    @apply inline-flex items-center justify-center rounded-lg bg-grass-500 px-6 py-3 text-white shadow-md;
-    @apply transition-all duration-200 hover:bg-grass-600 hover:shadow-lg active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white font-semibold shadow-lg;
+    @apply transition-all duration-200 active:scale-95;
+    background: linear-gradient(135deg, #2fb866 0%, #22944f 100%);
+    @apply hover:shadow-xl hover:-translate-y-0.5;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  /* Secondary Button */
+  /* Secondary Button - Sky Blue */
   .nature-button-secondary {
-    @apply inline-flex items-center justify-center rounded-lg bg-sky-400 px-6 py-3 text-white shadow-md;
-    @apply transition-all duration-200 hover:bg-sky-500 hover:shadow-lg active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white font-semibold shadow-lg;
+    @apply transition-all duration-200 active:scale-95;
+    background: linear-gradient(135deg, #7a9bc4 0%, #5b80ad 100%);
+    @apply hover:shadow-xl hover:-translate-y-0.5;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  /* Outline Button */
+  /* Outline Button - Glass Style */
   .nature-button-outline {
-    @apply inline-flex items-center justify-center rounded-lg border-2 border-rain-300 bg-transparent px-6 py-3;
-    @apply text-grass-700 shadow-sm transition-all duration-200;
-    @apply hover:bg-rain-50 hover:shadow-md active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-6 py-3;
+    @apply text-white font-semibold shadow-md transition-all duration-200;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    @apply hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5 active:scale-95;
   }
 
-  /* Input Field */
+  /* Glassmorphic Input Field */
   .nature-input {
-    @apply rounded-lg border border-rain-300 bg-white px-4 py-2.5 text-rain-900;
-    @apply transition-all duration-200 placeholder-rain-400;
-    @apply focus:border-grass-400 focus:outline-none focus:ring-2 focus:ring-grass-400/20;
+    @apply rounded-lg border px-4 py-3 text-rain-900 font-medium;
+    @apply transition-all duration-200 placeholder-white/40;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    @apply focus:border-grass-400 focus:outline-none focus:ring-2 focus:ring-grass-400/30;
   }
 
-  /* Feature Card */
+  /* Glassmorphic Feature Card */
   .nature-card {
-    @apply rounded-xl border border-rain-200 bg-white p-6 shadow-lg;
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply rounded-2xl border p-6 shadow-lg transition-all duration-300;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    @apply hover:shadow-xl hover:border-white/25 hover:-translate-y-1;
   }
 
-  /* Badge */
+  /* Card with Gradient Overlay */
+  .nature-card-gradient {
+    @apply nature-card relative overflow-hidden;
+
+    &::before {
+      content: '';
+      @apply absolute inset-0 pointer-events-none rounded-2xl;
+      opacity: 0.4;
+    }
+  }
+
+  .nature-card-gradient.purple-blue::before {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  }
+
+  .nature-card-gradient.coral-pink::before {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+  }
+
+  .nature-card-gradient.gold-cyan::before {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+  }
+
+  .nature-card-gradient.indigo-green::before {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(47, 184, 102, 0.05) 100%);
+  }
+
+  .nature-card-gradient > * {
+    @apply relative z-10;
+  }
+
+  /* Badge - Color Variants */
   .nature-badge {
-    @apply inline-block rounded-full bg-grass-100 px-3 py-1 text-sm text-grass-700;
+    @apply inline-block rounded-full px-3 py-1 text-sm font-medium text-white;
+    background: rgba(47, 184, 102, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    @apply transition-all duration-200 hover:bg-grass-500/40;
+  }
+
+  .nature-badge.purple {
+    background: rgba(167, 139, 250, 0.3);
+  }
+
+  .nature-badge.coral {
+    background: rgba(255, 107, 107, 0.3);
+  }
+
+  .nature-badge.gold {
+    background: rgba(251, 191, 36, 0.3);
+  }
+
+  .nature-badge.cyan {
+    background: rgba(6, 182, 212, 0.3);
   }
 
   /* Text variants */
   .text-muted {
-    @apply text-rain-500;
+    @apply text-white/60;
   }
 
   .text-success {
-    @apply text-grass-600;
+    @apply text-grass-400;
   }
 
   .text-error {
-    @apply text-red-600;
+    @apply text-red-300;
   }
 
   .text-info {
-    @apply text-sky-600;
+    @apply text-sky-300;
+  }
+
+  /* Accent Text Colors */
+  .text-purple {
+    @apply text-purple-300;
+  }
+
+  .text-coral {
+    @apply text-red-300;
+  }
+
+  .text-gold {
+    @apply text-amber-300;
+  }
+
+  .text-cyan {
+    @apply text-cyan-300;
+  }
+
+  /* Section Title */
+  .section-title {
+    @apply text-4xl font-bold text-white mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-white/70;
+  }
+
+  /* Feature Icon */
+  .feature-icon {
+    @apply text-5xl mb-4;
   }
 }
 
@@ -71,6 +191,26 @@ html {
 }
 
 body {
-  @apply bg-gradient-to-br from-sky-100 via-grass-50 to-sky-50 text-rain-900;
+  @apply text-white;
   font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #1a3a2a 0%, #2d5a45 50%, #1a3a2a 100%);
+  background-attachment: fixed;
+}
+
+/* Animation Delays */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+.delay-1000 {
+  animation-delay: 1000ms;
 }
