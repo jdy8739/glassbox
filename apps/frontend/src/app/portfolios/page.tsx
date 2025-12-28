@@ -55,18 +55,18 @@ export default function PortfolioLibrary() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80">Your Saved Analyses</span>
+            <span className="text-sm font-medium text-black dark:text-black/80 dark:text-white/80">Your Saved Analyses</span>
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-white">
+            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
               Portfolio
               <br />
               <span className="bg-gradient-to-r from-gold-300 to-orange-300 bg-clip-text text-transparent">
                 Library
               </span>
             </h1>
-            <p className="text-xl text-white/70 max-w-2xl">
+            <p className="text-xl text-black dark:text-black/70 dark:text-white/70 max-w-2xl">
               Manage your saved portfolios, view performance, and explore different allocation strategies.
             </p>
           </div>
@@ -79,8 +79,8 @@ export default function PortfolioLibrary() {
               <div className="space-y-4">
                 <p className="text-7xl">📦</p>
                 <div>
-                  <p className="text-2xl font-bold text-white mb-2">No portfolios yet</p>
-                  <p className="text-lg text-white/60 mb-6">Start analyzing stocks to build your first portfolio</p>
+                  <p className="text-2xl font-bold text-black dark:text-white mb-2">No portfolios yet</p>
+                  <p className="text-lg text-black dark:text-black/60 dark:text-white/60 mb-6">Start analyzing stocks to build your first portfolio</p>
                 </div>
               </div>
               <a href="/portfolio/new" className="nature-button inline-flex gap-2 text-lg px-8 py-4 hover:scale-105 transition-transform">
@@ -97,8 +97,8 @@ export default function PortfolioLibrary() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-grass-300 transition">{portfolio.name}</h3>
-                      <p className="text-sm text-white/60">Updated {formatDate(portfolio.updatedAt)}</p>
+                      <h3 className="text-xl font-bold text-black dark:text-white mb-1 group-hover:text-grass-300 transition">{portfolio.name}</h3>
+                      <p className="text-sm text-black dark:text-black/60 dark:text-white/60">Updated {formatDate(portfolio.updatedAt)}</p>
                     </div>
                     <button
                       onClick={() => handleDeletePortfolio(portfolio.id)}
@@ -110,7 +110,7 @@ export default function PortfolioLibrary() {
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/60 mb-2">Assets in portfolio:</p>
+                    <p className="text-xs text-black dark:text-black/60 dark:text-white/60 mb-2">Assets in portfolio:</p>
                     <div className="flex flex-wrap gap-2">
                       {portfolio.tickers.slice(0, 4).map((ticker) => (
                         <span
@@ -121,7 +121,7 @@ export default function PortfolioLibrary() {
                         </span>
                       ))}
                       {portfolio.tickers.length > 4 && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/70">
+                        <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-black dark:text-black/70 dark:text-white/70">
                           +{portfolio.tickers.length - 4} more
                         </span>
                       )}
@@ -130,7 +130,7 @@ export default function PortfolioLibrary() {
 
                   <Link
                     href={`/analysis/result?portfolioId=${portfolio.id}`}
-                    className="block w-full rounded-lg bg-gradient-to-r from-grass-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-white hover:shadow-lg transition-all text-center"
+                    className="block w-full rounded-lg bg-gradient-to-r from-grass-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-black dark:text-white hover:shadow-lg transition-all text-center"
                   >
                     View Analysis →
                   </Link>

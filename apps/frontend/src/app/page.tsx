@@ -12,14 +12,14 @@ export default function Home() {
       <div className="relative px-4 py-20 sm:py-32 md:py-40">
         <div className="mx-auto max-w-5xl space-y-10 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80">New: Advanced Beta Hedging</span>
+            <span className="text-sm font-medium text-black/80 dark:text-black dark:text-white/80">New: Advanced Beta Hedging</span>
           </div>
 
           {/* Hero Title */}
           <div className="space-y-8">
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white leading-tight">
+            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold text-black dark:text-black dark:text-white leading-tight">
               Smart
               <br />
               <span className="bg-gradient-to-r from-purple-300 via-cyan-300 to-gold-300 bg-clip-text text-transparent animate-pulse">
@@ -28,7 +28,7 @@ export default function Home() {
               <br />
               Optimization
             </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl text-white/70 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-black/70 dark:text-black dark:text-black/70 dark:text-white/70 max-w-3xl mx-auto leading-relaxed">
               Harness the power of modern portfolio theory with an intuitive, beautiful interface. Discover optimal allocations, calculate hedging positions, and master market risk—all in seconds.
             </p>
           </div>
@@ -49,17 +49,17 @@ export default function Home() {
           <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center items-center text-sm">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🚀</span>
-              <span className="text-white/70">Lightning Fast</span>
+              <span className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">Lightning Fast</span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-white/20"></div>
+            <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">🔐</span>
-              <span className="text-white/70">100% Transparent</span>
+              <span className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">100% Transparent</span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-white/20"></div>
+            <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">📈</span>
-              <span className="text-white/70">Math-Backed</span>
+              <span className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">Math-Backed</span>
             </div>
           </div>
         </div>
@@ -73,19 +73,19 @@ export default function Home() {
               <div className="text-5xl font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent mb-2">
                 10M+
               </div>
-              <p className="text-white/70">Portfolio Analyses</p>
+              <p className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">Portfolio Analyses</p>
             </div>
             <div className="nature-card text-center p-8 group hover:border-gold-300/50">
               <div className="text-5xl font-bold bg-gradient-to-r from-gold-300 to-orange-300 bg-clip-text text-transparent mb-2">
                 99.9%
               </div>
-              <p className="text-white/70">Accuracy Rate</p>
+              <p className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">Accuracy Rate</p>
             </div>
             <div className="nature-card text-center p-8 group hover:border-cyan-300/50">
               <div className="text-5xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-2">
                 &lt;100ms
               </div>
-              <p className="text-white/70">Average Response</p>
+              <p className="text-black/70 dark:text-black dark:text-black/70 dark:text-white/70">Average Response</p>
             </div>
           </div>
         </div>
@@ -95,10 +95,10 @@ export default function Home() {
       <div className="relative px-4 py-28">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-20 space-y-6">
-            <h2 className="text-5xl sm:text-6xl font-bold text-white">
+            <h2 className="text-5xl sm:text-6xl font-bold text-black dark:text-black dark:text-white">
               Intelligent <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">Features</span>
             </h2>
-            <p className="text-xl text-white/60 max-w-2xl mx-auto">
+            <p className="text-xl text-black/60 dark:text-black dark:text-black/60 dark:text-white/60 max-w-2xl mx-auto">
               Everything you need to become a smarter investor
             </p>
           </div>
@@ -108,8 +108,8 @@ export default function Home() {
             {/* Card 1 - Purple Blue */}
             <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">📈</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Efficient Frontier</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Efficient Frontier</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Discover optimal portfolio allocations using advanced quadratic programming and Monte Carlo sampling.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -122,8 +122,8 @@ export default function Home() {
             {/* Card 2 - Coral Pink */}
             <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">🛡️</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Beta Hedging</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Beta Hedging</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Calculate portfolio beta and size hedging positions in SPY or futures for market-neutral exposure.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -136,8 +136,8 @@ export default function Home() {
             {/* Card 3 - Gold Cyan */}
             <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">💎</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Premium Design</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Premium Design</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Experience sophisticated glassmorphic interface with stunning animations and intuitive controls.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -150,8 +150,8 @@ export default function Home() {
             {/* Card 4 - Indigo Green */}
             <div className="nature-card-gradient indigo-green group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">⚡</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Real-time Analysis</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Real-time Analysis</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Get instant results with lightning-fast calculations powered by cutting-edge algorithms.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -164,8 +164,8 @@ export default function Home() {
             {/* Card 5 - Purple Blue */}
             <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">📦</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Portfolio Management</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Portfolio Management</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Store, compare, and manage multiple portfolios with powerful organization and export tools.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -178,8 +178,8 @@ export default function Home() {
             {/* Card 6 - Coral Pink */}
             <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">🔬</div>
-              <h3 className="text-2xl font-bold text-white mb-3">Advanced Analytics</h3>
-              <p className="text-white/70 leading-relaxed mb-4 text-sm">
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Advanced Analytics</h3>
+              <p className="text-black dark:text-black/70 dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Deep-dive into Sharpe ratios, volatility, correlations, and comprehensive portfolio statistics.
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -195,7 +195,7 @@ export default function Home() {
       {/* How It Works Section */}
       <div className="relative px-4 py-28 bg-white/5">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-5xl font-bold text-white text-center mb-20">
+          <h2 className="text-5xl font-bold text-black dark:text-white text-center mb-20">
             How It <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">Works</span>
           </h2>
 
@@ -204,12 +204,12 @@ export default function Home() {
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-300 to-blue-300 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">1</span>
+                  <span className="text-2xl font-bold text-black dark:text-white">1</span>
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-white mb-2">Add Your Stocks</h3>
-                <p className="text-white/70">
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Add Your Stocks</h3>
+                <p className="text-black dark:text-black/70 dark:text-white/70">
                   Simply enter stock tickers you want to analyze. Our system fetches historical data from Yahoo Finance.
                 </p>
               </div>
@@ -219,12 +219,12 @@ export default function Home() {
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-300 to-orange-300 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">2</span>
+                  <span className="text-2xl font-bold text-black dark:text-white">2</span>
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-white mb-2">Run Analysis</h3>
-                <p className="text-white/70">
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Run Analysis</h3>
+                <p className="text-black dark:text-black/70 dark:text-white/70">
                   Our algorithms compute the efficient frontier and identify optimal portfolio weights in real-time.
                 </p>
               </div>
@@ -234,12 +234,12 @@ export default function Home() {
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-300 to-blue-400 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">3</span>
+                  <span className="text-2xl font-bold text-black dark:text-white">3</span>
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-white mb-2">Get Insights</h3>
-                <p className="text-white/70">
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Get Insights</h3>
+                <p className="text-black dark:text-black/70 dark:text-white/70">
                   View optimal allocations, calculate hedging positions, and save your analysis for future reference.
                 </p>
               </div>
@@ -254,10 +254,10 @@ export default function Home() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/10 via-cyan-300/10 to-gold-300/10 rounded-3xl blur-xl"></div>
             <div className="nature-panel p-12 sm:p-16 text-center space-y-8 relative">
-              <h2 className="text-5xl font-bold text-white">
+              <h2 className="text-5xl font-bold text-black dark:text-white">
                 Ready to <span className="bg-gradient-to-r from-grass-400 to-cyan-300 bg-clip-text text-transparent">Optimize?</span>
               </h2>
-              <p className="text-xl text-white/70 max-w-xl mx-auto">
+              <p className="text-xl text-black dark:text-black/70 dark:text-white/70 max-w-xl mx-auto">
                 Join thousands of investors using Glassbox to make smarter portfolio decisions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -279,13 +279,13 @@ export default function Home() {
       <div className="relative px-4 py-12 border-t border-white/10">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-8 text-center sm:text-left">
           <div>
-            <h3 className="text-2xl font-bold text-white mb-1">Glassbox</h3>
-            <p className="text-white/50 text-sm">Smart portfolio optimization for modern investors</p>
+            <h3 className="text-2xl font-bold text-black dark:text-white mb-1">Glassbox</h3>
+            <p className="text-black dark:text-black/50 dark:text-white/50 text-sm">Smart portfolio optimization for modern investors</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="text-white/60 hover:text-white transition">Docs</a>
-            <a href="#" className="text-white/60 hover:text-white transition">GitHub</a>
-            <a href="#" className="text-white/60 hover:text-white transition">Contact</a>
+            <a href="#" className="text-black dark:text-black/60 dark:text-white/60 hover:text-black dark:text-white transition">Docs</a>
+            <a href="#" className="text-black dark:text-black/60 dark:text-white/60 hover:text-black dark:text-white transition">GitHub</a>
+            <a href="#" className="text-black dark:text-black/60 dark:text-white/60 hover:text-black dark:text-white transition">Contact</a>
           </div>
         </div>
       </div>

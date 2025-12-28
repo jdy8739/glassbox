@@ -33,7 +33,7 @@ export default function PortfolioBuilder() {
     <main className="min-h-screen p-6 pb-32">
       {/* Navigation */}
       <nav className="nature-panel mx-auto max-w-4xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
-        <a href="/" className="text-sm font-semibold text-white/80 hover:text-white transition-colors duration-200 flex items-center gap-2">
+        <a href="/" className="text-sm font-semibold text-black dark:text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
           <span>←</span>
           <span>Back</span>
         </a>
@@ -52,18 +52,18 @@ export default function PortfolioBuilder() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80">Step 1 of 3: Build Portfolio</span>
+            <span className="text-sm font-medium text-black dark:text-black/80 dark:text-white/80">Step 1 of 3: Build Portfolio</span>
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-white">
+            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
               Build Your
               <br />
               <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
                 Investment Portfolio
               </span>
             </h1>
-            <p className="text-xl text-white/70 max-w-2xl">
+            <p className="text-xl text-black dark:text-black/70 dark:text-white/70 max-w-2xl">
               Add your favorite stocks and let our algorithms find the optimal allocation for your risk profile.
             </p>
           </div>
@@ -72,7 +72,7 @@ export default function PortfolioBuilder() {
         {/* Search Bar - Enhanced */}
         <div className="nature-card-gradient purple-blue">
           <div className="space-y-4">
-            <label className="block text-sm font-semibold text-white">📍 Add Stock Ticker</label>
+            <label className="block text-sm font-semibold text-black dark:text-white">📍 Add Stock Ticker</label>
             <div className="flex gap-3">
               <input
                 type="text"
@@ -88,7 +88,7 @@ export default function PortfolioBuilder() {
                 Add Stock
               </button>
             </div>
-            <p className="text-xs text-white/50">
+            <p className="text-xs text-black dark:text-black/50 dark:text-white/50">
               💡 Pro tip: Add 5-15 stocks for best results
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function PortfolioBuilder() {
 
         {/* Quick Add Presets */}
         <div className="space-y-4">
-          <label className="block text-sm font-semibold text-white">✨ Popular Assets</label>
+          <label className="block text-sm font-semibold text-black dark:text-white">✨ Popular Assets</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { name: 'Treasury Bonds', ticker: 'TLT', icon: '🏦', color: 'gold' },
@@ -112,8 +112,8 @@ export default function PortfolioBuilder() {
                 className={`nature-card-gradient ${preset.color === 'gold' ? 'gold-cyan' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'indigo-green' : 'purple-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
               >
                 <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{preset.icon}</div>
-                <p className="text-xs font-semibold text-white">{preset.name}</p>
-                <p className="text-xs text-white/60">{preset.ticker}</p>
+                <p className="text-xs font-semibold text-black dark:text-white">{preset.name}</p>
+                <p className="text-xs text-black dark:text-black/60 dark:text-white/60">{preset.ticker}</p>
               </button>
             ))}
           </div>
@@ -122,7 +122,7 @@ export default function PortfolioBuilder() {
         {/* Asset List - Enhanced */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-white">
+            <label className="block text-sm font-semibold text-black dark:text-white">
               📋 Your Assets <span className="text-cyan-300">({items.length})</span>
             </label>
             {items.length > 0 && (
@@ -137,8 +137,8 @@ export default function PortfolioBuilder() {
               <div className="nature-panel p-12 text-center space-y-4">
                 <div className="text-5xl">📍</div>
                 <div>
-                  <p className="text-lg text-white font-semibold mb-2">No assets added yet</p>
-                  <p className="text-white/60">Search for a ticker or use the preset buttons above to get started</p>
+                  <p className="text-lg text-black dark:text-white font-semibold mb-2">No assets added yet</p>
+                  <p className="text-black dark:text-black/60 dark:text-white/60">Search for a ticker or use the preset buttons above to get started</p>
                 </div>
               </div>
             ) : (
@@ -150,17 +150,17 @@ export default function PortfolioBuilder() {
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4 flex-1">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-300 to-cyan-300 flex items-center justify-center text-lg font-bold text-white">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-300 to-cyan-300 flex items-center justify-center text-lg font-bold text-black dark:text-white">
                           {item.symbol[0]}
                         </div>
                         <div className="flex-1">
-                          <p className="font-bold text-white text-lg">{item.symbol}</p>
-                          <p className="text-xs text-white/50">Stock #{index + 1}</p>
+                          <p className="font-bold text-black dark:text-white text-lg">{item.symbol}</p>
+                          <p className="text-xs text-black dark:text-black/50 dark:text-white/50">Stock #{index + 1}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2 bg-white/5 rounded-lg px-4 py-2">
-                          <label className="text-sm text-white/70 whitespace-nowrap">Qty:</label>
+                          <label className="text-sm text-black dark:text-black/70 dark:text-white/70 whitespace-nowrap">Qty:</label>
                           <input
                             type="number"
                             value={item.quantity}
@@ -191,7 +191,7 @@ export default function PortfolioBuilder() {
         {items.length > 0 && (
           <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
-              <p className="text-white/70">Portfolio completeness</p>
+              <p className="text-black dark:text-black/70 dark:text-white/70">Portfolio completeness</p>
               <p className="text-grass-400 font-semibold">{Math.min(items.length * 20, 100)}%</p>
             </div>
             <div className="h-2 rounded-full bg-white/10 overflow-hidden">

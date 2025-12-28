@@ -72,7 +72,7 @@ function AnalysisResultContent() {
     return (
       <main className="min-h-screen p-6 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="text-white text-lg">Loading analysis...</p>
+          <p className="text-black dark:text-white text-lg">Loading analysis...</p>
         </div>
       </main>
     );
@@ -84,7 +84,7 @@ function AnalysisResultContent() {
     <main className="min-h-screen p-6">
       {/* Navigation */}
       <nav className="nature-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
-        <a href={backLink} className="text-sm font-semibold text-white/80 hover:text-white transition-colors duration-200 flex items-center gap-2">
+        <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
           <span>←</span>
           <span>Back</span>
         </a>
@@ -118,21 +118,21 @@ function AnalysisResultContent() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80">
+            <span className="text-sm font-medium text-black/80 dark:text-white/80">
               {isSnapshot ? 'Saved Portfolio' : 'Step 2 of 3: Review Analysis'}
               {isReanalyzing && ' • Re-analyzing...'}
             </span>
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-white">
+            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
               Analysis
               <br />
               <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
                 Results
               </span>
             </h1>
-            <p className="text-xl text-white/70 max-w-2xl">
+            <p className="text-xl text-black/70 dark:text-white/70 max-w-2xl">
               {isSnapshot
                 ? savedPortfolio?.name
                   ? `Portfolio: ${savedPortfolio.name} (${savedPortfolio.tickers.join(', ')})`
@@ -151,7 +151,7 @@ function AnalysisResultContent() {
               className={`px-6 py-4 font-semibold transition-all border-b-2 ${
                 activeTab === 'frontier'
                   ? 'border-b-cyan-300 text-cyan-300'
-                  : 'border-b-transparent text-white/50 hover:text-white/70'
+                  : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
               }`}
             >
               📈 Efficient Frontier
@@ -161,7 +161,7 @@ function AnalysisResultContent() {
               className={`px-6 py-4 font-semibold transition-all border-b-2 ${
                 activeTab === 'hedging'
                   ? 'border-b-coral-300 text-coral-300'
-                  : 'border-b-transparent text-white/50 hover:text-white/70'
+                  : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
               }`}
             >
               🛡️ Beta Hedging
@@ -176,29 +176,29 @@ function AnalysisResultContent() {
                 <div className="space-y-4">
                   <p className="text-5xl">📊</p>
                   <div>
-                    <p className="text-2xl font-bold text-white mb-2">Efficient Frontier</p>
-                    <p className="text-white/60">Interactive chart visualization coming soon</p>
+                    <p className="text-2xl font-bold text-black dark:text-white mb-2">Efficient Frontier</p>
+                    <p className="text-black/60 dark:text-white/60">Interactive chart visualization coming soon</p>
                   </div>
                 </div>
               </div>
 
               {/* Portfolio Metrics Grid */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">Optimal Portfolios</h3>
+                <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Portfolios</h3>
                 <div className="grid gap-6 md:grid-cols-2">
                   {/* Global Minimum Variance */}
                   <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <p className="text-sm text-white/60 mb-2">Global Minimum Variance (GMV)</p>
-                        <p className="text-3xl font-bold text-white">12.5%</p>
-                        <p className="text-xs text-white/50 mt-1">Expected Annual Return</p>
+                        <p className="text-sm text-black/60 dark:text-white/60 mb-2">Global Minimum Variance (GMV)</p>
+                        <p className="text-3xl font-bold text-black dark:text-white">12.5%</p>
+                        <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
                       </div>
                       <div className="text-3xl">🎯</div>
                     </div>
                     <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                      <p className="text-xs text-white/60">Portfolio Volatility</p>
-                      <p className="text-2xl font-bold text-white">8.3%</p>
+                      <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
+                      <p className="text-2xl font-bold text-black dark:text-white">8.3%</p>
                     </div>
                   </div>
 
@@ -206,15 +206,15 @@ function AnalysisResultContent() {
                   <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <p className="text-sm text-white/60 mb-2">Maximum Sharpe Ratio</p>
-                        <p className="text-3xl font-bold text-white">18.2%</p>
-                        <p className="text-xs text-white/50 mt-1">Expected Annual Return</p>
+                        <p className="text-sm text-black/60 dark:text-white/60 mb-2">Maximum Sharpe Ratio</p>
+                        <p className="text-3xl font-bold text-black dark:text-white">18.2%</p>
+                        <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
                       </div>
                       <div className="text-3xl">⚡</div>
                     </div>
                     <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                      <p className="text-xs text-white/60">Portfolio Volatility</p>
-                      <p className="text-2xl font-bold text-white">15.7%</p>
+                      <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
+                      <p className="text-2xl font-bold text-black dark:text-white">15.7%</p>
                     </div>
                   </div>
                 </div>
@@ -222,30 +222,30 @@ function AnalysisResultContent() {
 
               {/* Weights Table */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">Optimal Weights</h3>
+                <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Weights</h3>
                 <div className="nature-card p-6 space-y-3">
                   <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-white font-medium">AAPL</span>
+                    <span className="text-black dark:text-white font-medium">AAPL</span>
                     <span className="text-grass-400 font-bold">24.5%</span>
                   </div>
                   <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-white font-medium">MSFT</span>
+                    <span className="text-black dark:text-white font-medium">MSFT</span>
                     <span className="text-grass-400 font-bold">18.2%</span>
                   </div>
                   <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-white font-medium">NVDA</span>
+                    <span className="text-black dark:text-white font-medium">NVDA</span>
                     <span className="text-grass-400 font-bold">15.8%</span>
                   </div>
                   <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-white font-medium">GOOG</span>
+                    <span className="text-black dark:text-white font-medium">GOOG</span>
                     <span className="text-grass-400 font-bold">12.3%</span>
                   </div>
                   <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-white font-medium">TSLA</span>
+                    <span className="text-black dark:text-white font-medium">TSLA</span>
                     <span className="text-grass-400 font-bold">10.1%</span>
                   </div>
                   <div className="flex items-center justify-between py-3">
-                    <span className="text-white font-medium">SGOV</span>
+                    <span className="text-black dark:text-white font-medium">SGOV</span>
                     <span className="text-grass-400 font-bold">19.1%</span>
                   </div>
                 </div>
@@ -260,49 +260,49 @@ function AnalysisResultContent() {
                 {/* Current Beta */}
                 <div className="nature-card-gradient indigo-green group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">📊</div>
-                  <p className="text-sm text-white/60 mb-2">Current Portfolio Beta</p>
-                  <p className="text-4xl font-bold text-white">1.25</p>
-                  <p className="text-xs text-white/50 mt-2">Market Exposure</p>
+                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Current Portfolio Beta</p>
+                  <p className="text-4xl font-bold text-black dark:text-white">1.25</p>
+                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Exposure</p>
                 </div>
 
                 {/* Target Beta */}
                 <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">🎯</div>
-                  <p className="text-sm text-white/60 mb-2">Target Beta</p>
-                  <p className="text-4xl font-bold text-white">0.00</p>
-                  <p className="text-xs text-white/50 mt-2">Market Neutral</p>
+                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Target Beta</p>
+                  <p className="text-4xl font-bold text-black dark:text-white">0.00</p>
+                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Neutral</p>
                 </div>
 
                 {/* Required Hedge */}
                 <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">🛡️</div>
-                  <p className="text-sm text-white/60 mb-2">Hedge Required</p>
-                  <p className="text-4xl font-bold text-white">1.25</p>
-                  <p className="text-xs text-white/50 mt-2">Beta Reduction Needed</p>
+                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
+                  <p className="text-4xl font-bold text-black dark:text-white">1.25</p>
+                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Beta Reduction Needed</p>
                 </div>
               </div>
 
               {/* Hedging Recommendation */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">Hedging Strategy</h3>
+                <h3 className="text-xl font-semibold text-black dark:text-white">Hedging Strategy</h3>
                 <div className="nature-card space-y-6">
                   {/* SPY Method */}
                   <div className="space-y-4 pb-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">📈</span>
-                      <h4 className="text-lg font-semibold text-white">SPY ETF Hedging</h4>
+                      <h4 className="text-lg font-semibold text-black dark:text-white">SPY ETF Hedging</h4>
                     </div>
                     <div className="bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Action:</span>
+                        <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">Short 42 shares</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Notional Value:</span>
-                        <span className="font-bold text-white">$18,500</span>
+                        <span className="text-black/70 dark:text-white/70">Notional Value:</span>
+                        <span className="font-bold text-black dark:text-white">$18,500</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Resulting Beta:</span>
+                        <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
                         <span className="font-bold text-grass-400">~0.00</span>
                       </div>
                     </div>
@@ -312,19 +312,19 @@ function AnalysisResultContent() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">⚡</span>
-                      <h4 className="text-lg font-semibold text-white">ES Futures Hedging</h4>
+                      <h4 className="text-lg font-semibold text-black dark:text-white">ES Futures Hedging</h4>
                     </div>
                     <div className="bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Action:</span>
+                        <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">Short 7 contracts</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Notional Value:</span>
-                        <span className="font-bold text-white">$17,850</span>
+                        <span className="text-black/70 dark:text-white/70">Notional Value:</span>
+                        <span className="font-bold text-black dark:text-white">$17,850</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-white/70">Resulting Beta:</span>
+                        <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
                         <span className="font-bold text-grass-400">~0.00</span>
                       </div>
                     </div>
@@ -337,11 +337,11 @@ function AnalysisResultContent() {
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">💡</span>
                   <div>
-                    <h4 className="font-semibold text-white mb-2">Key Insights</h4>
-                    <ul className="text-white/70 space-y-2 text-sm">
-                      <li>✓ Your portfolio is currently <span className="text-white">25% more exposed</span> to market movements than the benchmark</li>
+                    <h4 className="font-semibold text-black dark:text-white mb-2">Key Insights</h4>
+                    <ul className="text-black/70 dark:text-white/70 space-y-2 text-sm">
+                      <li>✓ Your portfolio is currently <span className="text-black dark:text-white">25% more exposed</span> to market movements than the benchmark</li>
                       <li>✓ Hedging via SPY is more accessible for retail investors</li>
-                      <li>✓ ES futures provide <span className="text-white">capital efficiency</span> for larger portfolios</li>
+                      <li>✓ ES futures provide <span className="text-black dark:text-white">capital efficiency</span> for larger portfolios</li>
                     </ul>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ function AnalysisResultContent() {
 
 export default function AnalysisResult() {
   return (
-    <Suspense fallback={<div className="min-h-screen p-6 flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen p-6 flex items-center justify-center"><div className="text-black dark:text-white">Loading...</div></div>}>
       <AnalysisResultContent />
     </Suspense>
   );
