@@ -251,6 +251,8 @@ body {
   background: linear-gradient(135deg, #1a3a2a 0%, #2d5a45 50%, #1a3a2a 100%);
   background-attachment: fixed;
   transition: background 0.3s ease-in-out;
+  /* Account for fixed header */
+  padding-top: 4rem;
 }
 
 html.dark body {
