@@ -1,16 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface SavedPortfolio {
   id: string;
   name: string;
-  date: string;
-  assets: string[];
+  tickers: string[];
+  quantities: number[];
+  updatedAt: string;
+  createdAt: string;
 }
 
 export default function PortfolioLibrary() {
-  const [portfolios] = useState<SavedPortfolio[]>([]);
+  const [portfolios, setPortfolios] = useState<SavedPortfolio[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  useEffect(() => {
+    // TODO: Implement API call to GET /api/portfolios
+    // const response = await fetch('/api/portfolios');
+    // const data = await response.json();
+    // setPortfolios(data);
+    setLoading(false);
+  }, []);
+
+  const handleDeletePortfolio = async (portfolioId: string) => {
+    if (!confirm('Are you sure you want to delete this portfolio?')) return;
+
+    setDeleting(portfolioId);
+    try {
+      // TODO: Implement API call to DELETE /api/portfolios/:id
+      // await fetch(`/api/portfolios/${portfolioId}`, { method: 'DELETE' });
+      setPortfolios(portfolios.filter(p => p.id !== portfolioId));
+    } catch (error) {
+      console.error('Error deleting portfolio:', error);
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
 
   return (
     <main className="min-h-screen p-6">
@@ -57,14 +93,18 @@ export default function PortfolioLibrary() {
               {portfolios.map((portfolio, index) => (
                 <div
                   key={portfolio.id}
-                  className={`nature-card-gradient ${index % 4 === 0 ? 'purple-blue' : index % 4 === 1 ? 'coral-pink' : index % 4 === 2 ? 'gold-cyan' : 'indigo-green'} group cursor-pointer transform transition-all hover:scale-105 space-y-4`}
+                  className={`nature-card-gradient ${index % 4 === 0 ? 'purple-blue' : index % 4 === 1 ? 'coral-pink' : index % 4 === 2 ? 'gold-cyan' : 'indigo-green'} group transform transition-all hover:scale-105 space-y-4`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-white mb-1 group-hover:text-grass-300 transition">{portfolio.name}</h3>
-                      <p className="text-sm text-white/60">Analyzed on {portfolio.date}</p>
+                      <p className="text-sm text-white/60">Updated {formatDate(portfolio.updatedAt)}</p>
                     </div>
-                    <button className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 flex items-center justify-center">
+                    <button
+                      onClick={() => handleDeletePortfolio(portfolio.id)}
+                      disabled={deleting === portfolio.id}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 flex items-center justify-center disabled:opacity-50"
+                    >
                       🗑️
                     </button>
                   </div>
@@ -72,25 +112,28 @@ export default function PortfolioLibrary() {
                   <div>
                     <p className="text-xs text-white/60 mb-2">Assets in portfolio:</p>
                     <div className="flex flex-wrap gap-2">
-                      {portfolio.assets.slice(0, 4).map((asset) => (
+                      {portfolio.tickers.slice(0, 4).map((ticker) => (
                         <span
-                          key={asset}
+                          key={ticker}
                           className="nature-badge text-xs"
                         >
-                          {asset}
+                          {ticker}
                         </span>
                       ))}
-                      {portfolio.assets.length > 4 && (
+                      {portfolio.tickers.length > 4 && (
                         <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/70">
-                          +{portfolio.assets.length - 4} more
+                          +{portfolio.tickers.length - 4} more
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <button className="w-full rounded-lg bg-gradient-to-r from-grass-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-white hover:shadow-lg transition-all">
+                  <Link
+                    href={`/analysis/result?portfolioId=${portfolio.id}`}
+                    className="block w-full rounded-lg bg-gradient-to-r from-grass-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-white hover:shadow-lg transition-all text-center"
+                  >
                     View Analysis →
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

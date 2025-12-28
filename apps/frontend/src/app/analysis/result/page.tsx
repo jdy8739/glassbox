@@ -1,23 +1,110 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+interface AnalysisSnapshot {
+  efficientFrontier: Array<{ return: number; volatility: number; sharpeRatio: number }>;
+  gmv: { weights: Record<string, number>; stats: { return: number; volatility: number; sharpe: number } };
+  maxSharpe: { weights: Record<string, number>; stats: { return: number; volatility: number; sharpe: number } };
+  portfolioBeta: number;
+  hedging: {
+    spyShares: number;
+    spyNotional: number;
+    esContracts: number;
+    esNotional: number;
+  };
+}
+
+interface SavedPortfolio {
+  id: string;
+  name: string;
+  tickers: string[];
+  quantities: number[];
+  analysisSnapshot: AnalysisSnapshot;
+  updatedAt: string;
+}
 
 export default function AnalysisResult() {
+  const searchParams = useSearchParams();
+  const portfolioId = searchParams.get('portfolioId');
+
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
+  const [isSnapshot, setIsSnapshot] = useState(!!portfolioId);
+  const [isReanalyzing, setIsReanalyzing] = useState(false);
+  const [savedPortfolio, setSavedPortfolio] = useState<SavedPortfolio | null>(null);
+  const [loading, setLoading] = useState(!!portfolioId);
+
+  useEffect(() => {
+    if (portfolioId) {
+      // Load saved portfolio snapshot from API
+      setLoading(true);
+      // TODO: Implement API call to GET /api/portfolios/:id
+      // const response = await fetch(`/api/portfolios/${portfolioId}`);
+      // const data = await response.json();
+      // setSavedPortfolio(data);
+      setLoading(false);
+    }
+  }, [portfolioId]);
+
+  const handleReanalyze = () => {
+    if (!savedPortfolio) return;
+    setIsReanalyzing(true);
+    // TODO: Implement API call to POST /api/analyze with tickers/quantities
+    // This will fetch fresh market data and run analysis
+    setTimeout(() => {
+      setIsReanalyzing(false);
+      setIsSnapshot(false); // Switch to edit mode after re-analysis
+    }, 2000);
+  };
+
+  const handleSavePortfolio = () => {
+    if (isSnapshot) {
+      // Update existing portfolio
+      // TODO: Implement API call to PUT /api/portfolios/:id
+    } else {
+      // Create new portfolio - show modal for name input
+      // TODO: Implement save modal
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen p-6 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-white text-lg">Loading analysis...</p>
+        </div>
+      </main>
+    );
+  }
+
+  const backLink = isSnapshot ? '/portfolios' : '/portfolio/new';
 
   return (
     <main className="min-h-screen p-6">
       {/* Navigation */}
       <nav className="nature-panel mx-auto max-w-6xl mb-12 flex items-center justify-between px-6 py-4 relative z-50">
-        <a href="/portfolio/new" className="text-2xl font-bold text-white hover:text-grass-400 transition">
+        <a href={backLink} className="text-2xl font-bold text-white hover:text-grass-400 transition">
           ← Back
         </a>
         <div className="flex gap-3">
+          {isSnapshot && !isReanalyzing && (
+            <button
+              onClick={handleReanalyze}
+              className="nature-button-secondary text-sm"
+            >
+              🔄 Re-analyze
+            </button>
+          )}
           <button className="nature-button-outline text-sm">
             Export Results
           </button>
-          <button className="nature-button text-sm">
-            Save Portfolio
+          <button
+            onClick={handleSavePortfolio}
+            className="nature-button text-sm"
+            disabled={isReanalyzing}
+          >
+            {isSnapshot ? '💾 Update Portfolio' : '💾 Save Portfolio'}
           </button>
         </div>
       </nav>
@@ -27,7 +114,10 @@ export default function AnalysisResult() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/80">Step 2 of 3: Review Analysis</span>
+            <span className="text-sm font-medium text-white/80">
+              {isSnapshot ? 'Saved Portfolio' : 'Step 2 of 3: Review Analysis'}
+              {isReanalyzing && ' • Re-analyzing...'}
+            </span>
           </div>
 
           <div className="space-y-4">
@@ -39,7 +129,11 @@ export default function AnalysisResult() {
               </span>
             </h1>
             <p className="text-xl text-white/70 max-w-2xl">
-              Explore your efficient frontier and hedging recommendations for optimal portfolio allocation.
+              {isSnapshot
+                ? savedPortfolio?.name
+                  ? `Portfolio: ${savedPortfolio.name} (${savedPortfolio.tickers.join(', ')})`
+                  : 'View your saved portfolio analysis'
+                : 'Explore your efficient frontier and hedging recommendations for optimal portfolio allocation.'}
             </p>
           </div>
         </div>
