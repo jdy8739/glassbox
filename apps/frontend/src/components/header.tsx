@@ -110,7 +110,7 @@ export function Header() {
               </svg>
             )}
             {/* Tooltip */}
-            <div className="absolute bottom-full mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="absolute top-full mt-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               {getThemeLabel()}
             </div>
           </button>
