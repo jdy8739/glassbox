@@ -83,28 +83,32 @@ function AnalysisResultContent() {
   return (
     <main className="min-h-screen p-6">
       {/* Navigation */}
-      <nav className="nature-panel mx-auto max-w-6xl mb-12 flex items-center justify-between px-6 py-4 relative z-50">
-        <a href={backLink} className="text-2xl font-bold text-white hover:text-grass-400 transition">
-          ← Back
+      <nav className="nature-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
+        <a href={backLink} className="text-sm font-semibold text-white/80 hover:text-white transition-colors duration-200 flex items-center gap-2">
+          <span>←</span>
+          <span>Back</span>
         </a>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {isSnapshot && !isReanalyzing && (
             <button
               onClick={handleReanalyze}
-              className="nature-button-secondary text-sm"
+              className="nature-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
             >
-              🔄 Re-analyze
+              <span>🔄</span>
+              <span>Re-analyze</span>
             </button>
           )}
-          <button className="nature-button-outline text-sm">
-            Export Results
+          <button className="nature-button-outline text-xs px-3 py-2 flex items-center gap-1.5">
+            <span>📥</span>
+            <span>Export</span>
           </button>
           <button
             onClick={handleSavePortfolio}
-            className="nature-button text-sm"
+            className="nature-button text-xs px-3 py-2 flex items-center gap-1.5"
             disabled={isReanalyzing}
           >
-            {isSnapshot ? '💾 Update Portfolio' : '💾 Save Portfolio'}
+            <span>💾</span>
+            <span>{isSnapshot ? 'Update' : 'Save'}</span>
           </button>
         </div>
       </nav>

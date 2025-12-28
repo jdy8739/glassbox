@@ -32,16 +32,18 @@ export default function PortfolioBuilder() {
   return (
     <main className="min-h-screen p-6 pb-32">
       {/* Navigation */}
-      <nav className="nature-panel mx-auto max-w-4xl mb-12 flex items-center justify-between px-6 py-4 relative z-50">
-        <a href="/" className="text-2xl font-bold text-white hover:text-grass-400 transition">
-          ← Back
+      <nav className="nature-panel mx-auto max-w-4xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
+        <a href="/" className="text-sm font-semibold text-white/80 hover:text-white transition-colors duration-200 flex items-center gap-2">
+          <span>←</span>
+          <span>Back</span>
         </a>
         <button
           onClick={handleAnalyze}
           disabled={items.length === 0}
-          className="nature-button disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="nature-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
         >
-          📊 Analyze
+          <span>📊</span>
+          <span>Analyze</span>
         </button>
       </nav>
 

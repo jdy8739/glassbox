@@ -1,21 +1,6 @@
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden">
-      {/* Navigation */}
-      <nav className="nature-panel mx-4 mt-4 flex items-center justify-between px-6 py-4 relative z-50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-grass-400 to-cyan-300 flex items-center justify-center">
-            <span className="text-xl font-bold text-white">📦</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Glassbox</h1>
-        </div>
-        <div className="flex gap-4">
-          <a href="/portfolio/new" className="nature-button text-sm">
-            Launch App
-          </a>
-        </div>
-      </nav>
-
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300/5 rounded-full blur-3xl animate-pulse"></div>
