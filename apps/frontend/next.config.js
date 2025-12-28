@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['@glassbox/types', '@glassbox/utils'],
+  transpilePackages: ['@glassbox/types', '@glassbox/utils', '@glassbox/design-tokens'],
 };
 
 module.exports = nextConfig;

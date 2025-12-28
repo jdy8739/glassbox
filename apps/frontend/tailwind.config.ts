@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import { colors, shadows, gradients, animations } from '@glassbox/design-tokens';
 
 const config: Config = {
   content: [
@@ -9,23 +10,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        glass: {
-          light: 'rgba(255, 255, 255, 0.15)',
-          medium: 'rgba(255, 255, 255, 0.2)',
-          dark: 'rgba(255, 255, 255, 0.3)',
-        },
-      },
-      backdropBlur: {
-        xs: '2px',
-        sm: '4px',
-        md: '12px',
-        lg: '16px',
-        xl: '20px',
+        grass: colors.grass,
+        sky: colors.sky,
+        earth: colors.earth,
+        rain: colors.rain,
       },
       boxShadow: {
-        glass: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
-        'glass-lg': '0 12px 48px 0 rgba(31, 38, 135, 0.2)',
+        sm: shadows.sm,
+        DEFAULT: shadows.DEFAULT,
+        md: shadows.md,
+        lg: shadows.lg,
+        xl: shadows.xl,
+        '2xl': shadows['2xl'],
+        rain: shadows.rain,
+        mist: shadows.mist,
       },
+      animation: {
+        sway: 'sway 3s ease-in-out infinite',
+        fall: 'fall 1s linear infinite',
+        drift: 'drift 8s ease-in-out infinite',
+        grow: 'grow 0.6s ease-out',
+      },
+      keyframes: animations,
     },
   },
   plugins: [],

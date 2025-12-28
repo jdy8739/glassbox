@@ -1,0 +1,16 @@
+{
+  "name": "@glassbox/design-tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for Glassbox - rainy grass field theme",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}
