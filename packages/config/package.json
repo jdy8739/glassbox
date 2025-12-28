@@ -1,0 +1,13 @@
+{
+  "name": "@glassbox/config",
+  "version": "0.1.0",
+  "description": "Shared configurations for Glassbox",
+  "private": true,
+  "main": "./dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
+  }
+}
