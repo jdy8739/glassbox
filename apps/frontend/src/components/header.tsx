@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { GlassboxIcon } from './glassbox-icon';
 
 export function Header() {
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
@@ -54,8 +55,8 @@ export function Header() {
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-grass-400 to-cyan-300 flex items-center justify-center flex-shrink-0">
-            <span className="text-lg font-bold">💎</span>
+          <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+            <GlassboxIcon />
           </div>
           <span className="font-bold text-base hidden sm:inline text-black dark:text-white">
             <span className="text-grass-600 dark:text-grass-400">Glass</span>
