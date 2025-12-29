@@ -53,7 +53,7 @@ export function Header() {
       <div className="absolute inset-0 rounded-b-2xl mx-4 mt-2 mb-0 border header-glass" />
 
       {/* Content */}
-      <nav className="relative mx-auto max-w-6xl px-6 py-3.5 flex items-center justify-between">
+      <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-grass-400 to-cyan-300 flex items-center justify-center flex-shrink-0">
@@ -69,13 +69,13 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-1">
           <Link
             href="/portfolio/new"
-            className="px-4 py-2 text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
           >
             Analyze
           </Link>
           <Link
             href="/portfolios"
-            className="px-4 py-2 text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
           >
             Portfolios
           </Link>
