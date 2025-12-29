@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from './providers';
-import dynamic from 'next/dynamic';
-
-const Header = dynamic(() => import('@/components/header').then(mod => ({ default: mod.Header })));
+import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
   title: 'Glassbox - Portfolio Optimization Tool',
   description: 'Transparent portfolio optimization and beta hedging with Glass UI design',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
