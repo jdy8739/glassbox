@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function Header() {
-  const [mounted, setMounted] = useState(false);
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
@@ -16,7 +15,6 @@ export function Header() {
     const isDark = savedTheme === 'dark' ||
       (savedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     setResolvedTheme(isDark ? 'dark' : 'light');
-    setMounted(true);
   }, []);
 
   const toggleTheme = () => {
