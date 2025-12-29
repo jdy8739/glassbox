@@ -1,0 +1,45 @@
+<svg
+  viewBox="0 0 128 128"
+  width="128"
+  height="128"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- White background for visibility -->
+  <rect width="128" height="128" fill="#ffffff" rx="16" />
+
+  <!-- Main glass prism - solid colors -->
+  <g>
+    <!-- Left face -->
+    <polygon
+      points="64,24 40,64 64,88"
+      fill="#2fb866"
+      stroke="#ffffff"
+      strokeWidth="2"
+    />
+
+    <!-- Right face -->
+    <polygon
+      points="64,24 88,64 64,88"
+      fill="#06b6d4"
+      stroke="#ffffff"
+      strokeWidth="2"
+    />
+
+    <!-- Center diamond overlay -->
+    <polygon
+      points="64,40 52,64 64,80 76,64"
+      fill="#4aca80"
+      opacity="0.9"
+    />
+  </g>
+
+  <!-- Portfolio chart bars - solid vibrant colors -->
+  <g>
+    <rect x="50" y="68" width="5" height="10" fill="#16a34a" rx="1" />
+    <rect x="62" y="62" width="5" height="16" fill="#06b6d4" rx="1" />
+    <rect x="74" y="56" width="5" height="22" fill="#a78bfa" rx="1" />
+  </g>
+
+  <!-- Glass shine highlight -->
+  <circle cx="52" cy="36" r="8" fill="#ffffff" opacity="0.5" />
+</svg>
