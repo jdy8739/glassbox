@@ -48,7 +48,7 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Glassmorphic Background */}
-      <div className="absolute inset-0 rounded-b-2xl mx-4 mt-2 mb-0 border header-glass" />
+      <div className="absolute inset-0 rounded-b-2xl mx-4 mb-0 border header-glass" />
 
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
