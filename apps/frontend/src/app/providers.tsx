@@ -1,6 +1,22 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Initialize QueryClient with default options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (garbage collection)
+      retry: 1, // Retry failed requests once
+      refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    },
+    mutations: {
+      retry: 1, // Retry failed mutations once
+    },
+  },
+});
 
 type ThemePreference = 'light' | 'dark' | 'system';
 type ResolvedTheme = 'light' | 'dark';
@@ -114,9 +130,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+        {children}
+      </ThemeContext.Provider>
+    </QueryClientProvider>
   );
 }
 
