@@ -1,16 +1,103 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import type { PortfolioItem } from '@glassbox/types';
+import { searchTickers, type TickerSearchResult } from '@/lib/api/tickers';
 
 export default function PortfolioBuilder() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
+  const [searchResults, setSearchResults] = useState<TickerSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const addItem = (symbol: string) => {
-    if (symbol && !items.find((item) => item.symbol === symbol.toUpperCase())) {
-      setItems([...items, { symbol: symbol.toUpperCase(), quantity: 1 }]);
+  // Search for tickers as user types (with debounce)
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchInput.trim().length >= 1) {
+        setIsSearching(true);
+        try {
+          const results = await searchTickers(searchInput);
+          setSearchResults(results);
+          setShowDropdown(true);
+        } catch (error) {
+          console.error('Failed to search tickers:', error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setSearchResults([]);
+        setShowDropdown(false);
+      }
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Update dropdown position
+  useEffect(() => {
+    const updatePosition = () => {
+      if (inputWrapperRef.current) {
+        const rect = inputWrapperRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 8, // 8px gap
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        });
+      }
+    };
+
+    if (showDropdown) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition);
+      return () => {
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition);
+      };
+    }
+
+    return undefined;
+  }, [showDropdown]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const addItem = (symbol: string, name?: string) => {
+    const upperSymbol = symbol.toUpperCase();
+    if (symbol && !items.find((item) => item.symbol === upperSymbol)) {
+      setItems([...items, { symbol: upperSymbol, quantity: 1 }]);
       setSearchInput('');
+      setShowDropdown(false);
+      setSearchResults([]);
+
+      // Smooth scroll to bottom after item is added
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100); // Small delay to ensure DOM has updated
     }
   };
 
@@ -69,27 +156,39 @@ export default function PortfolioBuilder() {
           </div>
         </div>
 
-        {/* Search Bar - Enhanced */}
-        <div className="nature-card-gradient purple-blue">
-          <div className="space-y-4">
+        {/* Search Bar - Enhanced with Autocomplete */}
+        <div className="nature-card-gradient purple-blue overflow-visible">
+          <div className="space-y-4 overflow-visible">
             <label className="block text-sm font-semibold text-black dark:text-white">📍 Add Stock Ticker</label>
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="e.g., AAPL, MSFT, NVDA, TSLA, GOOG..."
-                className="nature-input flex-1 text-lg"
-              />
-              <button
-                onClick={() => addItem(searchInput)}
-                className="nature-button whitespace-nowrap"
-              >
-                Add Stock
-              </button>
+            <div className="relative overflow-visible" ref={searchRef}>
+              <div className="flex gap-3" ref={inputWrapperRef}>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onFocus={() => {
+                      if (searchResults.length > 0) setShowDropdown(true);
+                    }}
+                    placeholder="Search by ticker or company name..."
+                    className="nature-input w-full text-lg pr-10"
+                  />
+                  {isSearching && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 border-2 border-grass-400 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => addItem(searchInput)}
+                  className="nature-button whitespace-nowrap"
+                >
+                  Add Stock
+                </button>
+              </div>
             </div>
             <p className="text-xs text-black dark:text-black/50 dark:text-white/50">
-              💡 Pro tip: Add 5-15 stocks for best results
+              💡 Pro tip: Search by ticker (e.g., AAPL) or company name (e.g., Apple)
             </p>
           </div>
         </div>
@@ -215,6 +314,51 @@ export default function PortfolioBuilder() {
             <span>Analyze Portfolio</span>
           </button>
         </div>
+      )}
+
+      {/* Portal-based Dropdown */}
+      {typeof window !== 'undefined' && showDropdown && createPortal(
+        <div
+          ref={dropdownRef}
+          style={{
+            position: 'absolute',
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+            width: `${dropdownPosition.width}px`,
+            zIndex: 9999,
+          }}
+        >
+          {searchResults.length > 0 ? (
+            <div className="max-h-80 overflow-y-auto rounded-2xl bg-white/25 dark:bg-white/25 backdrop-blur-xl border border-white/30 shadow-xl">
+              <div className="p-2 space-y-1">
+                {searchResults.map((result) => (
+                  <button
+                    key={result.symbol}
+                    onClick={() => addItem(result.symbol, result.name)}
+                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-between group"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-white text-lg">{result.symbol}</span>
+                        <span className="text-xs px-2 py-1 rounded bg-grass-400/30 text-grass-200 border border-grass-400/40 font-semibold">
+                          {result.exchange}
+                        </span>
+                      </div>
+                      <p className="text-sm text-white/90 mt-1 font-medium">{result.name}</p>
+                    </div>
+                    <span className="text-white/60 group-hover:text-white transition-colors">→</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : !isSearching && searchInput.length > 0 ? (
+            <div className="rounded-2xl bg-white/25 dark:bg-white/25 backdrop-blur-xl border border-white/30 shadow-xl p-6 text-center">
+              <p className="text-white/90 font-medium">No results found for "{searchInput}"</p>
+              <p className="text-xs text-white/70 mt-2">Try a different ticker or company name</p>
+            </div>
+          ) : null}
+        </div>,
+        document.body
       )}
     </main>
   );
