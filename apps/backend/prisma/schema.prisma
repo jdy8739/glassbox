@@ -10,56 +10,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User model - Google OAuth authentication
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  name      String?
-  googleId  String?    @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id         String      @id @default(uuid())
+  email      String      @unique
+  name       String?
+  picture    String? // Google profile picture URL
+  googleId   String?     @unique
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   portfolios Portfolio[]
 
   @@map("users")
 }
 
+// Portfolio model - Simplified schema (Option 1)
+// Stores tickers and quantities as arrays, analysis as JSON snapshot
 model Portfolio {
-  id          String   @id @default(cuid())
-  userId      String
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(uuid())
+  userId           String
+  name             String
+  tickers          String[] // ['AAPL', 'MSFT', 'NVDA']
+  quantities       Float[] // [10, 20, 15] - must match tickers array length
+  analysisSnapshot Json? // Full analysis results (nullable until first analysis)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items  PortfolioItem[]
-  analysis AnalysisResult?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("portfolios")
   @@index([userId])
-}
-
-model PortfolioItem {
-  id          String   @id @default(cuid())
-  portfolioId String
-  symbol      String
-  quantity    Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-
-  @@map("portfolio_items")
-  @@index([portfolioId])
-}
-
-model AnalysisResult {
-  id          String   @id @default(cuid())
-  portfolioId String   @unique
-  data        Json     // Store analysis results as JSON
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-
-  @@map("analysis_results")
+  @@map("portfolios")
 }

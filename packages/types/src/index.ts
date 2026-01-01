@@ -90,14 +90,51 @@ export interface AnalysisResult {
 }
 
 /**
- * Saved portfolio in database
+ * Analysis snapshot stored in Portfolio.analysisSnapshot (JSON field)
+ * Matches the structure defined in pages.md
+ */
+export interface AnalysisSnapshot {
+  efficientFrontier: Array<{
+    return: number;
+    volatility: number;
+    sharpeRatio: number;
+  }>;
+  gmv: {
+    weights: Record<string, number>; // { AAPL: 0.3, MSFT: 0.4, ... }
+    stats: {
+      return: number;
+      volatility: number;
+      sharpe: number;
+    };
+  };
+  maxSharpe: {
+    weights: Record<string, number>;
+    stats: {
+      return: number;
+      volatility: number;
+      sharpe: number;
+    };
+  };
+  portfolioBeta: number;
+  hedging: {
+    spyShares: number;
+    spyNotional: number;
+    esContracts: number;
+    esNotional: number;
+  };
+}
+
+/**
+ * Saved portfolio in database (Option 1 - Simplified Schema)
+ * Arrays for tickers/quantities, JSON for analysis
  */
 export interface Portfolio {
   id: string;
   userId: string;
   name: string;
-  items: PortfolioItem[];
-  analysisResult?: AnalysisResult;
+  tickers: string[]; // ['AAPL', 'MSFT', 'NVDA']
+  quantities: number[]; // [10, 20, 15]
+  analysisSnapshot: AnalysisSnapshot | null;
   createdAt: Date;
   updatedAt: Date;
 }
