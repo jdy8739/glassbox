@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import yahooFinance from 'yahoo-finance2';
@@ -12,6 +12,8 @@ export interface TickerSearchResult {
 
 @Injectable()
 export class DataService {
+  private readonly logger = new Logger(DataService.name);
+
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -30,11 +32,11 @@ export class DataService {
     // Try to get from cache
     const cached = await this.cacheManager.get<TickerSearchResult[]>(cacheKey);
     if (cached) {
-      console.log(`Cache HIT: ${cacheKey}`);
+      this.logger.debug(`Cache HIT: ${cacheKey}`);
       return cached;
     }
 
-    console.log(`Cache MISS: ${cacheKey}`);
+    this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
       // Fetch from Yahoo Finance
@@ -56,7 +58,7 @@ export class DataService {
 
       return filtered;
     } catch (error) {
-      console.error('Error fetching tickers from Yahoo Finance:', error);
+      this.logger.error('Error fetching tickers from Yahoo Finance:', error);
       throw new HttpException(
         'Failed to search tickers',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -69,11 +71,11 @@ export class DataService {
 
     const cached = await this.cacheManager.get(cacheKey);
     if (cached) {
-      console.log(`Cache HIT: ${cacheKey}`);
+      this.logger.debug(`Cache HIT: ${cacheKey}`);
       return cached;
     }
 
-    console.log(`Cache MISS: ${cacheKey}`);
+    this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
       const quote = await yahooFinance.quote(ticker);
@@ -83,7 +85,7 @@ export class DataService {
 
       return quote;
     } catch (error) {
-      console.error('Error fetching quote from Yahoo Finance:', error);
+      this.logger.error('Error fetching quote from Yahoo Finance:', error);
       throw new HttpException(
         'Failed to get quote',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -100,11 +102,11 @@ export class DataService {
 
     const cached = await this.cacheManager.get(cacheKey);
     if (cached) {
-      console.log(`Cache HIT: ${cacheKey}`);
+      this.logger.debug(`Cache HIT: ${cacheKey}`);
       return cached;
     }
 
-    console.log(`Cache MISS: ${cacheKey}`);
+    this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
       const history = await yahooFinance.historical(ticker, {
@@ -117,7 +119,7 @@ export class DataService {
 
       return history;
     } catch (error) {
-      console.error('Error fetching historical prices from Yahoo Finance:', error);
+      this.logger.error('Error fetching historical prices from Yahoo Finance:', error);
       throw new HttpException(
         'Failed to get historical prices',
         HttpStatus.INTERNAL_SERVER_ERROR,

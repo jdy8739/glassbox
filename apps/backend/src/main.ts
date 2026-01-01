@@ -2,9 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { PinoLoggerService } from './logger/pino-logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new PinoLoggerService(),
+  });
 
   // Enable CORS
   app.enableCors();
@@ -31,11 +34,11 @@ async function bootstrap() {
 
   const port = process.env.PORT || 4000;
   await app.listen(port);
-  console.log(`Glassbox backend running on http://localhost:${port}`);
-  console.log(`API documentation available at http://localhost:${port}/api`);
+  app.get(PinoLoggerService).log(`Glassbox backend running on http://localhost:${port}`);
+  app.get(PinoLoggerService).log(`API documentation available at http://localhost:${port}/api`);
 }
 
 bootstrap().catch((err) => {
-  console.error('Failed to start application:', err);
+  new PinoLoggerService().error('Failed to start application:', err);
   process.exit(1);
 });
