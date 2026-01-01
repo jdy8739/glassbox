@@ -11,8 +11,8 @@ export interface TickerSearchResult {
 }
 
 @Injectable()
-export class DataService {
-  private readonly logger = new Logger(DataService.name);
+export class TickerService {
+  private readonly logger = new Logger(TickerService.name);
 
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,

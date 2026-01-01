@@ -1,11 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { DataService, TickerSearchResult } from './data.service';
+import { TickerService, TickerSearchResult } from './ticker.service';
 
-@ApiTags('Data')
-@Controller('tickers')
-export class DataController {
-  constructor(private readonly dataService: DataService) {}
+@ApiTags('Ticker')
+@Controller('ticker')
+export class TickerController {
+  constructor(private readonly tickerService: TickerService) {}
 
   @Get('search')
   @ApiOperation({ summary: 'Search for ticker symbols' })
@@ -30,7 +30,7 @@ export class DataController {
   async searchTickers(
     @Query('q') query: string,
   ): Promise<TickerSearchResult[]> {
-    return this.dataService.searchTickers(query);
+    return this.tickerService.searchTickers(query);
   }
 
   @Get('quote')
@@ -49,6 +49,6 @@ export class DataController {
     description: 'Failed to fetch quote',
   })
   async getQuote(@Query('symbol') symbol: string) {
-    return this.dataService.getQuote(symbol);
+    return this.tickerService.getQuote(symbol);
   }
 }
