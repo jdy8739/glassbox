@@ -3,16 +3,30 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import yahooFinance from 'yahoo-finance2';
 
+interface YahooFinanceQuote {
+  symbol: string;
+  shortname?: string;
+  longname?: string;
+  exchange?: string;
+  quoteType?: string;
+  isYahooFinance?: boolean;
+}
+
+interface YahooFinanceSearchResponse {
+  quotes: YahooFinanceQuote[];
+}
+
 export interface TickerSearchResult {
   symbol: string;
   name: string;
   exchange: string;
-  type: string;
+  type?: string;
 }
 
 @Injectable()
 export class TickerService {
   private readonly logger = new Logger(TickerService.name);
+  private readonly yahoo = new yahooFinance();
 
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -40,13 +54,14 @@ export class TickerService {
 
     try {
       // Fetch from Yahoo Finance
-      const results = await yahooFinance.search(sanitizedQuery);
+      const results = (await this.yahoo.search(sanitizedQuery)) as YahooFinanceSearchResponse;
+      this.logger.debug('Yahoo Finance search results:', results);
 
       // Filter and transform results
       const filtered: TickerSearchResult[] = results.quotes
-        .filter((q: any) => q.isYahooFinance !== false && q.quoteType === 'EQUITY') // Only stocks from Yahoo Finance
+        .filter((q: YahooFinanceQuote) => q.isYahooFinance !== false && q.quoteType === 'EQUITY') // Only stocks from Yahoo Finance
         .slice(0, 10) // Limit to 10 results
-        .map((q: any) => ({
+        .map((q: YahooFinanceQuote) => ({
           symbol: q.symbol,
           name: q.longname || q.shortname || q.symbol,
           exchange: q.exchange || 'N/A',
@@ -78,7 +93,7 @@ export class TickerService {
     this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
-      const quote = await yahooFinance.quote(ticker);
+      const quote = await this.yahoo.quote(ticker);
 
       // Cache quotes for 5 minutes (300 seconds)
       await this.cacheManager.set(cacheKey, quote, 300);
@@ -109,7 +124,7 @@ export class TickerService {
     this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
-      const history = await yahooFinance.historical(ticker, {
+      const history = await this.yahoo.historical(ticker, {
         period1: startDate,
         period2: endDate,
       });
