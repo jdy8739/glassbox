@@ -21,7 +21,7 @@ export async function searchTickers(query: string): Promise<TickerSearchResult[]
     return [];
   }
 
-  return get<TickerSearchResult[]>('/tickers/search', {
+  return get<TickerSearchResult[]>('/ticker/search', {
     params: { q: query.trim() },
   });
 }
@@ -32,7 +32,7 @@ export async function searchTickers(query: string): Promise<TickerSearchResult[]
  * @returns Quote data
  */
 export async function getQuote(symbol: string): Promise<any> {
-  return get<any>('/tickers/quote', {
+  return get<any>('/ticker/quote', {
     params: { symbol },
   });
 }
