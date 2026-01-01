@@ -43,7 +43,7 @@ pnpm dev
 
 This will start:
 - **Frontend**: http://localhost:3000
-- **Backend**: http://localhost:3001
+- **Backend**: http://localhost:4000
 - **CLI**: Available via `pnpm dev` in `apps/cli`
 
 ## 📦 Packages
@@ -166,8 +166,8 @@ Shared development configurations.
 ```bash
 # Development
 pnpm dev                # Start all development servers (turbo)
-pnpm dev:frontend       # Start only frontend
-pnpm dev:backend        # Start only backend
+pnpm run fe             # Start only frontend
+pnpm run be             # Start only backend (runs on port 4000)
 
 # Building
 pnpm build              # Build all packages (turbo)
@@ -218,8 +218,8 @@ pnpm prisma studio
 ## 🌐 API Documentation
 
 Once the backend is running, visit:
-- **Swagger UI**: http://localhost:3001/api
-- **Health Check**: http://localhost:3001/health
+- **Swagger UI**: http://localhost:4000/api
+- **Health Check**: http://localhost:4000/health
 
 ## 📖 Documentation
 

@@ -116,13 +116,13 @@ node cli/index.js --tickers AAPL,MSFT,NVDA --start 2021-01-01 --samples 50000 --
 **Web App (Production):**
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
-# Start backend (Nest.js)
-npm run dev:backend
+# Start backend (Nest.js) - runs on http://localhost:4000
+pnpm run be
 
-# Start frontend (Next.js)
-npm run dev:frontend
+# In another terminal, start frontend (Next.js)
+pnpm run fe
 ```
 
 ---
