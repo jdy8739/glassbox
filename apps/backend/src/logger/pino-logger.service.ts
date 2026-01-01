@@ -22,22 +22,22 @@ export class PinoLoggerService implements LoggerService {
   }
 
   log(message: any, ...optionalParams: any[]) {
-    this.logger.info({ ...optionalParams }, message);
+    this.logger.info(message, ...optionalParams);
   }
 
   error(message: any, ...optionalParams: any[]) {
-    this.logger.error({ ...optionalParams }, message);
+    this.logger.error(message, ...optionalParams);
   }
 
   warn(message: any, ...optionalParams: any[]) {
-    this.logger.warn({ ...optionalParams }, message);
+    this.logger.warn(message, ...optionalParams);
   }
 
   debug(message: any, ...optionalParams: any[]) {
-    this.logger.debug({ ...optionalParams }, message);
+    this.logger.debug(message, ...optionalParams);
   }
 
   verbose(message: any, ...optionalParams: any[]) {
-    this.logger.trace({ ...optionalParams }, message);
+    this.logger.trace(message, ...optionalParams);
   }
 }

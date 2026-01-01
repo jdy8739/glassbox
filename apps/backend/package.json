@@ -42,7 +42,7 @@
     "pino": "^10.1.0",
     "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
-    "yahoo-finance2": "^2.11.12"
+    "yahoo-finance2": "^3.11.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",

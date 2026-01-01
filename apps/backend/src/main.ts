@@ -6,8 +6,10 @@ import { PinoLoggerService } from './logger/pino-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new PinoLoggerService(),
+    bufferLogs: true,
   });
+
+  app.useLogger(app.get(PinoLoggerService));
 
   // Enable CORS
   app.enableCors();

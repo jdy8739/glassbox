@@ -4,6 +4,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TickerModule } from './ticker/ticker.module';
+import { PinoLoggerService } from './logger/pino-logger.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { TickerModule } from './ticker/ticker.module';
     TickerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PinoLoggerService],
 })
 export class AppModule {}
