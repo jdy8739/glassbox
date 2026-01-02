@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import type { PortfolioItem } from '@glassbox/types';
 import { searchTickers, type TickerSearchResult } from '@/lib/api/tickers';
 
 export default function PortfolioBuilder() {
+  const router = useRouter();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<TickerSearchResult[]>([]);
@@ -113,7 +115,8 @@ export default function PortfolioBuilder() {
 
   const handleAnalyze = async () => {
     console.log('Analyzing portfolio:', items);
-    // TODO: Send to backend API
+    // TODO: Send to backend API - for now, just navigate to results page with mock data
+    router.push('/analysis/result');
   };
 
   return (
