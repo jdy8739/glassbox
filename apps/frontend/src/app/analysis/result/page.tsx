@@ -334,7 +334,7 @@ function AnalysisResultContent() {
                   <div className="text-3xl mb-4">🛡️</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
                   <p className="text-4xl font-bold text-black dark:text-white">
-                    {analysisData.portfolioBeta.toFixed(2)}
+                    {(analysisData.portfolioBeta).toFixed(2)}
                   </p>
                   <p className="text-xs text-black/50 dark:text-white/50 mt-2">Beta Reduction Needed</p>
                 </div>
@@ -354,7 +354,7 @@ function AnalysisResultContent() {
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">
-                          Short {Math.abs(analysisData.hedging.spyShares)} shares
+                          Short {Math.abs(analysisData.hedging.spyShares).toLocaleString()} shares
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -380,7 +380,7 @@ function AnalysisResultContent() {
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
                         <span className="font-bold text-coral-300">
-                          Short {Math.abs(analysisData.hedging.esContracts)} contracts
+                          Short {Math.abs(analysisData.hedging.esContracts).toLocaleString()} contracts
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
