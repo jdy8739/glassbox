@@ -40,6 +40,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "pino": "^10.1.0",
+    "python-shell": "^5.0.0",
     "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
     "yahoo-finance2": "^3.11.2"
@@ -52,6 +53,7 @@
     "@types/node": "^20.14.5",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-jwt": "^4.0.1",
+    "@types/python-shell": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
     "eslint": "^8.57.1",

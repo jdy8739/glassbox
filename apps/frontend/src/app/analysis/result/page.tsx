@@ -1,65 +1,42 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-
-interface AnalysisSnapshot {
-  efficientFrontier: Array<{ return: number; volatility: number; sharpeRatio: number }>;
-  gmv: { weights: Record<string, number>; stats: { return: number; volatility: number; sharpe: number } };
-  maxSharpe: { weights: Record<string, number>; stats: { return: number; volatility: number; sharpe: number } };
-  portfolioBeta: number;
-  hedging: {
-    spyShares: number;
-    spyNotional: number;
-    esContracts: number;
-    esNotional: number;
-  };
-}
-
-interface SavedPortfolio {
-  id: string;
-  name: string;
-  tickers: string[];
-  quantities: number[];
-  analysisSnapshot: AnalysisSnapshot;
-  updatedAt: string;
-}
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useFetchPortfolioData } from './useFetchPortfolioData';
 
 function AnalysisResultContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
 
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
-  const [isSnapshot, setIsSnapshot] = useState(!!portfolioId);
-  const [isReanalyzing, setIsReanalyzing] = useState(false);
-  const [savedPortfolio, setSavedPortfolio] = useState<SavedPortfolio | null>(null);
-  const [loading, setLoading] = useState(!!portfolioId);
+  
+  const { 
+    portfolioData, 
+    isLoading, 
+    isError, 
+    reanalyze, 
+    isReanalyzing 
+  } = useFetchPortfolioData(portfolioId);
 
+  // Redirect on error or missing data
   useEffect(() => {
-    if (portfolioId) {
-      // Load saved portfolio snapshot from API
-      setLoading(true);
-      // TODO: Implement API call to GET /api/portfolios/:id
-      // const response = await fetch(`/api/portfolios/${portfolioId}`);
-      // const data = await response.json();
-      // setSavedPortfolio(data);
-      setLoading(false);
+    if (isError) {
+      router.push('/portfolio/new');
     }
-  }, [portfolioId]);
+  }, [isError, router]);
 
   const handleReanalyze = () => {
-    if (!savedPortfolio) return;
-    setIsReanalyzing(true);
-    // TODO: Implement API call to POST /api/analyze with tickers/quantities
-    // This will fetch fresh market data and run analysis
-    setTimeout(() => {
-      setIsReanalyzing(false);
-      setIsSnapshot(false); // Switch to edit mode after re-analysis
-    }, 2000);
+    if (!portfolioData?.savedPortfolio) return;
+    
+    reanalyze({
+      tickers: portfolioData.savedPortfolio.tickers,
+      quantities: portfolioData.savedPortfolio.quantities,
+    });
   };
 
   const handleSavePortfolio = () => {
-    if (isSnapshot) {
+    if (portfolioId) {
       // Update existing portfolio
       // TODO: Implement API call to PUT /api/portfolios/:id
     } else {
@@ -68,7 +45,7 @@ function AnalysisResultContent() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <main className="min-h-screen p-6 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -77,6 +54,13 @@ function AnalysisResultContent() {
       </main>
     );
   }
+
+  // If we have no data and not loading, the useEffect will redirect.
+  // We can return null or a skeleton here.
+  if (!portfolioData) return null;
+
+  const { analysis: analysisData, items: portfolioItems, savedPortfolio } = portfolioData;
+  const isSnapshot = !!savedPortfolio;
 
   const backLink = isSnapshot ? '/portfolios' : '/portfolio/new';
 
@@ -137,6 +121,8 @@ function AnalysisResultContent() {
                 ? savedPortfolio?.name
                   ? `Portfolio: ${savedPortfolio.name} (${savedPortfolio.tickers.join(', ')})`
                   : 'View your saved portfolio analysis'
+                : portfolioItems.length > 0
+                ? `Analyzing ${portfolioItems.length} assets: ${portfolioItems.map(i => i.symbol).join(', ')}`
                 : 'Explore your efficient frontier and hedging recommendations for optimal portfolio allocation.'}
             </p>
           </div>
@@ -183,77 +169,93 @@ function AnalysisResultContent() {
               </div>
 
               {/* Portfolio Metrics Grid */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Portfolios</h3>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* Global Minimum Variance */}
-                  <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <p className="text-sm text-black/60 dark:text-white/60 mb-2">Global Minimum Variance (GMV)</p>
-                        <p className="text-3xl font-bold text-black dark:text-white">12.5%</p>
-                        <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
+              {analysisData && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Portfolios</h3>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {/* Global Minimum Variance */}
+                    <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <p className="text-sm text-black/60 dark:text-white/60 mb-2">Global Minimum Variance (GMV)</p>
+                          <p className="text-3xl font-bold text-black dark:text-white">
+                            {(analysisData.gmv.stats.return * 100).toFixed(1)}%
+                          </p>
+                          <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
+                        </div>
+                        <div className="text-3xl">🎯</div>
                       </div>
-                      <div className="text-3xl">🎯</div>
+                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
+                        <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
+                        <p className="text-2xl font-bold text-black dark:text-white">
+                          {(analysisData.gmv.stats.volatility * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
+                        <p className="text-xs text-black/60 dark:text-white/60">Sharpe Ratio</p>
+                        <p className="text-2xl font-bold text-black dark:text-white">
+                          {analysisData.gmv.stats.sharpe.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                      <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
-                      <p className="text-2xl font-bold text-black dark:text-white">8.3%</p>
-                    </div>
-                  </div>
 
-                  {/* Maximum Sharpe Ratio */}
-                  <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <p className="text-sm text-black/60 dark:text-white/60 mb-2">Maximum Sharpe Ratio</p>
-                        <p className="text-3xl font-bold text-black dark:text-white">18.2%</p>
-                        <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
+                    {/* Maximum Sharpe Ratio */}
+                    <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <p className="text-sm text-black/60 dark:text-white/60 mb-2">Maximum Sharpe Ratio</p>
+                          <p className="text-3xl font-bold text-black dark:text-white">
+                            {(analysisData.maxSharpe.stats.return * 100).toFixed(1)}%
+                          </p>
+                          <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
+                        </div>
+                        <div className="text-3xl">⚡</div>
                       </div>
-                      <div className="text-3xl">⚡</div>
-                    </div>
-                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                      <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
-                      <p className="text-2xl font-bold text-black dark:text-white">15.7%</p>
+                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
+                        <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
+                        <p className="text-2xl font-bold text-black dark:text-white">
+                          {(analysisData.maxSharpe.stats.volatility * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
+                        <p className="text-xs text-black/60 dark:text-white/60">Sharpe Ratio</p>
+                        <p className="text-2xl font-bold text-black dark:text-white">
+                          {analysisData.maxSharpe.stats.sharpe.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Weights Table */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Weights</h3>
-                <div className="nature-card p-6 space-y-3">
-                  <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-black dark:text-white font-medium">AAPL</span>
-                    <span className="text-grass-400 font-bold">24.5%</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-black dark:text-white font-medium">MSFT</span>
-                    <span className="text-grass-400 font-bold">18.2%</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-black dark:text-white font-medium">NVDA</span>
-                    <span className="text-grass-400 font-bold">15.8%</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-black dark:text-white font-medium">GOOG</span>
-                    <span className="text-grass-400 font-bold">12.3%</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3 border-b border-white/10">
-                    <span className="text-black dark:text-white font-medium">TSLA</span>
-                    <span className="text-grass-400 font-bold">10.1%</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-black dark:text-white font-medium">SGOV</span>
-                    <span className="text-grass-400 font-bold">19.1%</span>
+              {analysisData && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-black dark:text-white">
+                    Optimal Weights (Max Sharpe Portfolio)
+                  </h3>
+                  <div className="nature-card p-6 space-y-3">
+                    {Object.entries(analysisData.maxSharpe.weights)
+                      .filter(([_, weight]) => (weight as number) > 0.001) // Only show weights > 0.1%
+                      .sort((a, b) => (b[1] as number) - (a[1] as number)) // Sort by weight descending
+                      .map(([ticker, weight], index, array) => (
+                        <div
+                          key={ticker}
+                          className={`flex items-center justify-between py-3 ${
+                            index < array.length - 1 ? 'border-b border-white/10' : ''
+                          }`}
+                        >
+                          <span className="text-black dark:text-white font-medium">{ticker}</span>
+                          <span className="text-grass-400 font-bold">{((weight as number) * 100).toFixed(1)}%</span>
+                        </div>
+                      ))}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
-          {activeTab === 'hedging' && (
+          {activeTab === 'hedging' && analysisData && (
             <div className="space-y-6 animate-fade-in">
               {/* Beta Metrics */}
               <div className="grid gap-6 md:grid-cols-3">
@@ -261,7 +263,9 @@ function AnalysisResultContent() {
                 <div className="nature-card-gradient indigo-green group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">📊</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Current Portfolio Beta</p>
-                  <p className="text-4xl font-bold text-black dark:text-white">1.25</p>
+                  <p className="text-4xl font-bold text-black dark:text-white">
+                    {analysisData.portfolioBeta.toFixed(2)}
+                  </p>
                   <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Exposure</p>
                 </div>
 
@@ -277,7 +281,9 @@ function AnalysisResultContent() {
                 <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">🛡️</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
-                  <p className="text-4xl font-bold text-black dark:text-white">1.25</p>
+                  <p className="text-4xl font-bold text-black dark:text-white">
+                    {analysisData.portfolioBeta.toFixed(2)}
+                  </p>
                   <p className="text-xs text-black/50 dark:text-white/50 mt-2">Beta Reduction Needed</p>
                 </div>
               </div>
@@ -295,11 +301,15 @@ function AnalysisResultContent() {
                     <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
-                        <span className="font-bold text-coral-300">Short 42 shares</span>
+                        <span className="font-bold text-coral-300">
+                          Short {Math.abs(analysisData.hedging.spyShares)} shares
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Notional Value:</span>
-                        <span className="font-bold text-black dark:text-white">$18,500</span>
+                        <span className="font-bold text-black dark:text-white">
+                          ${Math.abs(analysisData.hedging.spyNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
@@ -317,11 +327,15 @@ function AnalysisResultContent() {
                     <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
-                        <span className="font-bold text-coral-300">Short 7 contracts</span>
+                        <span className="font-bold text-coral-300">
+                          Short {Math.abs(analysisData.hedging.esContracts)} contracts
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Notional Value:</span>
-                        <span className="font-bold text-black dark:text-white">$17,850</span>
+                        <span className="font-bold text-black dark:text-white">
+                          ${Math.abs(analysisData.hedging.esNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
@@ -339,7 +353,13 @@ function AnalysisResultContent() {
                   <div>
                     <h4 className="font-semibold text-black dark:text-white mb-2">Key Insights</h4>
                     <ul className="text-black/70 dark:text-white/70 space-y-2 text-sm">
-                      <li>✓ Your portfolio is currently <span className="text-black dark:text-white">25% more exposed</span> to market movements than the benchmark</li>
+                      <li>
+                        ✓ Your portfolio has a beta of{' '}
+                        <span className="text-black dark:text-white">{analysisData.portfolioBeta.toFixed(2)}</span>
+                        {analysisData.portfolioBeta > 1 && `, meaning it's ${((analysisData.portfolioBeta - 1) * 100).toFixed(0)}% more volatile than the market`}
+                        {analysisData.portfolioBeta < 1 && `, meaning it's ${((1 - analysisData.portfolioBeta) * 100).toFixed(0)}% less volatile than the market`}
+                        {analysisData.portfolioBeta === 1 && ', meaning it moves in line with the market'}
+                      </li>
                       <li>✓ Hedging via SPY is more accessible for retail investors</li>
                       <li>✓ ES futures provide <span className="text-black dark:text-white">capital efficiency</span> for larger portfolios</li>
                     </ul>

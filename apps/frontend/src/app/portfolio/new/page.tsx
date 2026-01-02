@@ -1,46 +1,40 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import type { PortfolioItem } from '@glassbox/types';
-import { searchTickers, type TickerSearchResult } from '@/lib/api/tickers';
+import { usePortfolioBuilder } from './usePortfolioBuilder';
 
 export default function PortfolioBuilder() {
-  const router = useRouter();
-  const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState<TickerSearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const {
+    items,
+    searchInput,
+    setSearchInput,
+    searchResults,
+    isSearching,
+    isAnalyzing,
+    analysisError,
+    showDropdown,
+    setShowDropdown,
+    addItem,
+    removeItem,
+    updateQuantity,
+    handleAnalyze,
+    clearError,
+  } = usePortfolioBuilder();
+
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const searchRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Search for tickers as user types (with debounce)
+  // Auto-show dropdown when results arrive or input changes
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (searchInput.trim().length >= 1) {
-        setIsSearching(true);
-        try {
-          const results = await searchTickers(searchInput);
-          setSearchResults(results);
-          setShowDropdown(true);
-        } catch (error) {
-          console.error('Failed to search tickers:', error);
-          setSearchResults([]);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults([]);
-        setShowDropdown(false);
-      }
-    }, 300); // 300ms debounce
-
-    return () => clearTimeout(timer);
-  }, [searchInput]);
+    if (searchResults.length > 0 && searchInput.length >= 1) {
+      setShowDropdown(true);
+    } else if (searchInput.length < 1) {
+      setShowDropdown(false);
+    }
+  }, [searchResults, searchInput, setShowDropdown]);
 
   // Update dropdown position
   useEffect(() => {
@@ -83,40 +77,18 @@ export default function PortfolioBuilder() {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [setShowDropdown]);
 
-  const addItem = (symbol: string, name?: string) => {
-    const upperSymbol = symbol.toUpperCase();
-    if (symbol && !items.find((item) => item.symbol === upperSymbol)) {
-      setItems([...items, { symbol: upperSymbol, quantity: 1 }]);
-      setSearchInput('');
-      setShowDropdown(false);
-      setSearchResults([]);
-
+  const handleAddItem = (symbol: string, name?: string) => {
+    if (addItem(symbol, name)) {
       // Smooth scroll to bottom after item is added
       setTimeout(() => {
         window.scrollTo({
           top: document.documentElement.scrollHeight,
           behavior: 'smooth'
         });
-      }, 100); // Small delay to ensure DOM has updated
+      }, 100);
     }
-  };
-
-  const removeItem = (symbol: string) => {
-    setItems(items.filter((item) => item.symbol !== symbol));
-  };
-
-  const updateQuantity = (symbol: string, quantity: number) => {
-    setItems(
-      items.map((item) => (item.symbol === symbol ? { ...item, quantity } : item)),
-    );
-  };
-
-  const handleAnalyze = async () => {
-    console.log('Analyzing portfolio:', items);
-    // TODO: Send to backend API - for now, just navigate to results page with mock data
-    router.push('/analysis/result');
   };
 
   return (
@@ -129,11 +101,20 @@ export default function PortfolioBuilder() {
         </a>
         <button
           onClick={handleAnalyze}
-          disabled={items.length === 0}
+          disabled={items.length === 0 || isAnalyzing}
           className="nature-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
         >
-          <span>📊</span>
-          <span>Analyze</span>
+          {isAnalyzing ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Analyzing...</span>
+            </>
+          ) : (
+            <>
+              <span>📊</span>
+              <span>Analyze</span>
+            </>
+          )}
         </button>
       </nav>
 
@@ -159,6 +140,25 @@ export default function PortfolioBuilder() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {analysisError && (
+          <div className="nature-card-gradient coral-pink">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div className="flex-1">
+                <h4 className="font-semibold text-black dark:text-white mb-1">Analysis Failed</h4>
+                <p className="text-sm text-black/70 dark:text-white/70">{analysisError}</p>
+                <button
+                  onClick={clearError}
+                  className="mt-3 text-xs px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Search Bar - Enhanced with Autocomplete */}
         <div className="nature-card-gradient purple-blue overflow-visible">
           <div className="space-y-4 overflow-visible">
@@ -183,7 +183,7 @@ export default function PortfolioBuilder() {
                   )}
                 </div>
                 <button
-                  onClick={() => addItem(searchInput)}
+                  onClick={() => handleAddItem(searchInput)}
                   className="nature-button whitespace-nowrap"
                 >
                   Add Stock
@@ -210,7 +210,7 @@ export default function PortfolioBuilder() {
             ].map((preset) => (
               <button
                 key={preset.ticker}
-                onClick={() => addItem(preset.ticker)}
+                onClick={() => handleAddItem(preset.ticker)}
                 className={`nature-card-gradient ${preset.color === 'gold' ? 'gold-cyan' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'indigo-green' : 'purple-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
               >
                 <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{preset.icon}</div>
@@ -308,13 +308,23 @@ export default function PortfolioBuilder() {
 
       {/* Floating Action Button */}
       {items.length > 0 && (
-        <div className="fixed bottom-6 left-0 right-0 px-4 flex justify-center">
+        <div className="fixed bottom-6 left-0 right-0 px-4 flex justify-center z-50">
           <button
             onClick={handleAnalyze}
-            className="nature-button text-lg font-semibold px-12 py-4 shadow-2xl hover:scale-105 transition-transform max-w-md"
+            disabled={isAnalyzing}
+            className="nature-button text-lg font-semibold px-12 py-4 shadow-2xl hover:scale-105 transition-transform max-w-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <span>🚀</span>
-            <span>Analyze Portfolio</span>
+            {isAnalyzing ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Analyzing Portfolio...</span>
+              </>
+            ) : (
+              <>
+                <span>🚀</span>
+                <span>Analyze Portfolio</span>
+              </>
+            )}
           </button>
         </div>
       )}
@@ -337,7 +347,7 @@ export default function PortfolioBuilder() {
                 {searchResults.map((result) => (
                   <button
                     key={result.symbol}
-                    onClick={() => addItem(result.symbol, result.name)}
+                    onClick={() => handleAddItem(result.symbol, result.name)}
                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-between group"
                   >
                     <div className="flex-1">

@@ -4,6 +4,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TickerModule } from './ticker/ticker.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 import { PinoLoggerService } from './logger/pino-logger.service';
 
 @Module({
@@ -17,6 +18,7 @@ import { PinoLoggerService } from './logger/pino-logger.service';
       max: 100, // maximum number of items in cache
     }),
     TickerModule,
+    PortfolioModule,
   ],
   controllers: [AppController],
   providers: [AppService, PinoLoggerService],
