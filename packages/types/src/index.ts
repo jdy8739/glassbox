@@ -99,6 +99,11 @@ export interface AnalysisSnapshot {
     volatility: number;
     sharpeRatio: number;
   }>;
+  randomPortfolios?: Array<{
+    return: number;
+    volatility: number;
+    sharpeRatio: number;
+  }>;
   gmv: {
     weights: Record<string, number>; // { AAPL: 0.3, MSFT: 0.4, ... }
     stats: {

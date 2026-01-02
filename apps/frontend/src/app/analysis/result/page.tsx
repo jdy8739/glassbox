@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
+import { EfficientFrontierChart } from './efficient-frontier-chart';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -10,13 +11,19 @@ function AnalysisResultContent() {
   const portfolioId = searchParams.get('portfolioId');
 
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [portfolioName, setPortfolioName] = useState('');
   
   const { 
     portfolioData, 
     isLoading, 
     isError, 
     reanalyze, 
-    isReanalyzing 
+    isReanalyzing,
+    savePortfolio,
+    isSaving,
+    updatePortfolio,
+    isUpdating
   } = useFetchPortfolioData(portfolioId);
 
   // Redirect on error or missing data
@@ -35,14 +42,34 @@ function AnalysisResultContent() {
     });
   };
 
-  const handleSavePortfolio = () => {
-    if (portfolioId) {
+  const handleSaveButton = () => {
+    if (portfolioId && portfolioData?.savedPortfolio) {
       // Update existing portfolio
-      // TODO: Implement API call to PUT /api/portfolios/:id
+      updatePortfolio({
+        id: portfolioId,
+        data: {
+          tickers: portfolioData.items.map(i => i.symbol),
+          quantities: portfolioData.items.map(i => i.quantity),
+          analysisSnapshot: portfolioData.analysis
+        }
+      });
     } else {
-      // Create new portfolio - show modal for name input
-      // TODO: Implement save modal
+      // Open modal for new portfolio
+      setPortfolioName('');
+      setIsSaveModalOpen(true);
     }
+  };
+
+  const confirmSave = () => {
+    if (!portfolioName.trim() || !portfolioData) return;
+    
+    savePortfolio({
+      name: portfolioName,
+      tickers: portfolioData.items.map(i => i.symbol),
+      quantities: portfolioData.items.map(i => i.quantity),
+      analysisSnapshot: portfolioData.analysis
+    });
+    setIsSaveModalOpen(false);
   };
 
   if (isLoading) {
@@ -61,6 +88,7 @@ function AnalysisResultContent() {
 
   const { analysis: analysisData, items: portfolioItems, savedPortfolio } = portfolioData;
   const isSnapshot = !!savedPortfolio;
+  const isProcessing = isSaving || isUpdating;
 
   const backLink = isSnapshot ? '/portfolios' : '/portfolio/new';
 
@@ -82,17 +110,27 @@ function AnalysisResultContent() {
               <span>Re-analyze</span>
             </button>
           )}
+          {/* Export functionality is placeholder for now */}
           <button className="nature-button-outline text-xs px-3 py-2 flex items-center gap-1.5">
             <span>📥</span>
             <span>Export</span>
           </button>
           <button
-            onClick={handleSavePortfolio}
+            onClick={handleSaveButton}
             className="nature-button text-xs px-3 py-2 flex items-center gap-1.5"
-            disabled={isReanalyzing}
+            disabled={isReanalyzing || isProcessing}
           >
-            <span>💾</span>
-            <span>{isSnapshot ? 'Update' : 'Save'}</span>
+            {isProcessing ? (
+               <>
+                 <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                 <span>Saving...</span>
+               </>
+            ) : (
+               <>
+                 <span>💾</span>
+                 <span>{isSnapshot ? 'Update' : 'Save'}</span>
+               </>
+            )}
           </button>
         </div>
       </nav>
@@ -157,15 +195,29 @@ function AnalysisResultContent() {
           {/* Tab Content */}
           {activeTab === 'frontier' && (
             <div className="space-y-6 animate-fade-in">
-              {/* Chart Placeholder */}
-              <div className="nature-card-gradient purple-blue p-12 text-center">
-                <div className="space-y-4">
-                  <p className="text-5xl">📊</p>
-                  <div>
-                    <p className="text-2xl font-bold text-black dark:text-white mb-2">Efficient Frontier</p>
-                    <p className="text-black/60 dark:text-white/60">Interactive chart visualization coming soon</p>
-                  </div>
-                </div>
+              {/* Chart */}
+              <div className="nature-card-gradient purple-blue p-6 text-center">
+                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                   <h2 className="text-lg font-semibold text-black dark:text-white text-left">Efficient Frontier</h2>
+                   
+                   {/* Legend */}
+                   <div className="flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
+                     <div className="flex items-center gap-2">
+                       <span className="w-2.5 h-2.5 rounded-full bg-grass-400"></span>
+                       <span className="text-black/70 dark:text-white/70">Efficient Frontier</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <span className="w-2.5 h-2.5 rounded-full bg-yellow-300"></span>
+                       <span className="text-black/70 dark:text-white/70">Min Variance</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                       <span className="text-black/70 dark:text-white/70">Max Sharpe</span>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <EfficientFrontierChart data={analysisData} />
               </div>
 
               {/* Portfolio Metrics Grid */}
@@ -370,6 +422,41 @@ function AnalysisResultContent() {
           )}
         </div>
       </div>
+
+      {/* Save Modal */}
+      {isSaveModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-white/10">
+            <h3 className="text-xl font-bold text-black dark:text-white">Save Portfolio</h3>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-black/70 dark:text-white/70">Portfolio Name</label>
+              <input
+                type="text"
+                value={portfolioName}
+                onChange={(e) => setPortfolioName(e.target.value)}
+                placeholder="e.g., My Tech Portfolio"
+                className="nature-input w-full"
+                autoFocus
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsSaveModalOpen(false)}
+                className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-black dark:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmSave}
+                disabled={!portfolioName.trim()}
+                className="nature-button px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

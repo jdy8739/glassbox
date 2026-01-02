@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios';
+import type { Portfolio, AnalysisSnapshot } from '@glassbox/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -12,6 +13,20 @@ export interface AnalyzePortfolioRequest {
   quantities: number[];
   portfolioValue?: number;
   targetBeta?: number;
+}
+
+export interface CreatePortfolioRequest {
+  name: string;
+  tickers: string[];
+  quantities: number[];
+  analysisSnapshot: AnalysisSnapshot;
+}
+
+export interface UpdatePortfolioRequest {
+  name?: string;
+  tickers?: string[];
+  quantities?: number[];
+  analysisSnapshot?: AnalysisSnapshot;
 }
 
 export interface PortfolioStats {
@@ -66,6 +81,30 @@ export async function analyzePortfolio(
     }
     throw error;
   }
+}
+
+/**
+ * Create a new portfolio
+ */
+export async function savePortfolio(request: CreatePortfolioRequest): Promise<Portfolio> {
+  const { data } = await axios.post<Portfolio>(`${API_BASE_URL}/portfolios`, request);
+  return data;
+}
+
+/**
+ * Update an existing portfolio
+ */
+export async function updatePortfolio(id: string, request: UpdatePortfolioRequest): Promise<Portfolio> {
+  const { data } = await axios.put<Portfolio>(`${API_BASE_URL}/portfolios/${id}`, request);
+  return data;
+}
+
+/**
+ * Get a portfolio by ID
+ */
+export async function getPortfolio(id: string): Promise<Portfolio> {
+  const { data } = await axios.get<Portfolio>(`${API_BASE_URL}/portfolios/${id}`);
+  return data;
 }
 
 /**

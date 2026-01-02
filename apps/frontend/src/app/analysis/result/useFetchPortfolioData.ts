@@ -1,22 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { analyzePortfolio } from '@/lib/api/portfolio';
-import type { AnalyzePortfolioResponse, AnalyzePortfolioRequest } from '@/lib/api/portfolio';
-import type { PortfolioItem, AnalysisSnapshot } from '@glassbox/types';
-
-export interface SavedPortfolio {
-  id: string;
-  name: string;
-  tickers: string[];
-  quantities: number[];
-  analysisSnapshot: AnalysisSnapshot;
-  updatedAt: string;
-}
+import { analyzePortfolio, getPortfolio, savePortfolio, updatePortfolio } from '@/lib/api/portfolio';
+import type { AnalyzePortfolioResponse, AnalyzePortfolioRequest, CreatePortfolioRequest, UpdatePortfolioRequest } from '@/lib/api/portfolio';
+import type { PortfolioItem, AnalysisSnapshot, Portfolio } from '@glassbox/types';
 
 export interface PortfolioData {
   analysis: AnalysisSnapshot;
   items: PortfolioItem[];
-  savedPortfolio?: SavedPortfolio | null;
+  savedPortfolio?: Portfolio | null;
 }
 
 export function useFetchPortfolioData(portfolioId: string | null) {
@@ -27,15 +17,26 @@ export function useFetchPortfolioData(portfolioId: string | null) {
     queryKey: ['portfolio', portfolioId || 'local'],
     queryFn: async () => {
       if (portfolioId) {
-        // TODO: Implement API call to GET /api/portfolios/:id
-        // const { data } = await axios.get<SavedPortfolio>(`/api/portfolios/${portfolioId}`);
-        // return {
-        //   analysis: data.analysisSnapshot,
-        //   items: data.tickers.map((t, i) => ({ symbol: t, quantity: data.quantities[i] })),
-        //   savedPortfolio: data
-        // };
-        
-        throw new Error('Portfolio fetching not implemented yet');
+        try {
+          const portfolio = await getPortfolio(portfolioId);
+          // Assuming the saved portfolio has quantities and tickers
+          const items = portfolio.tickers.map((ticker, index) => ({
+            symbol: ticker,
+            quantity: portfolio.quantities[index] || 0,
+          }));
+          
+          if (!portfolio.analysisSnapshot) {
+             throw new Error('Portfolio has no analysis snapshot');
+          }
+
+          return {
+            analysis: portfolio.analysisSnapshot as AnalysisSnapshot,
+            items,
+            savedPortfolio: portfolio
+          };
+        } catch (error) {
+          throw new Error('Failed to fetch portfolio');
+        }
       } else {
         // Load fresh analysis from sessionStorage
         if (typeof window === 'undefined') {
@@ -86,11 +87,38 @@ export function useFetchPortfolioData(portfolioId: string | null) {
     },
   });
 
+  // Mutation for saving new portfolio
+  const savePortfolioMutation = useMutation({
+    mutationFn: async (data: CreatePortfolioRequest) => {
+      return savePortfolio(data);
+    },
+    onSuccess: (newPortfolio) => {
+      // In a real app, we might redirect to the new portfolio ID URL
+      // For now, just invalidate list
+      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+    }
+  });
+
+  // Mutation for updating existing portfolio
+  const updatePortfolioMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string, data: UpdatePortfolioRequest }) => {
+      return updatePortfolio(id, data);
+    },
+    onSuccess: (updatedPortfolio) => {
+      queryClient.invalidateQueries({ queryKey: ['portfolio', updatedPortfolio.id] });
+      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+    }
+  });
+
   return {
     portfolioData: portfolioQuery.data,
     isLoading: portfolioQuery.isLoading,
     isError: portfolioQuery.isError,
     reanalyze: reanalyzeMutation.mutate,
     isReanalyzing: reanalyzeMutation.isPending,
+    savePortfolio: savePortfolioMutation.mutate,
+    isSaving: savePortfolioMutation.isPending,
+    updatePortfolio: updatePortfolioMutation.mutate,
+    isUpdating: updatePortfolioMutation.isPending,
   };
 }
