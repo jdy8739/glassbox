@@ -2,76 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Variables for Theme System */
-:root {
-  /* Light Mode Colors - Warm Cream/Earth Aesthetic */
-  --bg-primary: #ede5da;
-  --bg-secondary: #e0d5c8;
-  --text-primary: #1a1410;
-  --text-secondary: #1a1410e6;
-  --text-tertiary: #1a1410b3;
-  --text-muted: #1a1410b3;
-
-  /* Glass Components - Warm cream glass */
-  --glass-bg: rgba(220, 213, 204, 0.35);
-  --glass-border: rgba(160, 145, 130, 0.25);
-  --glass-hover-border: rgba(140, 120, 100, 0.35);
-
-  /* Button Styles - Warm outline */
-  --button-outline-border: rgba(160, 145, 130, 0.3);
-  --button-outline-bg: rgba(220, 213, 204, 0.2);
-  --button-outline-hover: rgba(140, 120, 100, 0.4);
-
-  /* Input Styles - Warm cream */
-  --input-bg: rgba(220, 213, 204, 0.25);
-  --input-border: rgba(160, 145, 130, 0.25);
-  --input-text: #1a1410;
-  --input-placeholder: rgba(26, 20, 16, 0.5);
-
-  /* Badge Styles - Warm tinted */
-  --badge-bg: rgba(47, 184, 102, 0.12);
-  --badge-border: rgba(47, 184, 102, 0.25);
-  --badge-text: #0d4620;
-}
-
-html.dark {
-  /* Dark Mode Colors */
-  --bg-primary: #0f1419;
-  --bg-secondary: #1a2a24;
-  --text-primary: #ffffff;
-  --text-secondary: #ffffffcc;
-  --text-tertiary: #ffffff99;
-  --text-muted: #ffffff99;
-
-  /* Glass Components */
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-hover-border: rgba(255, 255, 255, 0.15);
-
-  /* Button Styles */
-  --button-outline-border: rgba(255, 255, 255, 0.2);
-  --button-outline-bg: rgba(255, 255, 255, 0.05);
-  --button-outline-hover: rgba(255, 255, 255, 0.3);
-
-  /* Input Styles */
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.1);
-  --input-text: #ffffff;
-  --input-placeholder: rgba(255, 255, 255, 0.5);
-
-  /* Badge Styles */
-  --badge-bg: rgba(47, 184, 102, 0.2);
-  --badge-border: rgba(255, 255, 255, 0.15);
-  --badge-text: #ffffff;
-}
-
 @layer base {
   h1, h2, h3, h4 {
-    color: var(--text-primary);
+    @apply text-rain-900 dark:text-white;
   }
 
   p {
-    color: var(--text-secondary);
+    @apply text-rain-700 dark:text-white/80;
   }
 
   h1 {
@@ -99,93 +36,68 @@ html.dark {
   /* Glassmorphic Panel/Card Component */
   .nature-panel {
     @apply rounded-2xl border shadow-lg transition-all duration-300;
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    @apply bg-earth-200/35 border-earth-400/25;
+    @apply dark:bg-white/[0.08] dark:border-white/[0.12];
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     @apply hover:shadow-xl hover:-translate-y-1;
-  }
-
-  .nature-panel:hover {
-    border-color: var(--glass-hover-border);
+    @apply hover:border-earth-600/35 dark:hover:border-white/[0.15];
   }
 
   /* Primary Button - Bright Green */
   .nature-button {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold shadow-lg;
+    @apply bg-gradient-to-br from-grass-500 to-grass-600;
     @apply text-white transition-all duration-200 active:scale-95;
-    background: linear-gradient(135deg, #2fb866 0%, #22944f 100%);
-    @apply hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  html.dark .nature-button {
-    background: linear-gradient(135deg, #4aca80 0%, #2fb866 100%);
-    @apply text-black;
+    @apply hover:shadow-xl hover:-translate-y-0.5;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply dark:from-grass-400 dark:to-grass-500 dark:text-black;
   }
 
   /* Secondary Button - Sky Blue */
   .nature-button-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold shadow-lg;
+    @apply bg-gradient-to-br from-sky-400 to-sky-500;
     @apply text-white transition-all duration-200 active:scale-95;
-    background: linear-gradient(135deg, #7a9bc4 0%, #5b80ad 100%);
-    @apply hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  html.dark .nature-button-secondary {
-    background: linear-gradient(135deg, #a7bdd8 0%, #7a9bc4 100%);
+    @apply hover:shadow-xl hover:-translate-y-0.5;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply dark:from-sky-300 dark:to-sky-400;
   }
 
   /* Outline Button - Glass Style */
   .nature-button-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-lg border-2 px-6 py-3;
     @apply font-semibold shadow-md transition-all duration-200 active:scale-95;
-    background: var(--button-outline-bg);
-    border-color: var(--button-outline-border);
-    color: var(--text-primary);
+    @apply bg-earth-200/20 border-earth-400/30 text-rain-900;
+    @apply dark:bg-white/[0.05] dark:border-white/[0.20] dark:text-white;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-  }
-
-  .nature-button-outline:hover {
-    border-color: var(--button-outline-hover);
-    @apply shadow-lg -translate-y-0.5;
+    @apply hover:border-earth-600/40 hover:shadow-lg hover:-translate-y-0.5;
+    @apply dark:hover:border-white/[0.30];
   }
 
   /* Glassmorphic Input Field */
   .nature-input {
     @apply rounded-lg border px-4 py-3 font-medium;
+    @apply bg-earth-200/25 border-earth-400/25 text-rain-900;
+    @apply dark:bg-white/[0.05] dark:border-white/[0.10] dark:text-white;
+    @apply placeholder:text-rain-900/50 dark:placeholder:text-white/50;
     @apply transition-all duration-200 focus:outline-none focus:ring-2;
-    background: var(--input-bg);
-    border-color: var(--input-border);
-    color: var(--input-text);
+    @apply focus:border-grass-500 focus:ring-grass-500/[0.20];
+    @apply dark:focus:border-grass-600 dark:focus:ring-grass-500/[0.30];
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-  }
-
-  .nature-input::placeholder {
-    color: var(--input-placeholder);
-  }
-
-  .nature-input:focus {
-    @apply border-grass-500 ring-grass-500/20;
-  }
-
-  html.dark .nature-input:focus {
-    @apply border-grass-600 ring-grass-500/30;
   }
 
   /* Glassmorphic Feature Card */
   .nature-card {
     @apply rounded-2xl border p-6 shadow-lg transition-all duration-300;
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    @apply bg-earth-200/35 border-earth-400/25;
+    @apply dark:bg-white/[0.08] dark:border-white/[0.12];
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     @apply hover:shadow-xl hover:-translate-y-1;
-  }
-
-  .nature-card:hover {
-    border-color: var(--glass-hover-border);
+    @apply hover:border-earth-600/35 dark:hover:border-white/[0.15];
   }
 
   /* Card with Gradient Overlay */
@@ -222,142 +134,78 @@ html.dark {
   /* Badge - Default */
   .nature-badge {
     @apply inline-block rounded-full px-3 py-1 text-sm font-medium;
-    @apply transition-all duration-200;
-    color: var(--badge-text);
-    background: var(--badge-bg);
-    border: 1px solid var(--badge-border);
+    @apply bg-grass-500/[0.12] border border-grass-500/[0.25] text-grass-900;
+    @apply dark:bg-grass-500/[0.20] dark:border-white/[0.15] dark:text-white;
+    @apply transition-all duration-200 hover:opacity-80;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
 
-  .nature-badge:hover {
-    background: var(--badge-bg);
-    opacity: 0.8;
-  }
-
   /* Badge Variants - Purple */
   .nature-badge.purple {
-    --badge-bg: rgba(167, 139, 250, 0.15);
-    --badge-border: rgba(167, 139, 250, 0.3);
-    --badge-text: #6d28d9;
-  }
-
-  html.dark .nature-badge.purple {
-    --badge-bg: rgba(167, 139, 250, 0.2);
-    --badge-border: rgba(255, 255, 255, 0.15);
-    --badge-text: #ffffff;
+    @apply bg-purple-300/[0.15] border-purple-300/[0.30] text-purple-700;
+    @apply dark:bg-purple-300/[0.20] dark:border-white/[0.15] dark:text-white;
   }
 
   /* Badge Variants - Coral */
   .nature-badge.coral {
-    --badge-bg: rgba(255, 107, 107, 0.15);
-    --badge-border: rgba(255, 107, 107, 0.3);
-    --badge-text: #b91c1c;
-  }
-
-  html.dark .nature-badge.coral {
-    --badge-bg: rgba(255, 138, 138, 0.2);
-    --badge-border: rgba(255, 255, 255, 0.15);
-    --badge-text: #ffffff;
+    @apply bg-coral-300/[0.15] border-coral-300/[0.30] text-red-700;
+    @apply dark:bg-coral-300/[0.20] dark:border-white/[0.15] dark:text-white;
   }
 
   /* Badge Variants - Gold */
   .nature-badge.gold {
-    --badge-bg: rgba(251, 191, 36, 0.15);
-    --badge-border: rgba(251, 191, 36, 0.3);
-    --badge-text: #92400e;
-  }
-
-  html.dark .nature-badge.gold {
-    --badge-bg: rgba(252, 211, 77, 0.2);
-    --badge-border: rgba(255, 255, 255, 0.15);
-    --badge-text: #ffffff;
+    @apply bg-gold-300/[0.15] border-gold-300/[0.30] text-amber-700;
+    @apply dark:bg-gold-300/[0.20] dark:border-white/[0.15] dark:text-white;
   }
 
   /* Badge Variants - Cyan */
   .nature-badge.cyan {
-    --badge-bg: rgba(6, 182, 212, 0.15);
-    --badge-border: rgba(6, 182, 212, 0.3);
-    --badge-text: #0e7490;
-  }
-
-  html.dark .nature-badge.cyan {
-    --badge-bg: rgba(34, 211, 238, 0.2);
-    --badge-border: rgba(255, 255, 255, 0.15);
-    --badge-text: #ffffff;
+    @apply bg-cyan-300/[0.15] border-cyan-300/[0.30] text-cyan-700;
+    @apply dark:bg-cyan-300/[0.20] dark:border-white/[0.15] dark:text-white;
   }
 
   /* Text variants */
   .text-muted {
-    color: var(--text-muted);
+    @apply text-rain-900/70 dark:text-white/60;
   }
 
   .text-success {
-    @apply text-grass-600;
-  }
-
-  html.dark .text-success {
-    @apply text-grass-400;
+    @apply text-grass-600 dark:text-grass-400;
   }
 
   .text-error {
-    @apply text-red-600;
-  }
-
-  html.dark .text-error {
-    @apply text-red-300;
+    @apply text-red-600 dark:text-red-300;
   }
 
   .text-info {
-    @apply text-sky-600;
-  }
-
-  html.dark .text-info {
-    @apply text-sky-300;
+    @apply text-sky-600 dark:text-sky-300;
   }
 
   /* Accent Text Colors */
   .text-purple {
-    @apply text-purple-600;
-  }
-
-  html.dark .text-purple {
-    @apply text-purple-300;
+    @apply text-purple-600 dark:text-purple-300;
   }
 
   .text-coral {
-    @apply text-red-600;
-  }
-
-  html.dark .text-coral {
-    @apply text-red-300;
+    @apply text-red-600 dark:text-red-300;
   }
 
   .text-gold {
-    @apply text-amber-600;
-  }
-
-  html.dark .text-gold {
-    @apply text-amber-300;
+    @apply text-amber-600 dark:text-amber-300;
   }
 
   .text-cyan {
-    @apply text-cyan-600;
-  }
-
-  html.dark .text-cyan {
-    @apply text-cyan-300;
+    @apply text-cyan-600 dark:text-cyan-300;
   }
 
   /* Section Title */
   .section-title {
-    @apply text-4xl font-bold mb-2;
-    color: var(--text-primary);
+    @apply text-4xl font-bold mb-2 text-rain-900 dark:text-white;
   }
 
   .section-subtitle {
-    @apply text-lg;
-    color: var(--text-tertiary);
+    @apply text-lg text-rain-900/70 dark:text-white/70;
   }
 
   /* Feature Icon */
@@ -376,59 +224,47 @@ html.dark {
 }
 
 body {
-  color: var(--text-primary);
+  @apply text-rain-900 dark:text-white;
   font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+  background: linear-gradient(135deg, #ede5da 0%, #e0d5c8 50%, #ede5da 100%);
   background-attachment: fixed;
   transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
   /* Account for fixed header */
   padding-top: 4rem;
 }
 
+html.dark body {
+  background: linear-gradient(135deg, #0f1419 0%, #1a2a24 50%, #141a1f 100%);
+}
+
 /* Header Styling */
 .header-glass {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
+  @apply bg-earth-200/35 border-earth-400/25;
+  @apply dark:bg-white/[0.08] dark:border-white/[0.12];
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .theme-toggle-button {
-  color: var(--text-secondary);
-  background: var(--button-outline-bg);
-  border-color: var(--button-outline-border);
-  border: 1px solid;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  transition: all 0.3s;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.theme-toggle-button:hover {
-  color: var(--text-primary);
+  @apply text-rain-700 dark:text-white/80;
+  @apply bg-earth-200/20 dark:bg-white/[0.05];
+  @apply border border-earth-400/30 dark:border-white/[0.20];
+  @apply rounded-lg p-2 transition-all;
+  @apply inline-flex items-center justify-center relative;
+  @apply hover:text-rain-900 dark:hover:text-white;
 }
 
 .theme-toggle-tooltip {
-  position: absolute;
-  top: 100%;
-  margin-top: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  background: var(--glass-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
+  @apply absolute top-full mt-2 px-2 py-1;
+  @apply bg-earth-200/35 dark:bg-white/[0.08];
+  @apply text-rain-900 dark:text-white;
+  @apply border border-earth-400/25 dark:border-white/[0.12];
+  @apply rounded text-xs whitespace-nowrap;
+  @apply opacity-0 pointer-events-none transition-opacity;
 }
 
 .theme-toggle-button:hover .theme-toggle-tooltip {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 /* Animation Delays */
