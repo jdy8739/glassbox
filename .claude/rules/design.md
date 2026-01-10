@@ -715,13 +715,71 @@ Need text input?
 
 ---
 
-## Implementation Files
+## Design Tokens Package
 
-All design tokens are centralized in `packages/design-tokens/src/index.ts` and automatically exported to Tailwind via `apps/frontend/tailwind.config.ts`.
+All design tokens are centralized in `packages/design-tokens/` and exported to Tailwind via `apps/frontend/tailwind.config.ts`.
 
-**Component classes** are defined in `apps/frontend/src/app/globals.css`.
+### Package Structure
 
-To use: Simply apply class names like `.nature-button`, `.nature-input`, `.nature-card`, etc.
+```
+packages/design-tokens/src/
+├── index.ts              # Main re-exports (light mode)
+├── colors.ts             # Color palette (grass, sky, earth, rain, accent, semantic)
+├── typography.ts         # Font families, sizes, weights, line heights
+├── spacing.ts            # 4px grid system (0-24)
+├── borderRadius.ts       # Border radius scale (none-full)
+├── shadows.ts            # Elevation shadows (sm-2xl)
+├── gradients.ts          # Background gradients (page, hero, section)
+├── animations.ts         # Keyframe animations (sway, fall, drift, grow)
+├── components.ts         # Component tokens (button, panel, input)
+├── glass.ts              # Glassmorphism effects (sm-xl)
+├── cardGradients.ts      # Card overlay gradients
+└── dark/                 # Dark mode theme variants
+    ├── colors.ts         # Inverted color scales for dark mode
+    ├── glass.ts          # Adjusted glass effects for dark backgrounds
+    ├── shadows.ts        # Enhanced shadows for dark mode
+    ├── gradients.ts      # Dark mode background gradients
+    ├── components.ts     # Dark mode component tokens
+    ├── cardGradients.ts  # Brighter overlays for dark mode visibility
+    └── index.ts          # Dark mode re-exports
+```
+
+### Usage
+
+**Import tokens in JavaScript:**
+```typescript
+import { colors, typography, spacing, glass } from '@glassbox/design-tokens';
+import { darkColors, darkGlass } from '@glassbox/design-tokens';
+
+const primaryColor = colors.grass[500];      // #2fb866
+const fontSize = typography.fontSize.base;   // 1rem
+const padding = spacing[4];                  // 1rem
+```
+
+**Use in Tailwind CSS:**
+All tokens are automatically available as Tailwind utilities:
+```html
+<button class="bg-grass-500 hover:bg-grass-600 text-white">Click</button>
+<div class="px-4 py-2 text-base font-display">Heading</div>
+<div class="dark:bg-white/[0.08] dark:backdrop-blur-md">Glass panel</div>
+```
+
+**Apply component classes:**
+Component classes are defined in `apps/frontend/src/app/globals.css`:
+```html
+<button class="nature-button">Primary Action</button>
+<div class="nature-panel">Glass Panel</div>
+<input class="nature-input" placeholder="Enter text">
+<span class="nature-badge">Tag</span>
+```
+
+### Adding New Tokens
+
+1. Add to appropriate file (`colors.ts`, `spacing.ts`, etc.)
+2. Add JSDoc comments with usage guidelines
+3. Add dark mode variant if applicable (in `dark/` folder)
+4. Update `index.ts` exports if creating new file
+5. Tokens automatically available in Tailwind and JavaScript
 
 ---
 
