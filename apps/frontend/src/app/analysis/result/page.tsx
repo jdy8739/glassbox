@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { EfficientFrontierChart } from './efficient-frontier-chart';
+import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -13,6 +14,8 @@ function AnalysisResultContent() {
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [portfolioName, setPortfolioName] = useState('');
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
   
   const { 
     portfolioData, 
@@ -62,7 +65,7 @@ function AnalysisResultContent() {
 
   const confirmSave = () => {
     if (!portfolioName.trim() || !portfolioData) return;
-    
+
     savePortfolio({
       name: portfolioName,
       tickers: portfolioData.items.map(i => i.symbol),
@@ -71,6 +74,43 @@ function AnalysisResultContent() {
     });
     setIsSaveModalOpen(false);
   };
+
+  const handleExportCSV = () => {
+    if (!portfolioData) return;
+    exportAsCSV({
+      portfolioName: savedPortfolio?.name,
+      items: portfolioData.items,
+      analysis: portfolioData.analysis,
+      timestamp: new Date(),
+    });
+    setIsExportOpen(false);
+  };
+
+  const handleExportPDF = () => {
+    if (!portfolioData) return;
+    exportAsPDF({
+      portfolioName: savedPortfolio?.name,
+      items: portfolioData.items,
+      analysis: portfolioData.analysis,
+      timestamp: new Date(),
+    });
+    setIsExportOpen(false);
+  };
+
+  // Close export menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
+        setIsExportOpen(false);
+      }
+    };
+
+    if (isExportOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return undefined;
+  }, [isExportOpen]);
 
   if (isLoading) {
     return (
@@ -110,11 +150,34 @@ function AnalysisResultContent() {
               <span>Re-analyze</span>
             </button>
           )}
-          {/* Export functionality is placeholder for now */}
-          <button className="nature-button-outline text-xs px-3 py-2 flex items-center gap-1.5">
-            <span>📥</span>
-            <span>Export</span>
-          </button>
+          {/* Export Dropdown */}
+          <div className="relative" ref={exportMenuRef}>
+            <button
+              onClick={() => setIsExportOpen(!isExportOpen)}
+              className="nature-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
+            >
+              <span>📥</span>
+              <span>Export</span>
+            </button>
+            {isExportOpen && (
+              <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
+                <button
+                  onClick={handleExportCSV}
+                  className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
+                >
+                  <span>📊</span>
+                  <span>Export as CSV</span>
+                </button>
+                <button
+                  onClick={handleExportPDF}
+                  className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
+                >
+                  <span>📄</span>
+                  <span>Export as PDF</span>
+                </button>
+              </div>
+            )}
+          </div>
           <button
             onClick={handleSaveButton}
             className="nature-button text-xs px-3 py-2 flex items-center gap-1.5"

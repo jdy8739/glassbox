@@ -121,6 +121,7 @@ export interface AnalysisSnapshot {
     };
   };
   portfolioBeta: number;
+  riskFreeRate: number;
   hedging: {
     spyShares: number;
     spyNotional: number;
