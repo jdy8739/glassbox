@@ -2,6 +2,8 @@
 
 A monorepo containing a portfolio optimization and beta hedging tool with Glass UI design. This project includes a Next.js frontend, Nest.js backend, and CLI tool for MVP testing.
 
+> **👋 New to development?** Check out **[GETTING_STARTED.md](./GETTING_STARTED.md)** for a complete beginner's guide with step-by-step instructions!
+
 ## 🏗️ Project Structure
 
 ```
@@ -26,6 +28,7 @@ glassbox/
 
 - **Node.js 18+**
 - **pnpm 9+** (recommended for monorepo management)
+- **Python 3.9+** (for portfolio optimization calculations)
 - **PostgreSQL 12+** (for backend database)
 
 ### Installation
@@ -33,6 +36,11 @@ glassbox/
 ```bash
 # Install all dependencies
 pnpm install
+
+# Install Python dependencies for backend
+cd apps/backend/python
+pip3 install -r requirements.txt
+cd ../../..
 
 # Build all packages
 pnpm build
