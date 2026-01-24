@@ -85,8 +85,9 @@ export class PythonExecutorService {
         pyshell.send(JSON.stringify(input));
         pyshell.end((err) => {
           if (err) {
-            this.logger.error('Python script error:', err);
-            reject(err);
+            this.logger.error('Python script execution error:', err);
+            this.logger.error('Error details:', JSON.stringify(err, null, 2));
+            reject(new Error(`Python script failed: ${err.message || String(err)}`));
           }
         });
 
@@ -99,8 +100,8 @@ export class PythonExecutorService {
         });
 
         pyshell.on('stderr', (stderr: string) => {
-          // Log stderr but don't fail on warnings
-          this.logger.debug('Python stderr:', stderr);
+          // Log stderr for debugging - these could be warnings or errors
+          this.logger.warn('Python stderr:', stderr);
         });
 
         pyshell.on('close', () => {
