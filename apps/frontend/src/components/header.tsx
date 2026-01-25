@@ -56,37 +56,40 @@ export function Header() {
 
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
-        {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
-          <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
-            <GlassboxIcon />
-          </div>
-          <span className="font-bold text-base hidden sm:inline text-black dark:text-white">
-            <span className="text-cyan-600 dark:text-cyan-400">Glass</span>
-            <span className="text-black dark:text-white">box</span>
-          </span>
-        </Link>
-
-        {/* Navigation Links - Center */}
-        <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-          {navContent ? (
-            navContent
-          ) : (
-            <>
-              <Link
-                href="/portfolio/new"
-                className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-              >
-                Analyze
-              </Link>
-              <Link
-                href="/portfolios"
-                className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-              >
-                Portfolios
-              </Link>
-            </>
+        {/* Logo & Back Navigation */}
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
+            <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+              <GlassboxIcon />
+            </div>
+            <span className="font-bold text-base hidden sm:inline text-black dark:text-white">
+              <span className="text-cyan-600 dark:text-cyan-400">Glass</span>
+              <span className="text-black dark:text-white">box</span>
+            </span>
+          </Link>
+          
+          {/* Dynamic Back/Nav controls injected from pages */}
+          {navContent && (
+            <div className="hidden md:block pl-6 border-l border-black/10 dark:border-white/10">
+              {navContent}
+            </div>
           )}
+        </div>
+
+        {/* Navigation Links - Center (Always Visible) */}
+        <div className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <Link
+            href="/portfolio/new"
+            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+          >
+            Analyze
+          </Link>
+          <Link
+            href="/portfolios"
+            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+          >
+            Portfolios
+          </Link>
         </div>
 
         {/* Right Side Actions */}

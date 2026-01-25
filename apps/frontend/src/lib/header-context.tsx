@@ -24,7 +24,15 @@ export function HeaderProvider({ children }: { children: ReactNode }) {
 
 export function useHeader() {
   const context = useContext(HeaderContext);
-  if (!context) throw new Error('useHeader must be used within HeaderProvider');
+  // Allow usage without provider (returns default empty state) to prevent crashes if misconfigured
+  if (!context) {
+    return {
+      navContent: null,
+      setNavContent: () => {},
+      actionContent: null,
+      setActionContent: () => {},
+    };
+  }
   return context;
 }
 
