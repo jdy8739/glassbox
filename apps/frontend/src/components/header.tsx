@@ -56,7 +56,7 @@ export function Header() {
 
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
-        {/* Logo & Back Navigation */}
+        {/* Left Side: Logo, Back Nav, and Main Links */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
             <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
@@ -74,30 +74,30 @@ export function Header() {
               {navContent}
             </div>
           )}
-        </div>
 
-        {/* Navigation Links - Center (Always Visible) */}
-        <div className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-          <Link
-            href="/portfolio/new"
-            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-          >
-            Analyze
-          </Link>
-          <Link
-            href="/portfolios"
-            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-          >
-            Portfolios
-          </Link>
+          {/* Navigation Links (Always Visible) */}
+          <div className={`hidden lg:flex items-center gap-1 ${!navContent ? 'pl-6 border-l border-black/10 dark:border-white/10' : ''}`}>
+            <Link
+              href="/portfolio/new"
+              className="px-4 h-9 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
+            >
+              Analyze
+            </Link>
+            <Link
+              href="/portfolios"
+              className="px-4 h-9 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
+            >
+              Portfolios
+            </Link>
+          </div>
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="theme-toggle-button"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all relative"
             title={`Current: ${getThemeLabel()}. Click to cycle through themes.`}
             aria-label={`Theme: ${getThemeLabel()}. Click to cycle through light, dark, and system themes.`}
           >
@@ -118,7 +118,7 @@ export function Header() {
             actionContent
           ) : (
             /* Primary CTA Button */
-            <Link href="/portfolio/new" className="hidden sm:flex glass-button text-xs px-4 py-2">
+            <Link href="/portfolio/new" className="hidden sm:flex glass-button h-9 px-4 flex items-center gap-2 text-xs">
               <Zap className="w-4 h-4" />
               <span>Launch</span>
             </Link>
