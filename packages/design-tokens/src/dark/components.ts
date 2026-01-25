@@ -2,36 +2,38 @@ import { darkColors } from './colors';
 
 /**
  * Dark Mode Component Tokens - Adjusted colors for dark theme components
- * Brighter accent colors for better visibility on dark backgrounds
+ * White primary buttons with cyan accents, higher glass opacity for dark mode
  */
 export const darkComponents = {
   button: {
     primary: {
-      bg: darkColors.grass[400],
-      hover: darkColors.grass[500],
+      bg: '#ffffff',
+      hover: darkColors.slate[100],
       text: '#000000',
+      border: 'rgba(34, 211, 238, 0.4)',
     },
     secondary: {
-      bg: darkColors.sky[500],
-      hover: darkColors.sky[600],
+      bg: darkColors.cyan[500],
+      hover: darkColors.cyan[600],
       text: '#ffffff',
     },
     outline: {
+      bg: 'rgba(255, 255, 255, 0.1)',
       border: 'rgba(255, 255, 255, 0.2)',
-      hover: 'rgba(255, 255, 255, 0.3)',
-      text: darkColors.grass[600],
+      hover: 'rgba(255, 255, 255, 0.15)',
+      text: '#ffffff',
     },
   },
   panel: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    border: 'rgba(255, 255, 255, 0.12)',
+    bg: 'rgba(15, 23, 42, 0.7)',
+    border: 'rgba(255, 255, 255, 0.1)',
     text: '#ffffff',
-    backdropBlur: '10px',
+    backdropBlur: '12px',
   },
   input: {
-    bg: 'rgba(255, 255, 255, 0.05)',
-    border: 'rgba(255, 255, 255, 0.1)',
-    focus: darkColors.grass[600],
+    bg: 'rgba(15, 23, 42, 0.6)',
+    border: 'rgba(255, 255, 255, 0.15)',
+    focus: darkColors.cyan[500],
     placeholder: 'rgba(255, 255, 255, 0.5)',
     text: '#ffffff',
     backdropBlur: '8px',

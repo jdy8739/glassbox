@@ -11,18 +11,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Light mode colors (default)
-        grass: colors.grass,
-        sky: colors.sky,
-        earth: colors.earth,
-        rain: colors.rain,
-        // Accent colors (light mode)
-        purple: { 300: colors.accent.purple },
-        coral: { 300: colors.accent.coral },
-        gold: { 300: colors.accent.gold },
-        cyan: { 300: colors.accent.cyan },
-        pink: { 300: colors.accent.pink },
-        indigo: { 300: colors.accent.indigo },
+        // Primary neutral colors
+        slate: colors.slate,
+        // Primary accent color
+        cyan: colors.cyan,
+        // Alert color
+        coral: colors.coral,
+        // Semantic colors
+        success: colors.semantic.success,
+        warning: colors.semantic.warning,
+        error: colors.semantic.error,
+        info: colors.semantic.info,
       },
       boxShadow: {
         sm: shadows.sm,

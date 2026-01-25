@@ -54,7 +54,7 @@ export default function PortfolioLibrary() {
         {/* Header */}
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
             <span className="text-sm font-medium text-black dark:text-white/80">Your Saved Analyses</span>
           </div>
 
@@ -62,7 +62,7 @@ export default function PortfolioLibrary() {
             <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
               Portfolio
               <br />
-              <span className="bg-gradient-to-r from-gold-300 to-orange-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-slate-300 to-orange-300 bg-clip-text text-transparent">
                 Library
               </span>
             </h1>
@@ -75,7 +75,7 @@ export default function PortfolioLibrary() {
         {/* Portfolio Grid */}
         <div>
           {portfolios.length === 0 ? (
-            <div className="nature-panel space-y-8 p-16 text-center">
+            <div className="glass-panel space-y-8 p-16 text-center">
               <div className="space-y-4">
                 <p className="text-7xl">📦</p>
                 <div>
@@ -83,7 +83,7 @@ export default function PortfolioLibrary() {
                   <p className="text-lg text-black dark:text-white/60 mb-6">Start analyzing stocks to build your first portfolio</p>
                 </div>
               </div>
-              <a href="/portfolio/new" className="nature-button inline-flex gap-2 text-lg px-8 py-4 hover:scale-105 transition-transform">
+              <a href="/portfolio/new" className="glass-button inline-flex gap-2 text-lg px-8 py-4 hover:scale-105 transition-transform">
                 <span>🚀</span>
                 <span>Create Your First Portfolio</span>
               </a>
@@ -93,11 +93,11 @@ export default function PortfolioLibrary() {
               {portfolios.map((portfolio, index) => (
                 <div
                   key={portfolio.id}
-                  className={`nature-card-gradient ${index % 4 === 0 ? 'purple-blue' : index % 4 === 1 ? 'coral-pink' : index % 4 === 2 ? 'gold-cyan' : 'indigo-green'} group transform transition-all hover:scale-105 space-y-4`}
+                  className={`glass-card-gradient ${index % 4 === 0 ? 'cyan-blue' : index % 4 === 1 ? 'coral-pink' : index % 4 === 2 ? 'slate-glow' : 'cyan-blue'} group transform transition-all hover:scale-105 space-y-4`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black dark:text-white mb-1 group-hover:text-grass-300 transition">{portfolio.name}</h3>
+                      <h3 className="text-xl font-bold text-black dark:text-white mb-1 group-hover:text-cyan-300 transition">{portfolio.name}</h3>
                       <p className="text-sm text-black dark:text-white/60">Updated {formatDate(portfolio.updatedAt)}</p>
                     </div>
                     <button
@@ -115,7 +115,7 @@ export default function PortfolioLibrary() {
                       {portfolio.tickers.slice(0, 4).map((ticker) => (
                         <span
                           key={ticker}
-                          className="nature-badge text-xs"
+                          className="glass-badge text-xs"
                         >
                           {ticker}
                         </span>
@@ -130,7 +130,7 @@ export default function PortfolioLibrary() {
 
                   <Link
                     href={`/analysis/result?portfolioId=${portfolio.id}`}
-                    className="block w-full rounded-lg bg-gradient-to-r from-grass-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-black dark:text-white hover:shadow-lg transition-all text-center"
+                    className="block w-full rounded-lg bg-gradient-to-r from-cyan-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-black dark:text-white hover:shadow-lg transition-all text-center"
                   >
                     View Analysis →
                   </Link>

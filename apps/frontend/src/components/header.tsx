@@ -59,7 +59,7 @@ export function Header() {
             <GlassboxIcon />
           </div>
           <span className="font-bold text-base hidden sm:inline text-black dark:text-white">
-            <span className="text-grass-600 dark:text-grass-400">Glass</span>
+            <span className="text-cyan-600 dark:text-cyan-400">Glass</span>
             <span className="text-black dark:text-white">box</span>
           </span>
         </Link>
@@ -112,7 +112,7 @@ export function Header() {
           </button>
 
           {/* Primary CTA Button */}
-          <Link href="/portfolio/new" className="hidden sm:block nature-button text-xs px-4 py-2 flex items-center gap-1.5">
+          <Link href="/portfolio/new" className="hidden sm:block glass-button text-xs px-4 py-2 flex items-center gap-1.5">
             <span>🚀</span>
             <span>Launch</span>
           </Link>

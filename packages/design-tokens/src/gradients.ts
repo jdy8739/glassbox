@@ -1,14 +1,14 @@
 /**
  * Gradient System - Background gradients for pages and sections
  *
- * Philosophy: Subtle, nature-inspired gradients
- * Creates depth and visual interest without overpowering content
+ * Philosophy: Clean, glassmorphism-friendly gradients
+ * Creates depth and visual interest without overpowering glassmorphic content
  *
  * Usage:
  * - page: Main page backgrounds (fixed attachment)
  * - hero: Hero sections
  * - section: Section backgrounds
- * - rain: Overlay effects
+ * - overlay: Subtle overlay effects
  *
  * @example
  * ```tsx
@@ -18,12 +18,12 @@
  * ```
  */
 export const gradients = {
-  /** Page background - sky to grass to sky */
-  page: 'linear-gradient(135deg, #e5ecf4 0%, #d1f0dd 50%, #cbd8e9 100%)',
-  /** Hero section - vertical sky to grass */
-  hero: 'linear-gradient(180deg, #f4f7fb 0%, #f0f9f4 100%)',
-  /** Section background - subtle warm gradient */
-  section: 'linear-gradient(135deg, #fafbfc 0%, #f9f7f4 100%)',
-  /** Rain overlay - subtle blue tint */
-  rain: 'linear-gradient(180deg, rgba(123, 155, 196, 0.1) 0%, rgba(177, 188, 199, 0.05) 100%)',
+  /** Page background - light slate gray gradient (light mode) */
+  page: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)',
+  /** Hero section - vertical light slate gradient */
+  hero: 'linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)',
+  /** Section background - subtle gradient */
+  section: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+  /** Overlay - subtle slate tint */
+  overlay: 'linear-gradient(180deg, rgba(71, 85, 105, 0.1) 0%, rgba(148, 163, 184, 0.05) 100%)',
 };

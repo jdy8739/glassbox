@@ -4,11 +4,11 @@
 
 @layer base {
   h1, h2, h3, h4 {
-    @apply text-rain-900 dark:text-white;
+    @apply text-slate-900 dark:text-white;
   }
 
   p {
-    @apply text-rain-700 dark:text-white/80;
+    @apply text-slate-700 dark:text-white/80;
   }
 
   h1 {
@@ -34,178 +34,143 @@
 
 @layer components {
   /* Glassmorphic Panel/Card Component */
-  .nature-panel {
+  .glass-panel {
     @apply rounded-2xl border shadow-lg transition-all duration-300;
-    @apply bg-earth-200/35 border-earth-400/25;
-    @apply dark:bg-white/[0.08] dark:border-white/[0.12];
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    @apply bg-white/70 border-white/40;
+    @apply dark:bg-slate-900/70 dark:border-white/10;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     @apply hover:shadow-xl hover:-translate-y-1;
-    @apply hover:border-earth-600/35 dark:hover:border-white/[0.15];
+    @apply dark:hover:border-white/15;
   }
 
-  /* Primary Button - Bright Green */
-  .nature-button {
+  /* Primary Button - Black with Cyan Accent */
+  .glass-button {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold shadow-lg;
-    @apply bg-gradient-to-br from-grass-500 to-grass-600;
-    @apply text-white transition-all duration-200 active:scale-95;
-    @apply hover:shadow-xl hover:-translate-y-0.5;
+    @apply bg-black text-white border border-cyan-500/30;
+    @apply transition-all duration-200 active:scale-95;
+    @apply hover:shadow-xl hover:-translate-y-0.5 hover:border-cyan-400/50;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
-    @apply dark:from-grass-400 dark:to-grass-500 dark:text-black;
+    @apply dark:bg-white dark:text-black dark:border-cyan-400/40;
+    @apply dark:hover:bg-slate-100 dark:hover:border-cyan-400/60;
   }
 
-  /* Secondary Button - Sky Blue */
-  .nature-button-secondary {
+  /* Secondary Button - Cyan */
+  .glass-button-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold shadow-lg;
-    @apply bg-gradient-to-br from-sky-400 to-sky-500;
-    @apply text-white transition-all duration-200 active:scale-95;
-    @apply hover:shadow-xl hover:-translate-y-0.5;
+    @apply bg-cyan-500 text-white;
+    @apply transition-all duration-200 active:scale-95;
+    @apply hover:shadow-xl hover:-translate-y-0.5 hover:bg-cyan-600;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
-    @apply dark:from-sky-300 dark:to-sky-400;
+    @apply dark:bg-cyan-400 dark:hover:bg-cyan-500;
   }
 
   /* Outline Button - Glass Style */
-  .nature-button-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border-2 px-6 py-3;
+  .glass-button-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border px-6 py-3;
     @apply font-semibold shadow-md transition-all duration-200 active:scale-95;
-    @apply bg-earth-200/20 border-earth-400/30 text-rain-900;
-    @apply dark:bg-white/[0.05] dark:border-white/[0.20] dark:text-white;
+    @apply bg-white/10 border-white/30 text-white;
+    @apply dark:bg-slate-800/50 dark:border-white/20 dark:text-white;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    @apply hover:border-earth-600/40 hover:shadow-lg hover:-translate-y-0.5;
-    @apply dark:hover:border-white/[0.30];
+    @apply hover:bg-white/20 hover:border-white/50 hover:shadow-lg hover:-translate-y-0.5;
+    @apply dark:hover:bg-slate-700/50 dark:hover:border-white/30;
   }
 
   /* Glassmorphic Input Field */
-  .nature-input {
+  .glass-input {
     @apply rounded-lg border px-4 py-3 font-medium;
-    @apply bg-earth-200/25 border-earth-400/25 text-rain-900;
-    @apply dark:bg-white/[0.05] dark:border-white/[0.10] dark:text-white;
-    @apply placeholder:text-rain-900/50 dark:placeholder:text-white/50;
+    @apply bg-white/60 border-white/30 text-slate-900;
+    @apply dark:bg-slate-800/60 dark:border-white/20 dark:text-white;
+    @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
     @apply transition-all duration-200 focus:outline-none focus:ring-2;
-    @apply focus:border-grass-500 focus:ring-grass-500/[0.20];
-    @apply dark:focus:border-grass-600 dark:focus:ring-grass-500/[0.30];
+    @apply focus:border-cyan-500 focus:ring-cyan-500/20;
+    @apply dark:focus:border-cyan-400 dark:focus:ring-cyan-400/30;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
 
   /* Glassmorphic Feature Card */
-  .nature-card {
+  .glass-card {
     @apply rounded-2xl border p-6 shadow-lg transition-all duration-300;
-    @apply bg-earth-200/35 border-earth-400/25;
-    @apply dark:bg-white/[0.08] dark:border-white/[0.12];
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    @apply bg-white/60 border-white/30;
+    @apply dark:bg-slate-800/60 dark:border-white/10;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     @apply hover:shadow-xl hover:-translate-y-1;
-    @apply hover:border-earth-600/35 dark:hover:border-white/[0.15];
+    @apply dark:hover:border-white/15;
   }
 
   /* Card with Gradient Overlay */
-  .nature-card-gradient {
-    @apply nature-card relative overflow-hidden;
+  .glass-card-gradient {
+    @apply glass-card relative overflow-hidden;
 
     &::before {
       content: '';
       @apply absolute inset-0 pointer-events-none rounded-2xl;
-      opacity: 0.4;
     }
   }
 
-  .nature-card-gradient.purple-blue::before {
-    background: linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  .glass-card-gradient.cyan-blue::before {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
   }
 
-  .nature-card-gradient.coral-pink::before {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+  .glass-card-gradient.cyan-purple::before {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
   }
 
-  .nature-card-gradient.gold-cyan::before {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+  .glass-card-gradient.coral-pink::before {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
   }
 
-  .nature-card-gradient.indigo-green::before {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(47, 184, 102, 0.05) 100%);
+  .glass-card-gradient.slate-glow::before {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(203, 213, 225, 0.05) 100%);
   }
 
-  .nature-card-gradient > * {
+  .glass-card-gradient > * {
     @apply relative z-10;
   }
 
-  /* Badge - Default */
-  .nature-badge {
+  /* Badge - Default Cyan */
+  .glass-badge {
     @apply inline-block rounded-full px-3 py-1 text-sm font-medium;
-    @apply bg-grass-500/[0.12] border border-grass-500/[0.25] text-grass-900;
-    @apply dark:bg-grass-500/[0.20] dark:border-white/[0.15] dark:text-white;
+    @apply bg-cyan-500/20 border border-cyan-500/30 text-cyan-900;
+    @apply dark:bg-cyan-500/20 dark:border-white/15 dark:text-cyan-100;
     @apply transition-all duration-200 hover:opacity-80;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
 
-  /* Badge Variants - Purple */
-  .nature-badge.purple {
-    @apply bg-purple-300/[0.15] border-purple-300/[0.30] text-purple-700;
-    @apply dark:bg-purple-300/[0.20] dark:border-white/[0.15] dark:text-white;
-  }
-
   /* Badge Variants - Coral */
-  .nature-badge.coral {
-    @apply bg-coral-300/[0.15] border-coral-300/[0.30] text-red-700;
-    @apply dark:bg-coral-300/[0.20] dark:border-white/[0.15] dark:text-white;
-  }
-
-  /* Badge Variants - Gold */
-  .nature-badge.gold {
-    @apply bg-gold-300/[0.15] border-gold-300/[0.30] text-amber-700;
-    @apply dark:bg-gold-300/[0.20] dark:border-white/[0.15] dark:text-white;
-  }
-
-  /* Badge Variants - Cyan */
-  .nature-badge.cyan {
-    @apply bg-cyan-300/[0.15] border-cyan-300/[0.30] text-cyan-700;
-    @apply dark:bg-cyan-300/[0.20] dark:border-white/[0.15] dark:text-white;
+  .glass-badge.coral {
+    @apply bg-coral-500/20 border-coral-500/30 text-coral-900;
+    @apply dark:bg-coral-500/20 dark:border-white/15 dark:text-coral-100;
   }
 
   /* Text variants */
   .text-muted {
-    @apply text-rain-900/70 dark:text-white/60;
+    @apply text-slate-900/70 dark:text-white/60;
   }
 
   .text-success {
-    @apply text-grass-600 dark:text-grass-400;
+    @apply text-cyan-600 dark:text-cyan-400;
   }
 
   .text-error {
-    @apply text-red-600 dark:text-red-300;
+    @apply text-coral-600 dark:text-coral-300;
   }
 
   .text-info {
-    @apply text-sky-600 dark:text-sky-300;
-  }
-
-  /* Accent Text Colors */
-  .text-purple {
-    @apply text-purple-600 dark:text-purple-300;
-  }
-
-  .text-coral {
-    @apply text-red-600 dark:text-red-300;
-  }
-
-  .text-gold {
-    @apply text-amber-600 dark:text-amber-300;
-  }
-
-  .text-cyan {
-    @apply text-cyan-600 dark:text-cyan-300;
+    @apply text-blue-600 dark:text-blue-300;
   }
 
   /* Section Title */
   .section-title {
-    @apply text-4xl font-bold mb-2 text-rain-900 dark:text-white;
+    @apply text-4xl font-bold mb-2 text-slate-900 dark:text-white;
   }
 
   .section-subtitle {
-    @apply text-lg text-rain-900/70 dark:text-white/70;
+    @apply text-lg text-slate-900/70 dark:text-white/70;
   }
 
   /* Feature Icon */
@@ -224,9 +189,9 @@ html.dark {
 }
 
 body {
-  @apply text-rain-900 dark:text-white;
+  @apply text-slate-900 dark:text-white;
   font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, #ede5da 0%, #e0d5c8 50%, #ede5da 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
   background-attachment: fixed;
   transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
   /* Account for fixed header */
@@ -234,31 +199,41 @@ body {
 }
 
 html.dark body {
-  background: linear-gradient(135deg, #0f1419 0%, #1a2a24 50%, #141a1f 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+/* Subtle texture overlay for depth */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Header Styling */
 .header-glass {
-  @apply bg-earth-200/35 border-earth-400/25;
-  @apply dark:bg-white/[0.08] dark:border-white/[0.12];
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  @apply bg-white/70 border-white/40;
+  @apply dark:bg-slate-900/70 dark:border-white/10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .theme-toggle-button {
-  @apply text-rain-700 dark:text-white/80;
-  @apply bg-earth-200/20 dark:bg-white/[0.05];
-  @apply border border-earth-400/30 dark:border-white/[0.20];
+  @apply text-slate-700 dark:text-white/80;
+  @apply bg-white/10 dark:bg-slate-800/50;
+  @apply border border-white/30 dark:border-white/20;
   @apply rounded-lg p-2 transition-all;
   @apply inline-flex items-center justify-center relative;
-  @apply hover:text-rain-900 dark:hover:text-white;
+  @apply hover:text-slate-900 dark:hover:text-white;
 }
 
 .theme-toggle-tooltip {
   @apply absolute top-full mt-2 px-2 py-1;
-  @apply bg-earth-200/35 dark:bg-white/[0.08];
-  @apply text-rain-900 dark:text-white;
-  @apply border border-earth-400/25 dark:border-white/[0.12];
+  @apply bg-white/70 dark:bg-slate-900/70;
+  @apply text-slate-900 dark:text-white;
+  @apply border border-white/40 dark:border-white/10;
   @apply rounded text-xs whitespace-nowrap;
   @apply opacity-0 pointer-events-none transition-opacity;
 }

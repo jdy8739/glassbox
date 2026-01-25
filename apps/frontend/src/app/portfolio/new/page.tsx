@@ -94,7 +94,7 @@ export default function PortfolioBuilder() {
   return (
     <main className="min-h-screen p-6 pb-32">
       {/* Navigation */}
-      <nav className="nature-panel mx-auto max-w-4xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
+      <nav className="glass-panel mx-auto max-w-4xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
         <a href="/" className="text-sm font-semibold text-black dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
           <span>←</span>
           <span>Back</span>
@@ -102,7 +102,7 @@ export default function PortfolioBuilder() {
         <button
           onClick={handleAnalyze}
           disabled={items.length === 0 || isAnalyzing}
-          className="nature-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
+          className="glass-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
         >
           {isAnalyzing ? (
             <>
@@ -142,7 +142,7 @@ export default function PortfolioBuilder() {
 
         {/* Error Message */}
         {analysisError && (
-          <div className="nature-card-gradient coral-pink">
+          <div className="glass-card-gradient coral-pink">
             <div className="flex items-start gap-3">
               <span className="text-2xl">⚠️</span>
               <div className="flex-1">
@@ -160,7 +160,7 @@ export default function PortfolioBuilder() {
         )}
 
         {/* Search Bar - Enhanced with Autocomplete */}
-        <div className="nature-card-gradient purple-blue overflow-visible">
+        <div className="glass-card-gradient cyan-blue overflow-visible">
           <div className="space-y-4 overflow-visible">
             <label className="block text-sm font-semibold text-black dark:text-white">📍 Add Stock Ticker</label>
             <div className="relative overflow-visible" ref={searchRef}>
@@ -174,17 +174,17 @@ export default function PortfolioBuilder() {
                       if (searchResults.length > 0) setShowDropdown(true);
                     }}
                     placeholder="Search by ticker or company name..."
-                    className="nature-input w-full text-lg pr-10"
+                    className="glass-input w-full text-lg pr-10"
                   />
                   {isSearching && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 border-2 border-grass-400 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   )}
                 </div>
                 <button
                   onClick={() => handleAddItem(searchInput)}
-                  className="nature-button whitespace-nowrap"
+                  className="glass-button whitespace-nowrap"
                 >
                   Add Stock
                 </button>
@@ -201,9 +201,9 @@ export default function PortfolioBuilder() {
           <label className="block text-sm font-semibold text-black dark:text-white">✨ Popular Assets</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
-              { name: 'Treasury Bonds', ticker: 'TLT', icon: '🏦', color: 'gold' },
+              { name: 'Treasury Bonds', ticker: 'TLT', icon: '🏦', color: 'slate' },
               { name: 'Bitcoin', ticker: 'BTC', icon: '₿', color: 'coral' },
-              { name: 'Gold', ticker: 'GLD', icon: '💛', color: 'gold' },
+              { name: 'Gold', ticker: 'GLD', icon: '💛', color: 'slate' },
               { name: 'S&P 500', ticker: 'SPY', icon: '📈', color: 'purple' },
               { name: 'Tech', ticker: 'QQQ', icon: '🔧', color: 'cyan' },
               { name: 'Energy', ticker: 'XLE', icon: '⚡', color: 'coral' },
@@ -211,7 +211,7 @@ export default function PortfolioBuilder() {
               <button
                 key={preset.ticker}
                 onClick={() => handleAddItem(preset.ticker)}
-                className={`nature-card-gradient ${preset.color === 'gold' ? 'gold-cyan' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'indigo-green' : 'purple-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
+                className={`glass-card-gradient ${preset.color === 'slate' ? 'slate-glow' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'cyan-blue' : 'cyan-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
               >
                 <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{preset.icon}</div>
                 <p className="text-xs font-semibold text-black dark:text-white">{preset.name}</p>
@@ -228,7 +228,7 @@ export default function PortfolioBuilder() {
               📋 Your Assets <span className="text-cyan-300">({items.length})</span>
             </label>
             {items.length > 0 && (
-              <span className="text-xs px-3 py-1 rounded-full bg-grass-400/20 border border-grass-400/30 text-grass-300">
+              <span className="text-xs px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/30 text-cyan-300">
                 Ready to analyze
               </span>
             )}
@@ -236,7 +236,7 @@ export default function PortfolioBuilder() {
 
           <div className="space-y-3">
             {items.length === 0 ? (
-              <div className="nature-panel p-12 text-center space-y-4">
+              <div className="glass-panel p-12 text-center space-y-4">
                 <div className="text-5xl">📍</div>
                 <div>
                   <p className="text-lg text-black dark:text-white font-semibold mb-2">No assets added yet</p>
@@ -248,7 +248,7 @@ export default function PortfolioBuilder() {
                 {items.map((item, index) => (
                   <div
                     key={item.symbol}
-                    className="nature-card group hover:border-cyan-300/50 transition-all"
+                    className="glass-card group hover:border-cyan-300/50 transition-all"
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4 flex-1">
@@ -271,7 +271,7 @@ export default function PortfolioBuilder() {
                             }
                             min="0"
                             step="0.01"
-                            className="nature-input w-24 bg-black/10 dark:bg-white/10"
+                            className="glass-input w-24 bg-black/10 dark:bg-white/10"
                           />
                         </div>
                         <button
@@ -294,11 +294,11 @@ export default function PortfolioBuilder() {
           <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
               <p className="text-black dark:text-white/70">Portfolio completeness</p>
-              <p className="text-grass-400 font-semibold">{Math.min(items.length * 20, 100)}%</p>
+              <p className="text-cyan-400 font-semibold">{Math.min(items.length * 20, 100)}%</p>
             </div>
             <div className="h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-grass-400 to-cyan-300 transition-all duration-300"
+                className="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transition-all duration-300"
                 style={{ width: `${Math.min(items.length * 20, 100)}%` }}
               ></div>
             </div>
@@ -312,7 +312,7 @@ export default function PortfolioBuilder() {
           <button
             onClick={handleAnalyze}
             disabled={isAnalyzing}
-            className="nature-button text-lg font-semibold px-12 py-4 shadow-2xl hover:scale-105 transition-transform max-w-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="glass-button text-lg font-semibold px-12 py-4 shadow-2xl hover:scale-105 transition-transform max-w-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             {isAnalyzing ? (
               <>
@@ -353,7 +353,7 @@ export default function PortfolioBuilder() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <span className="font-bold text-white text-lg">{result.symbol}</span>
-                        <span className="text-xs px-2 py-1 rounded bg-grass-400/30 text-grass-200 border border-grass-400/40 font-semibold">
+                        <span className="text-xs px-2 py-1 rounded bg-cyan-400/30 text-cyan-200 border border-cyan-400/40 font-semibold">
                           {result.exchange}
                         </span>
                       </div>

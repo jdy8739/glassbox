@@ -135,7 +135,7 @@ function AnalysisResultContent() {
   return (
     <main className="min-h-screen p-6">
       {/* Navigation */}
-      <nav className="nature-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
+      <nav className="glass-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
         <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
           <span>←</span>
           <span>Back</span>
@@ -144,7 +144,7 @@ function AnalysisResultContent() {
           {isSnapshot && !isReanalyzing && (
             <button
               onClick={handleReanalyze}
-              className="nature-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+              className="glass-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
             >
               <span>🔄</span>
               <span>Re-analyze</span>
@@ -154,7 +154,7 @@ function AnalysisResultContent() {
           <div className="relative" ref={exportMenuRef}>
             <button
               onClick={() => setIsExportOpen(!isExportOpen)}
-              className="nature-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
+              className="glass-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
             >
               <span>📥</span>
               <span>Export</span>
@@ -180,7 +180,7 @@ function AnalysisResultContent() {
           </div>
           <button
             onClick={handleSaveButton}
-            className="nature-button text-xs px-3 py-2 flex items-center gap-1.5"
+            className="glass-button text-xs px-3 py-2 flex items-center gap-1.5"
             disabled={isReanalyzing || isProcessing}
           >
             {isProcessing ? (
@@ -247,7 +247,7 @@ function AnalysisResultContent() {
               onClick={() => setActiveTab('hedging')}
               className={`px-6 py-4 font-semibold transition-all border-b-2 ${
                 activeTab === 'hedging'
-                  ? 'border-b-coral-300 text-coral-300'
+                  ? 'border-b-slate-300 text-slate-300'
                   : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
               }`}
             >
@@ -259,14 +259,14 @@ function AnalysisResultContent() {
           {activeTab === 'frontier' && (
             <div className="space-y-6 animate-fade-in">
               {/* Chart */}
-              <div className="nature-card-gradient purple-blue p-6 text-center">
+              <div className="glass-card-gradient cyan-blue p-6 text-center">
                  <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                    <h2 className="text-lg font-semibold text-black dark:text-white text-left">Efficient Frontier</h2>
-                   
+
                    {/* Legend */}
                    <div className="flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
                      <div className="flex items-center gap-2">
-                       <span className="w-2.5 h-2.5 rounded-full bg-grass-400"></span>
+                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
                        <span className="text-black/70 dark:text-white/70">Efficient Frontier</span>
                      </div>
                      <div className="flex items-center gap-2">
@@ -279,7 +279,7 @@ function AnalysisResultContent() {
                      </div>
                    </div>
                  </div>
-                 
+
                  <EfficientFrontierChart data={analysisData} />
               </div>
 
@@ -289,7 +289,7 @@ function AnalysisResultContent() {
                   <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Portfolios</h3>
                   <div className="grid gap-6 md:grid-cols-2">
                     {/* Global Minimum Variance */}
-                    <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
+                    <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <p className="text-sm text-black/60 dark:text-white/60 mb-2">Global Minimum Variance (GMV)</p>
@@ -315,7 +315,7 @@ function AnalysisResultContent() {
                     </div>
 
                     {/* Maximum Sharpe Ratio */}
-                    <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
+                    <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <p className="text-sm text-black/60 dark:text-white/60 mb-2">Maximum Sharpe Ratio</p>
@@ -349,7 +349,7 @@ function AnalysisResultContent() {
                   <h3 className="text-xl font-semibold text-black dark:text-white">
                     Optimal Weights (Max Sharpe Portfolio)
                   </h3>
-                  <div className="nature-card p-6 space-y-3">
+                  <div className="glass-card p-6 space-y-3">
                     {Object.entries(analysisData.maxSharpe.weights)
                       .filter(([_, weight]) => (weight as number) > 0.001) // Only show weights > 0.1%
                       .sort((a, b) => (b[1] as number) - (a[1] as number)) // Sort by weight descending
@@ -361,7 +361,7 @@ function AnalysisResultContent() {
                           }`}
                         >
                           <span className="text-black dark:text-white font-medium">{ticker}</span>
-                          <span className="text-grass-400 font-bold">{((weight as number) * 100).toFixed(1)}%</span>
+                          <span className="text-cyan-400 font-bold">{((weight as number) * 100).toFixed(1)}%</span>
                         </div>
                       ))}
                   </div>
@@ -375,7 +375,7 @@ function AnalysisResultContent() {
               {/* Beta Metrics */}
               <div className="grid gap-6 md:grid-cols-3">
                 {/* Current Beta */}
-                <div className="nature-card-gradient indigo-green group cursor-pointer transform transition-all hover:scale-105">
+                <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">📊</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Current Portfolio Beta</p>
                   <p className="text-4xl font-bold text-black dark:text-white">
@@ -385,7 +385,7 @@ function AnalysisResultContent() {
                 </div>
 
                 {/* Target Beta */}
-                <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
+                <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">🎯</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Target Beta</p>
                   <p className="text-4xl font-bold text-black dark:text-white">0.00</p>
@@ -393,7 +393,7 @@ function AnalysisResultContent() {
                 </div>
 
                 {/* Required Hedge */}
-                <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
+                <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
                   <div className="text-3xl mb-4">🛡️</div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
                   <p className="text-4xl font-bold text-black dark:text-white">
@@ -406,7 +406,7 @@ function AnalysisResultContent() {
               {/* Hedging Recommendation */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-black dark:text-white">Hedging Strategy</h3>
-                <div className="nature-card space-y-6">
+                <div className="glass-card space-y-6">
                   {/* SPY Method */}
                   <div className="space-y-4 pb-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
@@ -428,7 +428,7 @@ function AnalysisResultContent() {
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
-                        <span className="font-bold text-grass-400">~0.00</span>
+                        <span className="font-bold text-cyan-400">~0.00</span>
                       </div>
                     </div>
                   </div>
@@ -442,7 +442,7 @@ function AnalysisResultContent() {
                     <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Action:</span>
-                        <span className="font-bold text-coral-300">
+                        <span className="font-bold text-slate-300">
                           Short {Math.abs(analysisData.hedging.esContracts).toLocaleString()} contracts
                         </span>
                       </div>
@@ -454,7 +454,7 @@ function AnalysisResultContent() {
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
-                        <span className="font-bold text-grass-400">~0.00</span>
+                        <span className="font-bold text-cyan-400">~0.00</span>
                       </div>
                     </div>
                   </div>
@@ -462,7 +462,7 @@ function AnalysisResultContent() {
               </div>
 
               {/* Key Insights */}
-              <div className="nature-card-gradient coral-pink space-y-4">
+              <div className="glass-card-gradient coral-pink space-y-4">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">💡</span>
                   <div>
@@ -498,7 +498,7 @@ function AnalysisResultContent() {
                 value={portfolioName}
                 onChange={(e) => setPortfolioName(e.target.value)}
                 placeholder="e.g., My Tech Portfolio"
-                className="nature-input w-full"
+                className="glass-input w-full"
                 autoFocus
               />
             </div>
@@ -512,7 +512,7 @@ function AnalysisResultContent() {
               <button
                 onClick={confirmSave}
                 disabled={!portfolioName.trim()}
-                className="nature-button px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="glass-button px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Save
               </button>

@@ -35,11 +35,11 @@ export default function Home() {
 
           {/* CTA Buttons with Icons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-            <a href="/portfolio/new" className="nature-button text-lg px-8 py-4 hover:scale-105">
+            <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105">
               <span>✨</span>
               <span>Start Analyzing</span>
             </a>
-            <a href="/portfolios" className="nature-button-secondary text-lg px-8 py-4 hover:scale-105">
+            <a href="/portfolios" className="glass-button-secondary text-lg px-8 py-4 hover:scale-105">
               <span>📊</span>
               <span>View Portfolios</span>
             </a>
@@ -69,19 +69,19 @@ export default function Home() {
       <div className="relative px-4 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="nature-card text-center p-8 group hover:border-purple-300/50">
+            <div className="glass-card text-center p-8 group hover:border-purple-300/50">
               <div className="text-5xl font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent mb-2">
                 10M+
               </div>
               <p className="text-black/70 dark:text-white/70">Portfolio Analyses</p>
             </div>
-            <div className="nature-card text-center p-8 group hover:border-gold-300/50">
-              <div className="text-5xl font-bold bg-gradient-to-r from-gold-300 to-orange-300 bg-clip-text text-transparent mb-2">
+            <div className="glass-card text-center p-8 group hover:border-slate-300/50">
+              <div className="text-5xl font-bold bg-gradient-to-r from-slate-300 to-orange-300 bg-clip-text text-transparent mb-2">
                 99.9%
               </div>
               <p className="text-black/70 dark:text-white/70">Accuracy Rate</p>
             </div>
-            <div className="nature-card text-center p-8 group hover:border-cyan-300/50">
+            <div className="glass-card text-center p-8 group hover:border-cyan-300/50">
               <div className="text-5xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-2">
                 &lt;100ms
               </div>
@@ -106,86 +106,86 @@ export default function Home() {
           {/* Feature Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Card 1 - Purple Blue */}
-            <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">📈</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Efficient Frontier</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Discover optimal portfolio allocations using advanced quadratic programming and Monte Carlo sampling.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge text-xs">GMV</span>
-                <span className="nature-badge text-xs">Max Sharpe</span>
-                <span className="nature-badge text-xs">Weights</span>
+                <span className="glass-badge text-xs">GMV</span>
+                <span className="glass-badge text-xs">Max Sharpe</span>
+                <span className="glass-badge text-xs">Weights</span>
               </div>
             </div>
 
             {/* Card 2 - Coral Pink */}
-            <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">🛡️</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Beta Hedging</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Calculate portfolio beta and size hedging positions in SPY or futures for market-neutral exposure.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge coral text-xs">SPY</span>
-                <span className="nature-badge coral text-xs">Futures</span>
-                <span className="nature-badge coral text-xs">ES</span>
+                <span className="glass-badge coral text-xs">SPY</span>
+                <span className="glass-badge coral text-xs">Futures</span>
+                <span className="glass-badge coral text-xs">ES</span>
               </div>
             </div>
 
             {/* Card 3 - Gold Cyan */}
-            <div className="nature-card-gradient gold-cyan group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">💎</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Premium Design</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Experience sophisticated glassmorphic interface with stunning animations and intuitive controls.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge gold text-xs">Glass</span>
-                <span className="nature-badge gold text-xs">Smooth</span>
-                <span className="nature-badge gold text-xs">Responsive</span>
+                <span className="glass-badge slate text-xs">Glass</span>
+                <span className="glass-badge slate text-xs">Smooth</span>
+                <span className="glass-badge slate text-xs">Responsive</span>
               </div>
             </div>
 
             {/* Card 4 - Indigo Green */}
-            <div className="nature-card-gradient indigo-green group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">⚡</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Real-time Analysis</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Get instant results with lightning-fast calculations powered by cutting-edge algorithms.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge text-xs">Fast</span>
-                <span className="nature-badge text-xs">Accurate</span>
-                <span className="nature-badge text-xs">Live</span>
+                <span className="glass-badge text-xs">Fast</span>
+                <span className="glass-badge text-xs">Accurate</span>
+                <span className="glass-badge text-xs">Live</span>
               </div>
             </div>
 
             {/* Card 5 - Purple Blue */}
-            <div className="nature-card-gradient purple-blue group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">📦</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Portfolio Management</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Store, compare, and manage multiple portfolios with powerful organization and export tools.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge purple text-xs">Save</span>
-                <span className="nature-badge purple text-xs">Export</span>
-                <span className="nature-badge purple text-xs">Compare</span>
+                <span className="glass-badge purple text-xs">Save</span>
+                <span className="glass-badge purple text-xs">Export</span>
+                <span className="glass-badge purple text-xs">Compare</span>
               </div>
             </div>
 
             {/* Card 6 - Coral Pink */}
-            <div className="nature-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
+            <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform">🔬</div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Advanced Analytics</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Deep-dive into Sharpe ratios, volatility, correlations, and comprehensive portfolio statistics.
               </p>
               <div className="flex gap-2 flex-wrap">
-                <span className="nature-badge coral text-xs">Metrics</span>
-                <span className="nature-badge coral text-xs">Stats</span>
-                <span className="nature-badge coral text-xs">Insights</span>
+                <span className="glass-badge coral text-xs">Metrics</span>
+                <span className="glass-badge coral text-xs">Stats</span>
+                <span className="glass-badge coral text-xs">Insights</span>
               </div>
             </div>
           </div>
@@ -253,19 +253,19 @@ export default function Home() {
         <div className="mx-auto max-w-3xl">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/10 via-cyan-300/10 to-gold-300/10 rounded-3xl blur-xl"></div>
-            <div className="nature-panel p-12 sm:p-16 text-center space-y-8 relative">
+            <div className="glass-panel p-12 sm:p-16 text-center space-y-8 relative">
               <h2 className="text-5xl font-bold text-black dark:text-white">
-                Ready to <span className="bg-gradient-to-r from-grass-400 to-cyan-300 bg-clip-text text-transparent">Optimize?</span>
+                Ready to <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">Optimize?</span>
               </h2>
               <p className="text-xl text-black dark:text-white/70 max-w-xl mx-auto">
                 Join thousands of investors using Glassbox to make smarter portfolio decisions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <a href="/portfolio/new" className="nature-button text-lg px-10 py-4 hover:scale-105 transition-transform">
+                <a href="/portfolio/new" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform">
                   <span>🚀</span>
                   <span>Launch App Now</span>
                 </a>
-                <a href="#features" className="nature-button-outline text-lg px-10 py-4 hover:scale-105 transition-transform">
+                <a href="#features" className="glass-button-outline text-lg px-10 py-4 hover:scale-105 transition-transform">
                   <span>📚</span>
                   <span>Learn More</span>
                 </a>

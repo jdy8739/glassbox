@@ -4,7 +4,7 @@ import { colors } from './colors';
  * Component Tokens - Predefined component styles
  *
  * Philosophy: Semantic component-level tokens for common UI patterns
- * Reduces repetition and ensures consistency
+ * Black/white primary colors with cyan accents and higher glass opacity
  *
  * Components:
  * - button: Button variants (primary, secondary, outline)
@@ -26,33 +26,35 @@ import { colors } from './colors';
 export const components = {
   button: {
     primary: {
-      bg: colors.grass[500],
-      hover: colors.grass[600],
+      bg: colors.black,
+      hover: colors.slate[800],
       text: colors.white,
+      border: 'rgba(6, 182, 212, 0.3)',
     },
     secondary: {
-      bg: colors.sky[400],
-      hover: colors.sky[500],
+      bg: colors.cyan[500],
+      hover: colors.cyan[600],
       text: colors.white,
     },
     outline: {
-      border: colors.rain[300],
-      hover: colors.rain[100],
-      text: colors.grass[700],
+      bg: 'rgba(255, 255, 255, 0.1)',
+      border: 'rgba(255, 255, 255, 0.3)',
+      hover: 'rgba(255, 255, 255, 0.2)',
+      text: colors.white,
     },
   },
   panel: {
-    bg: 'rgba(255, 255, 255, 0.15)',
-    border: 'rgba(255, 255, 255, 0.2)',
-    text: colors.rain[900],
-    backdropBlur: '10px',
+    bg: 'rgba(255, 255, 255, 0.7)',
+    border: 'rgba(255, 255, 255, 0.4)',
+    text: colors.slate[900],
+    backdropBlur: '12px',
   },
   input: {
-    bg: 'rgba(255, 255, 255, 0.1)',
-    border: 'rgba(255, 255, 255, 0.2)',
-    focus: colors.grass[400],
-    placeholder: colors.rain[400],
-    text: colors.rain[900],
+    bg: 'rgba(255, 255, 255, 0.6)',
+    border: 'rgba(255, 255, 255, 0.3)',
+    focus: colors.cyan[500],
+    placeholder: colors.slate[400],
+    text: colors.slate[900],
     backdropBlur: '8px',
   },
 };

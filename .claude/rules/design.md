@@ -1,143 +1,128 @@
-# Glassbox Design System - Glassmorphic Nature Theme
+# Glassbox Design System - Modern Glassmorphism
 
 ## Core Philosophy
 
-Our design philosophy combines **premium glassmorphism with nature-inspired grounding and vibrant accent colors**. Frosted glass cards with colorful gradient overlays float above dark nature-inspired backgrounds, creating a sophisticated yet dynamic interface that feels both professional and alive. Every visual element reflects our commitment to **transparency, clarity, natural beauty, and visual excitement** in portfolio management.
+Our design philosophy combines **premium glassmorphism with modern slate and cyan aesthetics**. Semi-transparent glass panels with higher opacity float above clean slate backgrounds, creating a sophisticated yet tech-forward interface that feels both professional and fresh. Every visual element reflects our commitment to **transparency, clarity, modern sophistication, and visual elegance** in portfolio management.
 
-**Mood**: Premium, dynamic, grounded, sophisticated
-**Values**: Transparency, growth, natural stability, refined trust, creative expression
-**User Feeling**: Professional, inspired, confident, grounded in nature with creative flair
+**Mood**: Premium, modern, clean, sophisticated
+**Values**: Transparency, clarity, tech-forward design, refined trust, minimalism
+**User Feeling**: Professional, confident, modern, empowered
 
 ---
 
 ## Design Principles
 
-### 1. Glassmorphism with Depth
-- **Semi-transparent glass cards** with real `backdrop-filter: blur()` effects
-- **Frosted glass appearance** with subtle borders (rgba(255, 255, 255, 0.15-0.25))
+### 1. Glassmorphism with Clean Aesthetics
+- **Higher opacity glass** (0.6-0.8) for better readability with black/white primary colors
+- **Frosted glass appearance** with backdrop blur effects
 - **Layered depth** through multiple glass surfaces
 - **Real blur effects** that reveal content underneath while maintaining focus
 
-### 2. Nature-Grounded Backgrounds
-- **Dark green-tinted gradients** (#1a3a2a to #2d5a45) simulating soil and grass
-- **Fixed backgrounds** that don't scroll, anchoring the experience
-- **Soft, muted tones** that feel natural and organic
-- **No harsh contrasts** — everything feels peaceful and welcoming
+### 2. Clean, Minimal Backgrounds
+- **Neutral slate gradients** (#f8fafc to #e2e8f0 light mode, #0f172a to #1e293b dark mode)
+- **Subtle texture overlays** for depth without visual noise
+- **Fixed backgrounds** that anchor the experience
+- **No competing colors** — clean and professional
 
-### 3. Bright Green Accents
-- **Grass green (#2fb866)** as primary action color — bright and energetic
+### 3. Cyan Accent Colors
+- **Cyan (#06b6d4)** as primary action color — modern and tech-forward
 - **Clear, high-contrast CTAs** stand out against glass backgrounds
-- **Growth-oriented feel** with nature-inspired primary color
+- **Tech-forward feel** with contemporary aesthetic
 - **Professional yet approachable** tone
 
-### 4. Clean Typography & Hierarchy
+### 4. Black & White Primary Colors
+- **Black buttons** with cyan border accents (light mode)
+- **White buttons** with cyan accents (dark mode)
+- **Maximum contrast** for accessibility and clarity
+- **Simple, elegant** visual hierarchy
+
+### 5. Clean Typography & Hierarchy
 - **White text on glass** for maximum readability
-- **Green headings** to guide focus and show importance
+- **Slate headings** for clear visual structure
 - **Transparent text layers** (white/60, white/70, white/80) for hierarchy
-- **Clear visual structure** through typography rather than decoration
+- **Clear visual structure** through consistent typography
 
 ---
 
 ## Color System
 
-### Primary Colors - Grass & Foliage
+### Primary Colors - Slate Neutrals
 
-The main color family evoking growth, vitality, and positive returns.
-
-```
-grass-50:  #f0f9f4   // Misty morning grass
-grass-100: #d1f0dd   // Fresh dew grass
-grass-200: #a8e6c1   // Light grass
-grass-300: #70d99f   // Spring grass
-grass-400: #4aca80   // Vibrant grass
-grass-500: #2fb866   // Deep grass (PRIMARY)
-grass-600: #22944f   // Forest grass
-grass-700: #1d7a42   // Dark grass
-grass-800: #185f33   // Deep forest
-grass-900: #144d2b   // Darkest foliage
-```
-
-**Use for**: Primary CTAs, success states, growth indicators, active states
-
-### Secondary Colors - Rainy Sky
-
-The sky palette bringing calm, trust, and contemplation.
+Professional, clean gray tones that serve as the foundation for the design system.
 
 ```
-sky-50:  #f4f7fb   // Light mist
-sky-100: #e5ecf4   // Soft clouds
-sky-200: #cbd8e9   // Overcast
-sky-300: #a7bdd8   // Rainy sky
-sky-400: #7a9bc4   // Storm approaching (SECONDARY)
-sky-500: #5b80ad   // Deep rain clouds
-sky-600: #4a6690   // Dark storm
-sky-700: #3d5276   // Evening rain
-sky-800: #334461   // Night rain
-sky-900: #2b3950   // Deepest sky
+slate-50:  #f8fafc   // Lightest - backgrounds, very subtle elements
+slate-100: #f1f5f9   // Very light - secondary backgrounds
+slate-200: #e2e8f0   // Light - borders, subtle backgrounds
+slate-300: #cbd5e1   // Light-mid - secondary borders
+slate-400: #94a3b8   // Mid - disabled states
+slate-500: #64748b   // Mid - secondary text
+slate-600: #475569   // Mid-dark - body text
+slate-700: #334155   // Dark - headings
+slate-800: #1e293b   // Very dark - dark mode glass
+slate-900: #0f172a   // Darkest - dark mode backgrounds
+slate-950: #020617   // Black - dark mode darkest
 ```
 
-**Use for**: Secondary CTAs, information, backgrounds, secondary actions
+**Use for**: Text, borders, disabled states, subtle backgrounds, dark mode surfaces
 
-### Accent Colors - Point Colors
+### Primary Accent Color - Cyan
 
-Vibrant colors for visual interest and feature differentiation.
-
-```
-purple:  #a78bfa   // Elegant purple for premium features
-coral:   #ff6b6b   // Vibrant coral/red for risk/hedging
-gold:    #fbbf24   // Warm gold for premium features
-cyan:    #06b6d4   // Cool cyan for data/analysis
-pink:    #ec4899   // Vibrant pink for special highlights
-indigo:  #6366f1   // Deep indigo for advanced features
-```
-
-**Use for**: Feature cards, badges, gradient overlays, visual differentiation, accent elements
-
-### Secondary Accent Colors - Earth & Soil
-
-The earth palette providing grounding and natural stability.
+Modern, tech-forward blue-green color for primary interactions and highlights.
 
 ```
-earth-50:  #f9f7f4   // Dry soil
-earth-100: #ede7dd   // Light earth
-earth-200: #dccfbb   // Sand
-earth-300: #c4ae8e   // Wet soil
-earth-400: #a88f68   // Rich soil (ACCENT)
-earth-500: #8c7350   // Deep earth
-earth-600: #6e5a3e   // Dark earth
-earth-700: #584932   // Forest floor
-earth-800: #473b28   // Deep soil
-earth-900: #3a3023   // Richest earth
+cyan-50:  #ecfeff   // Lightest - hover states
+cyan-100: #cffafe   // Very light - inactive states
+cyan-200: #a5f3fc   // Light - subtle accents
+cyan-300: #67e8f9   // Light-mid - secondary highlights
+cyan-400: #22d3ee   // Mid - focus states, secondary actions
+cyan-500: #06b6d4   // Primary - CTAs, primary actions (PRIMARY)
+cyan-600: #0891b2   // Dark - hover states
+cyan-700: #0e7490   // Darker - active states
+cyan-800: #155e75   // Very dark - dark mode
+cyan-900: #164e63   // Darkest - dark mode
 ```
 
-**Use for**: Warnings, caution states, supplementary accents
+**Use for**: Primary CTAs, success states, active states, focus indicators, data visualization accents, border highlights
 
-### Neutral Colors - Rain & Mist
+### Alert Color - Coral/Red
 
-The neutral palette for text, borders, and subtle backgrounds.
+Vibrant red tones for warnings, risk indicators, and urgent actions.
 
 ```
-rain-50:  #fafbfc   // Lightest mist
-rain-100: #f1f3f5   // Morning fog
-rain-200: #e3e7eb   // Light rain
-rain-300: #cfd6dd   // Mist (BORDERS)
-rain-400: #b1bcc7   // Drizzle
-rain-500: #8895a3   // Rain (SECONDARY TEXT)
-rain-600: #6b7885   // Heavy rain
-rain-700: #55606a   // Storm
-rain-800: #424c54   // Dark rain
-rain-900: #343d43   // Deepest shadow (PRIMARY TEXT)
+coral-50:  #fef2f2   // Lightest
+coral-100: #fee2e2   // Very light
+coral-200: #fecaca   // Light
+coral-300: #fca5a5   // Light-mid
+coral-400: #f87171   // Mid
+coral-500: #ef4444   // Primary - Warnings, alerts (PRIMARY)
+coral-600: #dc2626   // Dark - hover states
+coral-700: #b91c1c   // Darker - active states
+coral-800: #991b1b   // Very dark
+coral-900: #7f1d1d   // Darkest
 ```
 
-**Use for**: Text, borders, disabled states, subtle backgrounds
+**Use for**: Warning states, risk indicators, hedging features, error messages, destructive actions
 
 ### Semantic Colors
 
+Meaning-based colors with consistent usage patterns.
+
 ```
-Success:  #2fb866   (grass-500) - Growth, positive returns
-Warning:  #a88f68   (earth-400) - Caution, attention needed
-Error:    #c74444   - Muted red (autumn leaf)
-Info:     #7a9bc4   (sky-400) - Information, clarity
+success:  #06b6d4   // cyan-500 - Positive outcomes, growth
+warning:  #f59e0b   // amber-500 - Caution, needs attention
+error:    #ef4444   // coral-500 - Failed actions, critical alerts
+info:     #3b82f6   // blue-500 - Information, helpful tips
+```
+
+**Use for**: Success/error/warning messages, status indicators, semantic meaning
+
+### Special Colors
+
+```
+white:       #ffffff    // For text on dark, button text
+black:       #000000    // For primary buttons, dark text
+transparent: transparent // For overlay effects
 ```
 
 ---
@@ -211,82 +196,79 @@ px:  1px
 
 ### Buttons
 
-#### Primary Button (.nature-button)
-- **Background**: grass-500 (#2fb866) — bright green accent
-- **Text**: white
-- **Hover**: grass-600 with elevated shadow
-- **Active**: scale down 95%
-- **Usage**: Main CTAs, "Analyze", "Start Analysis", "Add", "Save"
-- **Note**: Stands out clearly against glass backgrounds
+#### Primary Button (.glass-button)
+- **Background**: Black (#000000) with cyan border
+- **Text**: White
+- **Border**: Cyan with 30% opacity
+- **Hover**: Slate-800 with increased border opacity
+- **Dark Mode**: White background with cyan accent
+- **Usage**: Main CTAs, "Analyze", "Save", "Start Analysis"
+- **Note**: High contrast with glassmorphic design
 
-#### Secondary Button (.nature-button-secondary)
-- **Background**: sky-400 (#7a9bc4) — secondary accent
-- **Text**: white
-- **Hover**: sky-500 with elevated shadow
-- **Active**: scale down 95%
-- **Usage**: Secondary actions, "View Portfolios"
+#### Secondary Button (.glass-button-secondary)
+- **Background**: Cyan-500 (#06b6d4)
+- **Text**: White
+- **Hover**: Cyan-600 with elevated shadow
+- **Dark Mode**: Cyan-400
+- **Usage**: Secondary actions, "View More", "Learn"
 
-#### Outline Button (.nature-button-outline)
-- **Background**: rgba(255, 255, 255, 0.1) with `backdrop-filter: blur(8px)`
-- **Border**: white/30, 2px
-- **Text**: white
-- **Hover**: border white/50 with increased shadow
-- **Usage**: Tertiary actions, "Export Results"
+#### Outline Button (.glass-button-outline)
+- **Background**: White/10 with backdrop blur
+- **Border**: White/30, 1px
+- **Text**: White
+- **Hover**: White/20 with increased shadow
+- **Usage**: Tertiary actions, "Export", "Cancel"
 
 ### Cards & Panels
 
-#### Panel (.nature-panel)
-- **Background**: rgba(255, 255, 255, 0.15) with `backdrop-filter: blur(10px)`
-- **Border**: white/20, 1px
-- **Border Radius**: rounded-2xl (2rem)
-- **Shadow**: 0 8px 32px rgba(0, 0, 0, 0.1)
-- **Hover**: border white/30, shadow-xl, translate up -0.5
+#### Panel (.glass-panel)
+- **Background**: White/70 with backdrop blur
+- **Border**: White/40, 1px
+- **Shadow**: Elevation shadow
+- **Dark Mode**: Slate-900/70 with white/10 border
+- **Hover**: Elevated shadow and slight translate
 - **Usage**: Major containers, headers, sections
 
-#### Card (.nature-card)
-- **Background**: rgba(255, 255, 255, 0.15) with `backdrop-filter: blur(10px)`
-- **Border**: white/20, 1px
+#### Card (.glass-card)
+- **Background**: White/60 with backdrop blur
+- **Border**: White/30, 1px
 - **Padding**: p-6 (1.5rem)
-- **Radius**: rounded-2xl
-- **Shadow**: 0 8px 32px rgba(0, 0, 0, 0.1)
-- **Hover**: border white/30, shadow-xl, translate up -1
-- **Usage**: Feature cards, portfolio items, data cards
+- **Shadow**: Moderate elevation
+- **Dark Mode**: Slate-800/60 with white/10 border
+- **Hover**: Lifted with enhanced shadow
+- **Usage**: Feature cards, portfolio items, metric displays
 
-#### Badge (.nature-badge)
-- **Background**: rgba(47, 184, 102, 0.3) with `backdrop-filter: blur(4px)`
-- **Border**: white/20, 1px
-- **Text**: white
+#### Badge (.glass-badge)
+- **Background**: Cyan-500/20 with backdrop blur
+- **Border**: Cyan-500/30, 1px
+- **Text**: Cyan-900 (light), Cyan-100 (dark)
 - **Padding**: px-3 py-1
 - **Radius**: rounded-full
 - **Usage**: Tags, asset labels, status indicators
 
 ##### Badge Variants
-- `.nature-badge.purple` - Purple tinted badge
-- `.nature-badge.coral` - Coral/red tinted badge
-- `.nature-badge.gold` - Gold tinted badge
-- `.nature-badge.cyan` - Cyan tinted badge
+- `.glass-badge.coral` - Coral/red tinted badge for warnings and risk
 
-#### Card with Gradient (.nature-card-gradient)
-- Extends `.nature-card` with colorful gradient overlay
-- Overlay opacity: 0.4 for subtle effect
+#### Card with Gradient (.glass-card-gradient)
+- Extends `.glass-card` with colorful gradient overlay
+- Overlay opacity: subtle for refined effect
 - **Variants**:
-  - `.purple-blue` - Purple to blue gradient
-  - `.coral-pink` - Coral to pink gradient
-  - `.gold-cyan` - Gold to cyan gradient
-  - `.indigo-green` - Indigo to green gradient
-- **Usage**: Feature cards, differentiated content cards, visual hierarchy
+  - `.cyan-blue` - Cyan to blue gradient (modern tech, primary features)
+  - `.cyan-purple` - Cyan to purple gradient (premium features)
+  - `.coral-pink` - Coral to pink gradient (alerts, risk)
+  - `.slate-glow` - Slate gradient (neutral, grounding)
+- **Usage**: Feature showcases, differentiated content cards
 
 ### Forms
 
-#### Input (.nature-input)
-- **Background**: rgba(255, 255, 255, 0.1) with `backdrop-filter: blur(8px)`
-- **Border**: white/20, 1px
-- **Text**: rain-900 (dark text for readability)
-- **Placeholder**: white/50
-- **Focus**:
-  - Border: grass-400
-  - Ring: grass-400/20 (2px)
-- **Padding**: px-4 py-2.5
+#### Input (.glass-input)
+- **Background**: White/60 with backdrop blur
+- **Border**: White/30, 1px
+- **Text**: Slate-900
+- **Placeholder**: Slate-400
+- **Focus**: Cyan-500 border with cyan ring
+- **Dark Mode**: Slate-800/60 background, white text
+- **Padding**: px-4 py-3
 - **Radius**: rounded-lg (1rem)
 - **Usage**: Text inputs, number fields, searches
 
@@ -294,29 +276,30 @@ px:  1px
 
 ## Shadows
 
-Soft shadows for glassmorphic depth — subtle and dark-tinted.
+Soft shadows for glassmorphic depth — subtle and refined.
 
 ```
-sm:     0 4px 6px rgba(0, 0, 0, 0.07)
+sm:     0 4px 6px rgba(0, 0, 0, 0.05)
 default: 0 8px 32px rgba(0, 0, 0, 0.1)
 md:     0 12px 48px rgba(0, 0, 0, 0.15)
 lg:     0 8px 32px rgba(0, 0, 0, 0.1)
 xl:     0 16px 64px rgba(0, 0, 0, 0.2)
 ```
 
-**Principle**: Shadows create depth for floating glass cards without feeling heavy. Dark shadows on dark backgrounds maintain the premium aesthetic.
+**Principle**: Shadows create depth for floating glass cards without feeling heavy. Subtle elevation effects maintain the premium aesthetic.
 
 ---
 
 ## Page Background
 
 ```
-Base Gradient: linear-gradient(135deg, #1a3a2a 0%, #2d5a45 50%, #1a3a2a 100%)
+Light Mode: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)
+Dark Mode:  linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)
 Fixed: background-attachment: fixed (doesn't scroll)
-Color Intent: Dark green gradient evoking soil and grass roots
+Texture: SVG noise overlay at 5% opacity for subtle depth
 ```
 
-**Principle**: The fixed, dark background anchors the entire experience while frosted glass cards float above it. This creates visual depth and sophistication while maintaining nature grounding.
+**Principle**: The fixed, clean background anchors the entire experience while frosted glass cards float above it. Subtle texture adds depth without visual distraction.
 
 ---
 
@@ -331,24 +314,24 @@ h4: text-xl font-semibold
 ```
 
 ### Text Colors
-- **Primary Headings**: White (#FFFFFF)
-- **Secondary Text**: white/70 or white/80
-- **Muted Text**: white/60
-- **Accent Headings**: Colored spans (cyan, purple, gold, coral)
+- **Primary Headings**: Slate-900 (light), White (dark)
+- **Secondary Text**: Slate-700 (light), White/80 (dark)
+- **Muted Text**: Slate-600 (light), White/60 (dark)
+- **Accent Headings**: Cyan spans for emphasis
 
 ### Hero Heading Pattern
 ```
-Large h1 with white base text
-+ colored span with accent color
-Creates visual interest while maintaining readability
+Large h1 with slate base text
++ cyan accent span
+Creates modern, tech-forward feel
 ```
 
-**Example**: "Build Your **Portfolio**" (Portfolio in cyan-300)
+**Example**: "Optimize Your **Portfolio**" (Portfolio in cyan)
 
 ### Section Titles
 ```
-.section-title: text-4xl font-bold text-white
-.section-subtitle: text-lg text-white/70
+.section-title: text-4xl font-bold text-slate-900 dark:text-white
+.section-subtitle: text-lg text-slate-900/70 dark:text-white/70
 Always paired together for clarity
 ```
 
@@ -359,7 +342,7 @@ Always paired together for clarity
 ### Keyframe Animations
 
 #### Sway (3s infinite)
-Gentle side-to-side movement like grass in wind.
+Gentle side-to-side movement like wind.
 ```
 0%, 100%: translateX(0) rotate(0deg)
 50%:      translateX(2px) rotate(1deg)
@@ -407,7 +390,7 @@ space-y-6-8 (large vertical spacing)
 
 Heading Structure:
 - Large h1 with gradient text span
-- Supporting paragraph in white/70
+- Supporting paragraph in slate-700
 - CTA buttons below heading
 ```
 
@@ -418,7 +401,7 @@ max-w-6xl mx-auto (wide container)
 grid gap-6 (consistent spacing)
 md:grid-cols-2 lg:grid-cols-3 (responsive)
 
-Each feature card uses .nature-card-gradient
+Each feature card uses .glass-card-gradient
 Cards have emoji icon, heading, description, badges
 ```
 
@@ -432,11 +415,11 @@ space-y-6-8 (vertical section spacing)
 
 ### Navigation (Top Bar)
 ```
-nature-panel (glassmorphic header)
+.glass-panel (glassmorphic header)
 flex items-center justify-between
 px-6 py-4 (comfortable padding)
 mx-4 mt-4 (inset from edges)
-White text, green primary button
+White text, cyan primary button
 ```
 
 ---
@@ -444,178 +427,99 @@ White text, green primary button
 ## Accessibility
 
 ### Contrast Ratios
-- **Normal text on white**: rain-900 text (#343d43) = 14:1
-- **Body text on white**: rain-700 text (#55606a) = 10:1
-- **Disabled text on white**: rain-400 (#b1bcc7) = 4.8:1
+- **Black button on white**: 21:1 (AAA)
+- **Cyan on white**: 5.2:1 (AA)
+- **Body text on white**: 12:1+ (AA)
+- **Disabled text**: 4.8:1 (AA)
 
-All ratios exceed WCAG AA standards (4.5:1).
+All ratios meet or exceed WCAG AA standards.
 
 ### Color Independence
 - Status is never indicated by color alone
 - Icons and text labels accompany color indicators
-- Focus states clearly visible (ring outline)
+- Focus states clearly visible (cyan ring)
 
 ### Keyboard Navigation
 - All interactive elements focusable
-- Focus ring visible (grass-400, 2px)
+- Focus ring visible (cyan, 2px)
 - Tab order logical and predictable
 
 ---
 
 ## Dark Mode - Complete Implementation
 
-Dark mode provides a premium, eye-friendly alternative to light mode while maintaining all design principles and brand values.
+Dark mode provides a premium, eye-friendly alternative to light mode while maintaining all design principles.
 
 ### Dark Mode Philosophy
 
 **Dark Mode Characteristics:**
-- **Dark backgrounds**: Deep navy-black gradient (#0f1419 to #1a2a24)
-- **Light text**: White on semi-transparent glass for readability
-- **Brighter accents**: Lighter shades of grass, sky, earth for contrast
-- **Subtle glassmorphism**: Lighter glass overlays on dark backgrounds
-- **Enhanced shadows**: More pronounced shadows for depth perception
+- **Dark backgrounds**: Slate-900 to slate-800 gradient
+- **Light text**: White on semi-transparent slate for readability
+- **Brighter cyan accents**: More vibrant for contrast
+- **Subtle glassmorphism**: Darker glass overlays on dark backgrounds
+- **Enhanced shadows**: More pronounced for depth perception
 
 ### Dark Mode Color System
 
-**Dark Grass (Primary)** - Inverted light-to-dark spectrum
+**Dark Slate** - Inverted light-to-dark spectrum
 ```
-dark-grass-50:  #144d2b   // Darkest
-dark-grass-100: #185f33
-dark-grass-200: #1d7a42
-dark-grass-300: #22944f
-dark-grass-400: #2fb866   // Primary green
-dark-grass-500: #4aca80   // Brighter for contrast
-dark-grass-600: #70d99f   // Lighter green
-dark-grass-700: #a8e6c1   // Bright green
-dark-grass-800: #d1f0dd
-dark-grass-900: #f0f9f4   // Lightest
+Dark backgrounds use: #0f172a to #1e293b
+Dark glass uses: rgba(15, 23, 42, 0.6-0.8)
+Lighter shades for text and accents
 ```
 
-**Dark Sky (Secondary)** - Inverted light-to-dark spectrum
+**Dark Cyan** - Brighter for contrast
 ```
-dark-sky-50:  #2b3950    // Darkest
-dark-sky-100: #334461
-dark-sky-200: #3d5276
-dark-sky-300: #4a6690
-dark-sky-400: #5b80ad    // Primary sky
-dark-sky-500: #7a9bc4    // Brighter for contrast
-dark-sky-600: #a7bdd8    // Lighter sky
-dark-sky-700: #cbd8e9
-dark-sky-800: #e5ecf4
-dark-sky-900: #f4f7fb    // Lightest
+Bright cyan used for visibility: #22d3ee to #06b6d4
+Same semantic meaning as light mode
 ```
 
-**Dark Earth (Accent)** - Inverted light-to-dark spectrum
+**Dark Coral** - Brighter for alerts
 ```
-dark-earth-50:  #3a3023   // Darkest
-dark-earth-100: #473b28
-dark-earth-200: #584932
-dark-earth-300: #6e5a3e
-dark-earth-400: #8c7350   // Primary earth
-dark-earth-500: #a88f68   // Brighter for contrast
-dark-earth-600: #c4ae8e   // Lighter earth
-dark-earth-700: #dccfbb
-dark-earth-800: #ede7dd
-dark-earth-900: #f9f7f4   // Lightest
-```
-
-**Dark Rain (Neutral)** - Inverted light-to-dark spectrum
-```
-dark-rain-50:  #343d43    // Darkest gray
-dark-rain-100: #424c54
-dark-rain-200: #55606a
-dark-rain-300: #6b7885
-dark-rain-400: #8895a3
-dark-rain-500: #b1bcc7    // Mid gray
-dark-rain-600: #cfd6dd    // Light gray
-dark-rain-700: #e3e7eb
-dark-rain-800: #f1f3f5
-dark-rain-900: #fafbfc    // Lightest (white)
-```
-
-**Dark Accent Colors** - Brightened for contrast on dark backgrounds
-```
-dark-purple:  #d8bffd    // Lighter purple (#a78bfa → #d8bffd)
-dark-coral:   #ff8a8a    // Lighter coral (#ff6b6b → #ff8a8a)
-dark-gold:    #fcd34d    // Lighter gold (#fbbf24 → #fcd34d)
-dark-cyan:    #22d3ee    // Lighter cyan (#06b6d4 → #22d3ee)
-dark-pink:    #f472b6    // Lighter pink (#ec4899 → #f472b6)
-dark-indigo:  #a5b4fc    // Lighter indigo (#6366f1 → #a5b4fc)
-```
-
-### Dark Mode Background
-
-```
-Base Gradient: linear-gradient(135deg, #0f1419 0%, #1a2a24 50%, #141a1f 100%)
-Fixed: background-attachment: fixed
-Color Intent: Very dark navy-green, evoking deep night sky with nature
+Brighter coral for urgency: #f87171 to #ef4444
+Enhanced visibility on dark backgrounds
 ```
 
 ### Dark Mode Glassmorphism
 
-Adjusted glass effects for visibility on dark backgrounds:
+Adjusted glass effects for visibility:
 
 ```
 Glass Layers (Dark Mode):
-- sm:    background: rgba(255, 255, 255, 0.05), blur: 4px
-- default: background: rgba(255, 255, 255, 0.08), blur: 10px
-- lg:    background: rgba(255, 255, 255, 0.1), blur: 16px
-- xl:    background: rgba(255, 255, 255, 0.12), blur: 20px
+- sm:    background: rgba(15, 23, 42, 0.6), blur: 8px
+- default: background: rgba(15, 23, 42, 0.7), blur: 12px
+- lg:    background: rgba(15, 23, 42, 0.75), blur: 16px
+- xl:    background: rgba(15, 23, 42, 0.8), blur: 20px
 
-Borders: rgba(255, 255, 255, 0.08 - 0.18)
+Borders: rgba(255, 255, 255, 0.1 - 0.25)
 Text: White (#ffffff) on glass
-```
-
-### Dark Mode Card Gradients
-
-Lighter gradient overlays for visibility:
-
-```
-purpleBlue: linear-gradient(135deg, rgba(168, 160, 253, 0.15) 0%, rgba(96, 165, 250, 0.08) 100%)
-coralPink:  linear-gradient(135deg, rgba(255, 138, 138, 0.15) 0%, rgba(244, 114, 182, 0.08) 100%)
-goldCyan:   linear-gradient(135deg, rgba(252, 211, 77, 0.15) 0%, rgba(34, 211, 238, 0.08) 100%)
-indigoGreen: linear-gradient(135deg, rgba(165, 180, 252, 0.15) 0%, rgba(106, 204, 128, 0.08) 100%)
 ```
 
 ### Dark Mode Shadows
 
-Enhanced shadows for depth perception on dark backgrounds:
+Enhanced shadows for depth perception:
 
 ```
-sm:     0 1px 2px 0 rgba(0, 0, 0, 0.3)
-default: 0 2px 8px 0 rgba(0, 0, 0, 0.4)
-md:     0 4px 16px 0 rgba(0, 0, 0, 0.5)
-lg:     0 8px 24px 0 rgba(0, 0, 0, 0.6)
-xl:     0 12px 32px 0 rgba(0, 0, 0, 0.7)
-2xl:    0 20px 48px 0 rgba(0, 0, 0, 0.8)
+sm:     0 4px 6px rgba(0, 0, 0, 0.3)
+default: 0 8px 32px rgba(0, 0, 0, 0.4)
+md:     0 12px 48px rgba(0, 0, 0, 0.5)
+lg:     0 16px 64px rgba(0, 0, 0, 0.6)
+xl:     0 20px 96px rgba(0, 0, 0, 0.7)
 ```
 
-### Dark Mode Typography
+### Dark Mode Button Styles
 
-- **Headings**: White (#ffffff) - bright and clear
-- **Body text**: White or white/80 - high contrast
-- **Secondary text**: White/60 or white/70 - hierarchy
-- **Muted text**: White/50 - subtle information
+- **Primary Button (Dark)**: White background with cyan border, black text
+- **Secondary Button (Dark)**: Cyan-400 background
+- **Outline Button (Dark)**: Slate-800/50 with white border
 
-### Dark Mode Contrast Ratios
+### Dark Mode Toggle
 
-- **Heading on glass**: White text (#ffffff) on rgba(255,255,255,0.08) = 14:1+ (AA compliant)
-- **Body text**: White text on glass = 12:1+ (AA compliant)
-- **Secondary text**: White/70 on glass = 9:1+ (AA compliant)
-- **Disabled text**: White/40 = 4.8:1 (AA compliant)
-
-### Implementing Dark Mode
-
-**Toggle mechanism** (to be implemented):
-1. User preferences stored in localStorage
-2. CSS class on `<html>` element: `class="dark"`
-3. Tailwind dark mode selector: `dark:` utilities
-4. CSS custom properties for theme switching
-
-**Planned locations:**
-- Top navigation bar (sun/moon icon toggle)
-- User settings/preferences panel
-- System preference detection (prefers-color-scheme)
+**Implemented in Header:**
+- Sun/moon icon toggle in top navigation
+- Uses HTML `<html class="dark">` for Tailwind dark mode
+- User preference stored in localStorage (optional)
+- System preference detection via `prefers-color-scheme`
 
 ### Dark Mode Advantages
 
@@ -632,36 +536,26 @@ xl:     0 12px 32px 0 rgba(0, 0, 0, 0.7)
 ### Premium & Sophisticated
 - Glassmorphic design with real blur effects
 - Layered depth and visual hierarchy
-- Gradient overlays for visual interest
-- Professional, refined aesthetic
+- Clean, professional aesthetic
+- Modern, refined look
 
-### Growth & Positivity
-- Green primary color for actions and success
-- Uplifting, forward-moving design
-- Energetic accent colors (purple, coral, gold)
-- Progressive revelation of information
-- Dynamic visual hierarchy
+### Tech-Forward & Modern
+- Cyan primary color for contemporary feel
+- Minimal, clean design without clutter
+- Sleek glassmorphism with higher opacity
+- Professional yet approachable tone
 
-### Grounded & Trustworthy
-- Dark nature-inspired background
+### Trustworthy & Clear
+- Black/white primary colors for maximum clarity
 - Stable, consistent component patterns
 - Clear visual structure
-- Professional yet approachable tone
 - Transparent, honest presentation
 
-### Creative & Expressive
-- Point accent colors (purple, coral, gold, cyan)
-- Gradient overlays on feature cards
-- Colorful badges and labels
-- Visual diversity without chaos
-- Playful yet professional
-
-### Natural Beauty
-- Nature-inspired color palette
-- Organic, rounded shapes (rounded-2xl)
-- Gentle animations and transitions
-- Peaceful base aesthetic
-- Peaceful dark background grounded in nature
+### Accessible & Inclusive
+- High contrast colors (black on white, cyan accents)
+- Clear focus states and indicators
+- Semantic color usage
+- Professional, welcoming design
 
 ---
 
@@ -669,48 +563,50 @@ xl:     0 12px 32px 0 rgba(0, 0, 0, 0.7)
 
 ### When to Use Each Color
 
-**Grass (Primary)**
-- Main call-to-action buttons
-- Active states and focus states
-- Success indicators and positive feedback
-- Primary navigation elements
-- Growth-related metrics
+**Black (Primary)**
+- Main call-to-action buttons (light mode)
+- Primary text and headings
+- High-contrast elements
 
-**Sky (Secondary)**
+**White (Primary)**
+- Primary buttons in dark mode
+- Text on dark backgrounds
+- High-contrast elements
+
+**Cyan (Accent)**
 - Secondary actions
-- Information boxes and alerts
-- Complementary CTAs
-- Secondary navigation
-- Contextual backgrounds
+- Focus states and indicators
+- Success indicators
+- Data visualization accents
+- Border highlights
 
-**Earth (Accent)**
+**Coral (Alert)**
 - Warning states and caution
-- Supplementary emphasis
-- Alternative highlights
-- Supporting UI elements
+- Risk indicators
+- Error messages
+- Destructive actions
 
-**Rain (Neutral)**
+**Slate (Neutral)**
 - Body text and labels
 - Borders and dividers
 - Disabled states
 - Subtle backgrounds
-- Secondary information
 
 ### Component Decision Tree
 
 ```
 Need a CTA?
-├─ Main action? → nature-button (grass)
-├─ Secondary action? → nature-button-secondary (sky)
-└─ Tertiary action? → nature-button-outline
+├─ Main action? → glass-button (black + cyan)
+├─ Secondary action? → glass-button-secondary (cyan)
+└─ Tertiary action? → glass-button-outline
 
 Need a container?
-├─ Major section? → nature-panel
-├─ Feature/card? → nature-card
-└─ Small tag? → nature-badge
+├─ Major section? → glass-panel
+├─ Feature/card? → glass-card
+└─ Small tag? → glass-badge
 
 Need text input?
-└─ → nature-input (any type)
+└─ → glass-input (any type)
 ```
 
 ---
@@ -724,7 +620,7 @@ All design tokens are centralized in `packages/design-tokens/` and exported to T
 ```
 packages/design-tokens/src/
 ├── index.ts              # Main re-exports (light mode)
-├── colors.ts             # Color palette (grass, sky, earth, rain, accent, semantic)
+├── colors.ts             # Slate, cyan, coral, semantic colors
 ├── typography.ts         # Font families, sizes, weights, line heights
 ├── spacing.ts            # 4px grid system (0-24)
 ├── borderRadius.ts       # Border radius scale (none-full)
@@ -735,9 +631,9 @@ packages/design-tokens/src/
 ├── glass.ts              # Glassmorphism effects (sm-xl)
 ├── cardGradients.ts      # Card overlay gradients
 └── dark/                 # Dark mode theme variants
-    ├── colors.ts         # Inverted color scales for dark mode
-    ├── glass.ts          # Adjusted glass effects for dark backgrounds
-    ├── shadows.ts        # Enhanced shadows for dark mode
+    ├── colors.ts         # Dark mode color scales
+    ├── glass.ts          # Dark mode glass effects
+    ├── shadows.ts        # Dark mode enhanced shadows
     ├── gradients.ts      # Dark mode background gradients
     ├── components.ts     # Dark mode component tokens
     ├── cardGradients.ts  # Brighter overlays for dark mode visibility
@@ -749,9 +645,9 @@ packages/design-tokens/src/
 **Import tokens in JavaScript:**
 ```typescript
 import { colors, typography, spacing, glass } from '@glassbox/design-tokens';
-import { darkColors, darkGlass } from '@glassbox/design-tokens';
+import { darkColors, darkGlass } from '@glassbox/design-tokens/dark';
 
-const primaryColor = colors.grass[500];      // #2fb866
+const primaryColor = colors.cyan[500];       // #06b6d4
 const fontSize = typography.fontSize.base;   // 1rem
 const padding = spacing[4];                  // 1rem
 ```
@@ -759,38 +655,30 @@ const padding = spacing[4];                  // 1rem
 **Use in Tailwind CSS:**
 All tokens are automatically available as Tailwind utilities:
 ```html
-<button class="bg-grass-500 hover:bg-grass-600 text-white">Click</button>
+<button class="bg-black text-white border-cyan-500">Click</button>
 <div class="px-4 py-2 text-base font-display">Heading</div>
-<div class="dark:bg-white/[0.08] dark:backdrop-blur-md">Glass panel</div>
+<div class="dark:bg-slate-900/70 dark:backdrop-blur-md">Glass panel</div>
 ```
 
 **Apply component classes:**
 Component classes are defined in `apps/frontend/src/app/globals.css`:
 ```html
-<button class="nature-button">Primary Action</button>
-<div class="nature-panel">Glass Panel</div>
-<input class="nature-input" placeholder="Enter text">
-<span class="nature-badge">Tag</span>
+<button class="glass-button">Primary Action</button>
+<div class="glass-panel">Glass Panel</div>
+<input class="glass-input" placeholder="Enter text">
+<span class="glass-badge">Tag</span>
 ```
-
-### Adding New Tokens
-
-1. Add to appropriate file (`colors.ts`, `spacing.ts`, etc.)
-2. Add JSDoc comments with usage guidelines
-3. Add dark mode variant if applicable (in `dark/` folder)
-4. Update `index.ts` exports if creating new file
-5. Tokens automatically available in Tailwind and JavaScript
 
 ---
 
 ## Success Metrics
 
 A successful design implementation should:
-- ✅ Evoke calm and peace
-- ✅ Feel grounded and organic
-- ✅ Build trust through clarity
-- ✅ Support growth and positivity
+- ✅ Feel clean and professional
+- ✅ Be modern and tech-forward
+- ✅ Support clarity and accessibility
 - ✅ Maintain consistency across pages
 - ✅ Meet accessibility standards
 - ✅ Perform smoothly with subtle animations
-- ✅ Feel distinctly nature-inspired, not generic
+- ✅ Feel premium and refined
+- ✅ Support both light and dark modes
