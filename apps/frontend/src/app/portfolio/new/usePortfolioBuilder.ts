@@ -5,21 +5,23 @@ import { searchTickers } from '@/lib/api/tickers';
 import type { TickerSearchResult } from '@/lib/api/tickers';
 import type { PortfolioItem } from '@glassbox/types';
 import { useState } from 'react';
+import { useDebounce } from '@/lib/hooks';
 
 export function usePortfolioBuilder() {
   const router = useRouter();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
+  const debouncedSearchInput = useDebounce(searchInput, 300);
   const [showDropdown, setShowDropdown] = useState(false);
 
   // Query for searching tickers
   const searchQuery = useQuery({
-    queryKey: ['searchTickers', searchInput],
+    queryKey: ['searchTickers', debouncedSearchInput],
     queryFn: async () => {
-      if (searchInput.trim().length < 1) return [];
-      return searchTickers(searchInput);
+      if (debouncedSearchInput.trim().length < 1) return [];
+      return searchTickers(debouncedSearchInput);
     },
-    enabled: searchInput.trim().length >= 1,
+    enabled: debouncedSearchInput.trim().length >= 1,
     staleTime: 60 * 1000, // 1 minute cache for searches
   });
 
