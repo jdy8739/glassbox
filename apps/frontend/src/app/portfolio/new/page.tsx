@@ -1,7 +1,7 @@
 'use client';
 
-import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers, AlertCircle } from 'lucide-react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
@@ -9,6 +9,7 @@ import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
 import { QuickAddAssets } from './components/QuickAddAssets';
 import { HeaderPortal } from '@/lib/header-context';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const PortfolioDonutChart = dynamic(
   () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
@@ -31,7 +32,44 @@ const CHART_COLORS = [
   '#60a5fa', // Blue 400
 ];
 
-export default function PortfolioBuilder() {
+function BuilderErrorFallback() {
+  return (
+    <main className="min-h-screen px-6 py-8 flex items-center justify-center">
+      <div className="glass-panel p-8 max-w-md w-full text-center space-y-6 border-orange-500/20 bg-orange-500/5">
+        <div className="mx-auto w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold text-black dark:text-white mb-2">
+            Portfolio Build Failed
+          </h2>
+          <p className="text-sm text-black/60 dark:text-white/60">
+            Something went wrong while loading the portfolio builder. Please try again.
+          </p>
+        </div>
+
+        <div className="flex gap-3 justify-center">
+          <button
+            onClick={() => window.location.href = '/'}
+            className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
+          >
+            <span>Back to Home</span>
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"
+          >
+            <Rocket className="w-4 h-4" />
+            Retry
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function PortfolioBuilderContent() {
   const {
     items,
     searchInput,
@@ -405,5 +443,13 @@ export default function PortfolioBuilder() {
         document.body
       )}
     </main>
+  );
+}
+
+export default function PortfolioBuilder() {
+  return (
+    <ErrorBoundary fallback={<BuilderErrorFallback />}>
+      <PortfolioBuilderContent />
+    </ErrorBoundary>
   );
 }
