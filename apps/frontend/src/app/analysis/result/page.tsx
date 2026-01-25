@@ -6,6 +6,8 @@ import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { EfficientFrontierChart } from './efficient-frontier-chart';
 import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
 import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check } from 'lucide-react';
+import { KeyMetrics } from './components/KeyMetrics';
+import { HedgingComparison } from './components/HedgingComparison';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -199,302 +201,162 @@ function AnalysisResultContent() {
         </div>
       </nav>
 
-      <div className="mx-auto max-w-6xl space-y-12">
+      <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse"></span>
-            <span className="text-sm font-medium text-black/80 dark:text-white/80">
-              {isSnapshot ? 'Saved Portfolio' : 'Step 2 of 3: Review Analysis'}
-              {isReanalyzing && ' • Re-analyzing...'}
-            </span>
-          </div>
-
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
-              Analysis
-              <br />
-              <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
-                Results
-              </span>
-            </h1>
-            <p className="text-xl text-black/70 dark:text-white/70 max-w-2xl">
-              {isSnapshot
-                ? savedPortfolio?.name
-                  ? `Portfolio: ${savedPortfolio.name} (${savedPortfolio.tickers.join(', ')})`
-                  : 'View your saved portfolio analysis'
-                : portfolioItems.length > 0
-                ? `Analyzing ${portfolioItems.length} assets: ${portfolioItems.map(i => i.symbol).join(', ')}`
-                : 'Explore your efficient frontier and hedging recommendations for optimal portfolio allocation.'}
-            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-semibold text-black/70 dark:text-white/70">Analysis Complete</span>
+            </div>
+            
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-2">
+                Portfolio Analysis
+              </h1>
+              <p className="text-lg text-black/60 dark:text-white/60 max-w-2xl">
+                {isSnapshot
+                  ? `Viewing saved snapshot: ${savedPortfolio?.name}`
+                  : `Optimized allocation for ${portfolioItems.length} assets based on historical data.`}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Top Level Key Metrics */}
+        {analysisData && (
+          <KeyMetrics 
+            stats={{
+              maxSharpe: analysisData.maxSharpe.stats,
+              gmv: analysisData.gmv.stats,
+              beta: analysisData.portfolioBeta
+            }} 
+          />
+        )}
+
+        {/* Main Content Tabs */}
         <div className="space-y-6">
-          {/* Tab Navigation - Enhanced */}
-          <div className="flex gap-2 border-b border-white/10">
-            <button
-              onClick={() => setActiveTab('frontier')}
-              className={`px-6 py-4 font-semibold transition-all border-b-2 flex items-center gap-2 ${
-                activeTab === 'frontier'
-                  ? 'border-b-cyan-300 text-cyan-300'
-                  : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
-              }`}
-            >
-              <TrendingUp className="w-4 h-4" />
-              <span>Efficient Frontier</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('hedging')}
-              className={`px-6 py-4 font-semibold transition-all border-b-2 flex items-center gap-2 ${
-                activeTab === 'hedging'
-                  ? 'border-b-slate-300 text-slate-300'
-                  : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
-              }`}
-            >
-              <Shield className="w-4 h-4" />
-              <span>Beta Hedging</span>
-            </button>
+          {/* Tab Navigation */}
+          <div className="border-b border-black/10 dark:border-white/10">
+            <div className="flex gap-8">
+              <button
+                onClick={() => setActiveTab('frontier')}
+                className={`pb-4 font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${
+                  activeTab === 'frontier'
+                    ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
+                    : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                <span>Efficient Frontier</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('hedging')}
+                className={`pb-4 font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${
+                  activeTab === 'hedging'
+                    ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                    : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                <Shield className="w-4 h-4" />
+                <span>Beta Hedging</span>
+              </button>
+            </div>
           </div>
 
-          {/* Tab Content */}
-          {activeTab === 'frontier' && (
-            <div className="space-y-6 animate-fade-in">
-              {/* Chart */}
-              <div className="glass-card-gradient cyan-blue p-6 text-center">
-                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                   <h2 className="text-lg font-semibold text-black dark:text-white text-left">Efficient Frontier</h2>
+          {/* Tab Panels */}
+          <div className="animate-fade-in">
+            {activeTab === 'frontier' && analysisData && (
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Main Chart Area */}
+                <div className="lg:col-span-2 glass-panel p-6 min-h-[500px] flex flex-col">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-black dark:text-white">Risk vs. Return Profile</h3>
+                    
+                    {/* Legend */}
+                    <div className="flex gap-4 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                        <span className="opacity-70">Optimal Line</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                        <span className="opacity-70">Max Sharpe</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 -ml-4">
+                     <EfficientFrontierChart data={analysisData} />
+                  </div>
+                </div>
 
-                   {/* Legend */}
-                   <div className="flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
-                     <div className="flex items-center gap-2">
-                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-                       <span className="text-black/70 dark:text-white/70">Efficient Frontier</span>
-                     </div>
-                     <div className="flex items-center gap-2">
-                       <span className="w-2.5 h-2.5 rounded-full bg-yellow-300"></span>
-                       <span className="text-black/70 dark:text-white/70">Min Variance</span>
-                     </div>
-                     <div className="flex items-center gap-2">
-                       <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-                       <span className="text-black/70 dark:text-white/70">Max Sharpe</span>
-                     </div>
-                   </div>
+                {/* Optimal Weights Sidebar */}
+                <div className="lg:col-span-1 space-y-6">
+                  <div className="glass-panel p-6 h-full">
+                    <h3 className="font-bold text-black dark:text-white mb-4 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-yellow-500" />
+                      Optimal Allocation
+                    </h3>
+                    <p className="text-xs text-black/50 dark:text-white/50 mb-4">
+                      Suggested weights to maximize Sharpe ratio (Risk-adjusted return).
+                    </p>
+                    
+                    <div className="space-y-3">
+                      {Object.entries(analysisData.maxSharpe.weights)
+                        .filter(([_, weight]) => (weight as number) > 0.001)
+                        .sort((a, b) => (b[1] as number) - (a[1] as number))
+                        .map(([ticker, weight]) => (
+                          <div key={ticker} className="flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center font-bold text-xs">
+                                {ticker[0]}
+                              </div>
+                              <span className="font-medium text-sm">{ticker}</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="font-bold text-cyan-600 dark:text-cyan-400">
+                                {((weight as number) * 100).toFixed(1)}%
+                              </span>
+                              <div className="h-1 w-16 bg-black/5 dark:bg-white/5 rounded-full mt-1 overflow-hidden">
+                                <div 
+                                  className="h-full bg-cyan-500" 
+                                  style={{ width: `${(weight as number) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'hedging' && analysisData && (
+              <div className="space-y-8">
+                 <HedgingComparison 
+                   data={{
+                     spy: analysisData.hedging.spy,
+                     es: analysisData.hedging.es,
+                     beta: analysisData.portfolioBeta
+                   }}
+                 />
+
+                 {/* Hedge Explanation */}
+                 <div className="glass-panel p-6 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border-dashed">
+                    <h4 className="font-bold text-black dark:text-white mb-2 flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-yellow-500" />
+                      How this works
+                    </h4>
+                    <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed max-w-3xl">
+                      Since your portfolio has a Beta of <strong>{analysisData.portfolioBeta.toFixed(2)}</strong>, it is theoretically {((Math.abs(1 - analysisData.portfolioBeta)) * 100).toFixed(0)}% {analysisData.portfolioBeta > 1 ? 'more' : 'less'} volatile than the market. 
+                      To make your portfolio "Market Neutral" (Beta ≈ 0), you need to short sell an equivalent amount of market exposure. 
+                      This protects you from systematic market crashes while allowing you to profit from the individual performance (Alpha) of your chosen stocks.
+                    </p>
                  </div>
-
-                 <EfficientFrontierChart data={analysisData} />
               </div>
-
-              {/* Portfolio Metrics Grid */}
-              {analysisData && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-black dark:text-white">Optimal Portfolios</h3>
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {/* Global Minimum Variance */}
-                    <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <p className="text-sm text-black/60 dark:text-white/60 mb-2">Global Minimum Variance (GMV)</p>
-                          <p className="text-3xl font-bold text-black dark:text-white">
-                            {(analysisData.gmv.stats.return * 100).toFixed(1)}%
-                          </p>
-                          <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
-                        </div>
-                        <Target className="w-8 h-8 text-cyan-400" />
-                      </div>
-                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                        <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
-                        <p className="text-2xl font-bold text-black dark:text-white">
-                          {(analysisData.gmv.stats.volatility * 100).toFixed(1)}%
-                        </p>
-                      </div>
-                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                        <p className="text-xs text-black/60 dark:text-white/60">Sharpe Ratio</p>
-                        <p className="text-2xl font-bold text-black dark:text-white">
-                          {analysisData.gmv.stats.sharpe.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Maximum Sharpe Ratio */}
-                    <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <p className="text-sm text-black/60 dark:text-white/60 mb-2">Maximum Sharpe Ratio</p>
-                          <p className="text-3xl font-bold text-black dark:text-white">
-                            {(analysisData.maxSharpe.stats.return * 100).toFixed(1)}%
-                          </p>
-                          <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
-                        </div>
-                        <Zap className="w-8 h-8 text-coral-300" />
-                      </div>
-                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                        <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
-                        <p className="text-2xl font-bold text-black dark:text-white">
-                          {(analysisData.maxSharpe.stats.volatility * 100).toFixed(1)}%
-                        </p>
-                      </div>
-                      <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
-                        <p className="text-xs text-black/60 dark:text-white/60">Sharpe Ratio</p>
-                        <p className="text-2xl font-bold text-black dark:text-white">
-                          {analysisData.maxSharpe.stats.sharpe.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Weights Table */}
-              {analysisData && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-black dark:text-white">
-                    Optimal Weights (Max Sharpe Portfolio)
-                  </h3>
-                  <div className="glass-card p-6 space-y-3">
-                    {Object.entries(analysisData.maxSharpe.weights)
-                      .filter(([_, weight]) => (weight as number) > 0.001) // Only show weights > 0.1%
-                      .sort((a, b) => (b[1] as number) - (a[1] as number)) // Sort by weight descending
-                      .map(([ticker, weight], index, array) => (
-                        <div
-                          key={ticker}
-                          className={`flex items-center justify-between py-3 ${
-                            index < array.length - 1 ? 'border-b border-white/10' : ''
-                          }`}
-                        >
-                          <span className="text-black dark:text-white font-medium">{ticker}</span>
-                          <span className="text-cyan-400 font-bold">{((weight as number) * 100).toFixed(1)}%</span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'hedging' && analysisData && (
-            <div className="space-y-6 animate-fade-in">
-              {/* Beta Metrics */}
-              <div className="grid gap-6 md:grid-cols-3">
-                {/* Current Beta */}
-                <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="mb-4"><BarChart3 className="w-8 h-8 text-cyan-400" /></div>
-                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Current Portfolio Beta</p>
-                  <p className="text-4xl font-bold text-black dark:text-white">
-                    {analysisData.portfolioBeta.toFixed(2)}
-                  </p>
-                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Exposure</p>
-                </div>
-
-                {/* Target Beta */}
-                <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="mb-4"><Target className="w-8 h-8 text-cyan-400" /></div>
-                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Target Beta</p>
-                  <p className="text-4xl font-bold text-black dark:text-white">0.00</p>
-                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Neutral</p>
-                </div>
-
-                {/* Required Hedge */}
-                <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="mb-4"><Shield className="w-8 h-8 text-slate-400" /></div>
-                  <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
-                  <p className="text-4xl font-bold text-black dark:text-white">
-                    {(analysisData.portfolioBeta).toFixed(2)}
-                  </p>
-                  <p className="text-xs text-black/50 dark:text-white/50 mt-2">Beta Reduction Needed</p>
-                </div>
-              </div>
-
-              {/* Hedging Recommendation */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-black dark:text-white">Hedging Strategy</h3>
-                <div className="glass-card space-y-6">
-                  {/* SPY Method */}
-                  <div className="space-y-4 pb-6 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                      <TrendingUp className="w-6 h-6 text-cyan-400" />
-                      <h4 className="text-lg font-semibold text-black dark:text-white">SPY ETF Hedging</h4>
-                    </div>
-                    <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Action:</span>
-                        <span className="font-bold text-coral-300">
-                          Short {Math.abs(analysisData.hedging.spyShares).toLocaleString()} shares
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Notional Value:</span>
-                        <span className="font-bold text-black dark:text-white">
-                          ${Math.abs(analysisData.hedging.spyNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
-                        <span className="font-bold text-cyan-400">~0.00</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ES Futures Method */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Zap className="w-6 h-6 text-slate-400" />
-                      <h4 className="text-lg font-semibold text-black dark:text-white">ES Futures Hedging</h4>
-                    </div>
-                    <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Action:</span>
-                        <span className="font-bold text-slate-300">
-                          Short {Math.abs(analysisData.hedging.esContracts).toLocaleString()} contracts
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Notional Value:</span>
-                        <span className="font-bold text-black dark:text-white">
-                          ${Math.abs(analysisData.hedging.esNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-black/70 dark:text-white/70">Resulting Beta:</span>
-                        <span className="font-bold text-cyan-400">~0.00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Key Insights */}
-              <div className="glass-card-gradient coral-pink space-y-4">
-                <div className="flex items-start gap-3">
-                  <Lightbulb className="w-6 h-6 text-coral-300 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-black dark:text-white mb-2">Key Insights</h4>
-                    <ul className="text-black/70 dark:text-white/70 space-y-2 text-sm">
-                      <li className="flex gap-2 items-start">
-                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                        <span>
-                          Your portfolio has a beta of{' '}
-                          <span className="text-black dark:text-white">{analysisData.portfolioBeta.toFixed(2)}</span>
-                          {analysisData.portfolioBeta > 1 && `, meaning it's ${((analysisData.portfolioBeta - 1) * 100).toFixed(0)}% more volatile than the market`}
-                          {analysisData.portfolioBeta < 1 && `, meaning it's ${((1 - analysisData.portfolioBeta) * 100).toFixed(0)}% less volatile than the market`}
-                          {analysisData.portfolioBeta === 1 && ', meaning it moves in line with the market'}
-                        </span>
-                      </li>
-                      <li className="flex gap-2 items-start">
-                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                        <span>Hedging via SPY is more accessible for retail investors</span>
-                      </li>
-                      <li className="flex gap-2 items-start">
-                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                        <span>ES futures provide <span className="text-black dark:text-white">capital efficiency</span> for larger portfolios</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
