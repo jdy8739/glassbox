@@ -304,7 +304,7 @@ export default function PortfolioBuilder() {
             </div>
             
             {/* Helper Tip */}
-            <div className="mt-6 glass-card-gradient slate-glow p-4 rounded-xl">
+            <div className="mt-3 glass-panel p-4 rounded-xl">
                <div className="flex gap-3">
                  <Lightbulb className="w-5 h-5 text-yellow-500 flex-shrink-0" />
                  <p className="text-xs text-black/70 dark:text-white/70 leading-relaxed">
