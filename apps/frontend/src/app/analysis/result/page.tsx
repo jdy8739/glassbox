@@ -396,8 +396,14 @@ function AnalysisResultContent() {
               <div className="space-y-8">
                  <HedgingComparison 
                    data={{
-                     spy: analysisData.hedging.spy,
-                     es: analysisData.hedging.es,
+                     spy: {
+                       shares: analysisData.hedging.spyShares,
+                       notional: analysisData.hedging.spyNotional
+                     },
+                     es: {
+                       contracts: analysisData.hedging.esContracts,
+                       notional: analysisData.hedging.esNotional
+                     },
                      beta: analysisData.portfolioBeta
                    }}
                  />
