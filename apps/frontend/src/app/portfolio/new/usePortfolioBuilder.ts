@@ -49,6 +49,10 @@ export function usePortfolioBuilder() {
     return false;
   };
 
+  const loadTemplate = (templateItems: { symbol: string; quantity: number }[]) => {
+    setItems(templateItems);
+  };
+
   const removeItem = (symbol: string) => {
     setItems(items.filter((item) => item.symbol !== symbol));
   };
@@ -88,6 +92,7 @@ export function usePortfolioBuilder() {
     showDropdown,
     setShowDropdown,
     addItem,
+    loadTemplate,
     removeItem,
     updateQuantity,
     handleAnalyze,

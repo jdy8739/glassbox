@@ -1,10 +1,21 @@
 'use client';
 
-import { Sparkles, TrendingUp, Lightbulb, Plus, X as XIcon, Building2, Bitcoin, DollarSign, BarChart3, Wrench, Zap, Clipboard, MapPin, Rocket } from 'lucide-react';
-
+import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
+import { PortfolioDonutChart } from './components/PortfolioDonutChart';
+import { AssetList } from './components/AssetList';
+import { StarterTemplates } from './components/StarterTemplates';
+
+const CHART_COLORS = [
+  '#06b6d4', // Cyan 500
+  '#f472b6', // Pink 400
+  '#a78bfa', // Violet 400
+  '#fbbf24', // Amber 400
+  '#34d399', // Emerald 400
+  '#60a5fa', // Blue 400
+];
 
 export default function PortfolioBuilder() {
   const {
@@ -18,6 +29,7 @@ export default function PortfolioBuilder() {
     showDropdown,
     setShowDropdown,
     addItem,
+    loadTemplate,
     removeItem,
     updateQuantity,
     handleAnalyze,
@@ -83,13 +95,7 @@ export default function PortfolioBuilder() {
 
   const handleAddItem = (symbol: string, name?: string) => {
     if (addItem(symbol, name)) {
-      // Smooth scroll to bottom after item is added
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
+      // Smooth scroll happens via React state update, no need for manual scroll
     }
   };
 
@@ -101,250 +107,210 @@ export default function PortfolioBuilder() {
           <span>←</span>
           <span>Back</span>
         </a>
+        
+        {/* Mobile Analyze Button */}
         <button
           onClick={handleAnalyze}
           disabled={items.length === 0 || isAnalyzing}
-          className="glass-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
+          className="lg:hidden glass-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
         >
           {isAnalyzing ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span>Analyzing...</span>
-            </>
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           ) : (
-            <>
-              <TrendingUp className="w-5 h-5" />
-              <span>Analyze</span>
-            </>
+            <TrendingUp className="w-5 h-5" />
           )}
+          <span>Analyze</span>
         </button>
       </nav>
 
-      <div className="mx-auto max-w-6xl space-y-10">
-        {/* Header Section */}
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-black dark:text-white/80">Step 1 of 3: Build Portfolio</span>
-          </div>
+      <div className="mx-auto max-w-6xl">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column: Workbench (8 cols) */}
+          <div className="lg:col-span-8 space-y-10">
+            
+            {/* Header Section */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+                <span className="text-sm font-medium text-black dark:text-white/80">Step 1: Build Portfolio</span>
+              </div>
 
-          <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
-              Build Your
-              <br />
-              <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
-                Investment Portfolio
-              </span>
-            </h1>
-            <p className="text-xl text-black dark:text-white/70 max-w-2xl">
-              Add your favorite stocks and let our algorithms find the optimal allocation for your risk profile.
-            </p>
-          </div>
-        </div>
-
-        {/* Error Message */}
-        {analysisError && (
-          <div className="glass-card-gradient coral-pink">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">⚠️</span>
-              <div className="flex-1">
-                <h4 className="font-semibold text-black dark:text-white mb-1">Analysis Failed</h4>
-                <p className="text-sm text-black/70 dark:text-white/70">{analysisError}</p>
-                <button
-                  onClick={clearError}
-                  className="mt-3 text-xs px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
-                >
-                  Dismiss
-                </button>
+              <div className="space-y-4">
+                <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
+                  Build Your
+                  <br />
+                  <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
+                    Investment Portfolio
+                  </span>
+                </h1>
+                <p className="text-xl text-black dark:text-white/70 max-w-2xl">
+                  Mix and match assets to create your perfect portfolio.
+                </p>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Search Bar - Enhanced with Autocomplete */}
-        <div className="glass-card-gradient cyan-blue overflow-visible">
-          <div className="space-y-4 overflow-visible">
-            <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Add Stock Ticker
-            </label>
-            <div className="relative overflow-visible" ref={searchRef}>
-              <div className="flex gap-3" ref={inputWrapperRef}>
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    onFocus={() => {
-                      if (searchResults.length > 0) setShowDropdown(true);
-                    }}
-                    placeholder="Search by ticker or company name..."
-                    className="glass-input w-full text-lg pr-10"
+            {/* Error Message */}
+            {analysisError && (
+              <div className="glass-card-gradient coral-pink animate-fade-in">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">⚠️</span>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-black dark:text-white mb-1">Analysis Failed</h4>
+                    <p className="text-sm text-black/70 dark:text-white/70">{analysisError}</p>
+                    <button
+                      onClick={clearError}
+                      className="mt-3 text-xs px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Search Bar */}
+            <div className="glass-card-gradient cyan-blue overflow-visible relative z-30">
+              <div className="space-y-4 overflow-visible">
+                <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Add Stock Ticker
+                </label>
+                <div className="relative overflow-visible" ref={searchRef}>
+                  <div className="flex gap-3" ref={inputWrapperRef}>
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        onFocus={() => {
+                          if (searchResults.length > 0) setShowDropdown(true);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && searchInput) {
+                            handleAddItem(searchInput);
+                          }
+                        }}
+                        placeholder="Search ticker (e.g. AAPL)..."
+                        className="glass-input w-full text-lg pr-10"
+                      />
+                      {isSearching && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleAddItem(searchInput)}
+                      className="glass-button whitespace-nowrap"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="space-y-6">
+              {items.length === 0 ? (
+                /* Empty State: Starter Templates */
+                <div className="space-y-6 animate-fade-in">
+                  <div className="flex items-center gap-2 text-black dark:text-white">
+                    <Sparkles className="w-5 h-5 text-cyan-400" />
+                    <h3 className="text-lg font-semibold">Start with a Template</h3>
+                  </div>
+                  <StarterTemplates onSelect={loadTemplate} />
+                </div>
+              ) : (
+                /* List of Assets */
+                <div className="space-y-4 animate-fade-in">
+                   <div className="flex items-center justify-between">
+                    <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+                      <Layers className="w-4 h-4" />
+                      Your Assets
+                    </label>
+                    <button 
+                      onClick={() => loadTemplate([])}
+                      className="text-xs text-red-400 hover:text-red-500 transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                  <AssetList 
+                    items={items} 
+                    colors={CHART_COLORS}
+                    onRemove={removeItem}
+                    onUpdateQuantity={updateQuantity}
                   />
-                  {isSearching && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
                 </div>
-                <button
-                  onClick={() => handleAddItem(searchInput)}
-                  className="glass-button whitespace-nowrap"
-                >
-                  Add Stock
-                </button>
-              </div>
+              )}
             </div>
-            <p className="text-xs text-black dark:text-white/50 flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 flex-shrink-0" />
-              Pro tip: Search by ticker (e.g., AAPL) or company name (e.g., Apple)
-            </p>
           </div>
-        </div>
 
-        {/* Quick Add Presets */}
-        <div className="space-y-4">
-          <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4" />
-            Popular Assets
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {[
-              { name: 'Treasury Bonds', ticker: 'TLT', icon: Building2, color: 'slate' },
-              { name: 'Bitcoin', ticker: 'BTC', icon: Bitcoin, color: 'coral' },
-              { name: 'Gold', ticker: 'GLD', icon: DollarSign, color: 'slate' },
-              { name: 'S&P 500', ticker: 'SPY', icon: BarChart3, color: 'cyan' },
-              { name: 'Tech', ticker: 'QQQ', icon: Wrench, color: 'cyan' },
-              { name: 'Energy', ticker: 'XLE', icon: Zap, color: 'coral' },
-            ].map((preset) => {
-              const IconComponent = preset.icon;
-              return (
-                <button
-                  key={preset.ticker}
-                  onClick={() => handleAddItem(preset.ticker)}
-                  className={`glass-card-gradient ${preset.color === 'slate' ? 'slate-glow' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'cyan-blue' : 'cyan-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
-                >
-                  <div className="mb-2 group-hover:scale-110 transition-transform flex justify-center">
-                    <IconComponent className="w-8 h-8 text-cyan-400" />
+          {/* Right Column: Sticky Summary Panel (4 cols) */}
+          <div className="hidden lg:block lg:col-span-4 sticky top-24">
+            <div className="glass-panel p-6 space-y-6">
+              <h3 className="text-xl font-bold text-black dark:text-white flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-cyan-400" />
+                Live Preview
+              </h3>
+              
+              {/* Donut Chart */}
+              <PortfolioDonutChart items={items} colors={CHART_COLORS} />
+
+              {/* Stats Summary */}
+              {items.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 py-4 border-t border-b border-black/10 dark:border-white/10">
+                  <div>
+                    <p className="text-xs text-black/50 dark:text-white/50">Total Assets</p>
+                    <p className="text-lg font-bold text-black dark:text-white">{items.length}</p>
                   </div>
-                  <p className="text-xs font-semibold text-black dark:text-white">{preset.name}</p>
-                  <p className="text-xs text-black dark:text-white/60">{preset.ticker}</p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Asset List - Enhanced */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
-              <Clipboard className="w-4 h-4" />
-              Your Assets <span className="text-cyan-300">({items.length})</span>
-            </label>
-            {items.length > 0 && (
-              <span className="text-xs px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/30 text-cyan-300">
-                Ready to analyze
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            {items.length === 0 ? (
-              <div className="glass-panel p-12 text-center space-y-4">
-                <div className="flex justify-center">
-                  <MapPin className="w-12 h-12 text-cyan-400" />
-                </div>
-                <div>
-                  <p className="text-lg text-black dark:text-white font-semibold mb-2">No assets added yet</p>
-                  <p className="text-black dark:text-white/60">Search for a ticker or use the preset buttons above to get started</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                {items.map((item, index) => (
-                  <div
-                    key={item.symbol}
-                    className="glass-card group hover:border-cyan-300/50 transition-all"
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-300 to-cyan-300 flex items-center justify-center text-lg font-bold text-black dark:text-white">
-                          {item.symbol[0]}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-black dark:text-white text-lg">{item.symbol}</p>
-                          <p className="text-xs text-black dark:text-white/50">Stock #{index + 1}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-lg px-4 py-2">
-                          <label className="text-sm text-black dark:text-white/70 whitespace-nowrap">Qty:</label>
-                          <input
-                            type="number"
-                            value={item.quantity}
-                            onChange={(e) =>
-                              updateQuantity(item.symbol, parseFloat(e.target.value) || 0)
-                            }
-                            min="0"
-                            step="0.01"
-                            className="glass-input w-24 bg-black/10 dark:bg-white/10"
-                          />
-                        </div>
-                        <button
-                          onClick={() => removeItem(item.symbol)}
-                          className="w-10 h-10 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 transition-all flex items-center justify-center"
-                        >
-                          <XIcon className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
+                  <div>
+                    <p className="text-xs text-black/50 dark:text-white/50">Est. Value</p>
+                    <p className="text-lg font-bold text-black dark:text-white">$100k</p>
                   </div>
-                ))}
-              </>
-            )}
+                </div>
+              )}
+
+              {/* Main CTA */}
+              <button
+                onClick={handleAnalyze}
+                disabled={items.length === 0 || isAnalyzing}
+                className="w-full glass-button text-lg py-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Analyzing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Rocket className="w-5 h-5 group-hover:animate-bounce" />
+                    <span>Analyze Portfolio</span>
+                  </>
+                )}
+              </button>
+              
+              {items.length === 0 && (
+                <p className="text-xs text-center text-black/40 dark:text-white/40">
+                  Add at least one asset to enable analysis.
+                </p>
+              )}
+            </div>
+            
+            {/* Helper Tip */}
+            <div className="mt-6 glass-card-gradient slate-glow p-4 rounded-xl">
+               <div className="flex gap-3">
+                 <Lightbulb className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+                 <p className="text-xs text-black/70 dark:text-white/70 leading-relaxed">
+                   <strong>Pro Tip:</strong> Try to include a mix of assets (Stocks, Bonds, Crypto) to see how diversification affects your efficient frontier.
+                 </p>
+               </div>
+            </div>
           </div>
         </div>
-
-        {/* Progress Indicator */}
-        {items.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <p className="text-black dark:text-white/70">Portfolio completeness</p>
-              <p className="text-cyan-400 font-semibold">{Math.min(items.length * 20, 100)}%</p>
-            </div>
-            <div className="h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transition-all duration-300"
-                style={{ width: `${Math.min(items.length * 20, 100)}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
       </div>
-
-      {/* Floating Action Button */}
-      {items.length > 0 && (
-        <div className="fixed bottom-6 left-0 right-0 px-4 flex justify-center z-50">
-          <button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing}
-            className="glass-button text-lg font-semibold px-12 py-4 shadow-2xl hover:scale-105 transition-transform max-w-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            {isAnalyzing ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Analyzing Portfolio...</span>
-              </>
-            ) : (
-              <>
-                <Rocket className="w-5 h-5" />
-                <span>Analyze Portfolio</span>
-              </>
-            )}
-          </button>
-        </div>
-      )}
 
       {/* Portal-based Dropdown */}
       {typeof window !== 'undefined' && showDropdown && createPortal(
