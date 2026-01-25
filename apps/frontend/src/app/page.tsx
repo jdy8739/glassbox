@@ -1,4 +1,5 @@
 import { Sparkles, TrendingUp, Zap, Lock, BarChart3, Shield, Gem, Package, Microscope, BookOpen } from 'lucide-react';
+import { HeroVisual } from '@/components/landing/hero-visual';
 
 export default function Home() {
   return (
@@ -11,58 +12,62 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative px-6 py-12 sm:py-20 md:py-28">
-        <div className="mx-auto max-w-5xl space-y-10 text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-black/80 dark:text-white/80">New: Advanced Beta Hedging</span>
-          </div>
-
-          {/* Hero Title */}
-          <div className="space-y-8">
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold text-black dark:text-white leading-tight">
-              Smart
-              <br />
-              <span className="bg-gradient-to-r from-purple-300 via-cyan-300 to-gold-300 bg-clip-text text-transparent animate-pulse">
-                Portfolio
+      <div className="relative px-6 py-12 sm:py-20 md:py-28 lg:py-32">
+        <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          {/* Left Column: Text Content */}
+          <div className="space-y-10 text-center lg:text-left">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <br />
-              Optimization
-            </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl text-black/70 dark:text-white/70 max-w-3xl mx-auto leading-relaxed">
-              Harness the power of modern portfolio theory with an intuitive, beautiful interface. Discover optimal allocations, calculate hedging positions, and master market risk—all in seconds.
-            </p>
+              <span className="text-sm font-medium text-black/80 dark:text-white/80">New: Advanced Beta Hedging</span>
+            </div>
+
+            {/* Hero Title */}
+            <div className="space-y-6">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black dark:text-white leading-[1.1] tracking-tight">
+                Master Your
+                <br />
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient-x">
+                  Portfolio Risk
+                </span>
+              </h1>
+              <p className="text-lg sm:text-xl text-black/60 dark:text-white/60 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                Harness the power of modern portfolio theory with a beautiful glassmorphic interface. Calculate efficient frontiers, optimize allocations, and hedge market beta in seconds.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+              <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2 group">
+                <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+                <span>Start Analyzing</span>
+              </a>
+              <a href="/portfolios" className="glass-button-outline text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                <span>View Library</span>
+              </a>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="pt-8 flex flex-wrap justify-center lg:justify-start gap-6 text-sm opacity-80">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-cyan-500" />
+                <span className="text-black/70 dark:text-white/70 font-medium">Instant Analysis</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-purple-500" />
+                <span className="text-black/70 dark:text-white/70 font-medium">Local Computation</span>
+              </div>
+            </div>
           </div>
 
-          {/* CTA Buttons with Icons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-            <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
-              <Sparkles className="w-5 h-5" />
-              <span>Start Analyzing</span>
-            </a>
-            <a href="/portfolios" className="glass-button-secondary text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              <span>View Portfolios</span>
-            </a>
-          </div>
-
-          {/* Trust Badges */}
-          <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center items-center text-sm">
-            <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-black/70 dark:text-white/70" />
-              <span className="text-black/70 dark:text-white/70">Lightning Fast</span>
-            </div>
-            <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
-            <div className="flex items-center gap-2">
-              <Lock className="w-5 h-5 text-black/70 dark:text-white/70" />
-              <span className="text-black/70 dark:text-white/70">100% Transparent</span>
-            </div>
-            <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-black/70 dark:text-white/70" />
-              <span className="text-black/70 dark:text-white/70">Math-Backed</span>
-            </div>
+          {/* Right Column: Visual Mockup */}
+          <div className="hidden lg:block relative z-10 perspective-1000">
+             <HeroVisual />
           </div>
         </div>
       </div>
