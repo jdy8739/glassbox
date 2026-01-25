@@ -2,13 +2,14 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
+import { memo } from 'react';
 
 interface MarketScenarioProps {
   beta: number;
   portfolioValue?: number; // Optional, defaults to $100k for visualization
 }
 
-export function MarketScenarioSimulator({ beta, portfolioValue = 100000 }: MarketScenarioProps) {
+function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketScenarioProps) {
   // Scenarios: Market moves -5%, 0%, +5%
   const marketMoves = [-0.05, 0, 0.05];
 
@@ -106,3 +107,5 @@ export function MarketScenarioSimulator({ beta, portfolioValue = 100000 }: Marke
     </div>
   );
 }
+
+export const MarketScenarioSimulator = memo(MarketScenarioSimulatorBase);

@@ -12,13 +12,14 @@ import {
   Cell,
   Label
 } from 'recharts';
+import { memo } from 'react';
 import type { AnalysisSnapshot } from '@glassbox/types';
 
 interface EfficientFrontierChartProps {
   data: AnalysisSnapshot;
 }
 
-export function EfficientFrontierChart({ data }: EfficientFrontierChartProps) {
+function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
   const { efficientFrontier, gmv, maxSharpe, randomPortfolios } = data;
 
   // Format data for chart
@@ -130,3 +131,5 @@ export function EfficientFrontierChart({ data }: EfficientFrontierChartProps) {
     </div>
   );
 }
+
+export const EfficientFrontierChart = memo(EfficientFrontierChartBase);
