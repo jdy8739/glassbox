@@ -8,6 +8,7 @@ import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
 import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check } from 'lucide-react';
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
+import { MarketScenarioSimulator } from './components/MarketScenarioSimulator';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -292,7 +293,7 @@ function AnalysisResultContent() {
 
                 {/* Optimal Weights Sidebar */}
                 <div className="lg:col-span-1 space-y-6">
-                  <div className="glass-panel p-6 h-full">
+                  <div className="glass-panel p-6">
                     <h3 className="font-bold text-black dark:text-white mb-4 flex items-center gap-2">
                       <Zap className="w-4 h-4 text-yellow-500" />
                       Optimal Allocation
@@ -328,6 +329,26 @@ function AnalysisResultContent() {
                         ))}
                     </div>
                   </div>
+
+                  {/* Additional Stats */}
+                  <div className="glass-panel p-6 space-y-4">
+                    <h3 className="font-bold text-black dark:text-white flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-pink-500" />
+                      Risk Profile
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
+                        <span className="text-black/60 dark:text-white/60">Risk-Free Rate Used</span>
+                        <span className="font-mono text-black dark:text-white">{(analysisData.riskFreeRate * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
+                         <span className="text-black/60 dark:text-white/60">Sharpe Rating</span>
+                         <span className={`font-bold ${analysisData.maxSharpe.stats.sharpe > 1 ? 'text-emerald-500' : 'text-yellow-500'}`}>
+                           {analysisData.maxSharpe.stats.sharpe > 1 ? 'Excellent' : analysisData.maxSharpe.stats.sharpe > 0.5 ? 'Good' : 'Fair'}
+                         </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -341,6 +362,9 @@ function AnalysisResultContent() {
                      beta: analysisData.portfolioBeta
                    }}
                  />
+                 
+                 {/* Market Simulation */}
+                 <MarketScenarioSimulator beta={analysisData.portfolioBeta} />
 
                  {/* Hedge Explanation */}
                  <div className="glass-panel p-6 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border-dashed">

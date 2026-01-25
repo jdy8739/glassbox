@@ -18,6 +18,8 @@ export function HedgingComparison({ data }: { data: HedgingProps }) {
   // Determine recommendation based on portfolio size/efficiency (simple logic: > $100k implies ES is efficient)
   // Since we assume $100k, we'll mark SPY as "Retail Friendly" and ES as "Capital Efficient"
   
+  if (!data?.spy || !data?.es) return null;
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {/* SPY Strategy */}
