@@ -307,8 +307,7 @@ function AnalysisResultContent() {
 
           {/* Tab Panels */}
           <div className="animate-fade-in">
-            {activeTab === 'frontier' && analysisData && (
-              <div className="grid lg:grid-cols-3 gap-6">
+            <div className={`grid lg:grid-cols-3 gap-6 ${activeTab === 'frontier' ? 'block' : 'hidden'}`}>
                 {/* Main Chart Area */}
                 <div className="lg:col-span-2 glass-panel p-6 min-h-[500px] flex flex-col">
                   <div className="flex justify-between items-center mb-6">
@@ -390,11 +389,9 @@ function AnalysisResultContent() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+            </div>
 
-            {activeTab === 'hedging' && analysisData && (
-              <div className="space-y-8">
+            <div className={`space-y-8 ${activeTab === 'hedging' ? 'block' : 'hidden'}`}>
                  <HedgingComparison 
                    data={{
                      spy: {
@@ -424,8 +421,7 @@ function AnalysisResultContent() {
                       This protects you from systematic market crashes while allowing you to profit from the individual performance (Alpha) of your chosen stocks.
                     </p>
                  </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
