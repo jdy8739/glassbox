@@ -14,9 +14,13 @@ const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
   { 
     loading: () => (
-      <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40">
-        <div className="w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm font-medium">Loading Chart...</span>
+      <div className="w-full h-full min-h-[400px] bg-black/5 dark:bg-white/5 rounded-xl animate-pulse flex flex-col justify-end p-6 gap-4">
+         <div className="w-full flex-1 bg-black/5 dark:bg-white/5 rounded-lg" />
+         <div className="flex justify-between items-center w-full">
+           <div className="h-4 w-12 bg-black/5 dark:bg-white/5 rounded" />
+           <div className="h-4 w-12 bg-black/5 dark:bg-white/5 rounded" />
+           <div className="h-4 w-12 bg-black/5 dark:bg-white/5 rounded" />
+         </div>
       </div>
     ),
     ssr: false 
@@ -27,9 +31,16 @@ const MarketScenarioSimulator = dynamic(
   () => import('./components/MarketScenarioSimulator').then((mod) => mod.MarketScenarioSimulator),
   {
     loading: () => (
-      <div className="w-full h-[300px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40 glass-panel">
-        <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        <span className="text-xs font-medium">Loading Simulator...</span>
+      <div className="glass-panel p-6 space-y-6">
+        <div className="space-y-2">
+          <div className="h-6 w-48 bg-black/10 dark:bg-white/10 rounded animate-pulse" />
+          <div className="h-4 w-64 bg-black/5 dark:bg-white/5 rounded animate-pulse" />
+        </div>
+        <div className="h-[250px] w-full flex items-end gap-4 px-4 pb-2">
+           <div className="flex-1 h-1/2 bg-black/5 dark:bg-white/5 rounded-t animate-pulse" />
+           <div className="flex-1 h-3/4 bg-black/5 dark:bg-white/5 rounded-t animate-pulse" />
+           <div className="flex-1 h-2/3 bg-black/5 dark:bg-white/5 rounded-t animate-pulse" />
+        </div>
       </div>
     ),
     ssr: false

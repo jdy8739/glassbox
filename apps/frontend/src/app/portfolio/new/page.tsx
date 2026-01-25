@@ -14,8 +14,8 @@ const PortfolioDonutChart = dynamic(
   () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
   {
     loading: () => (
-      <div className="w-full h-[250px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40">
-        <div className="w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      <div className="w-full h-[250px] flex items-center justify-center">
+        <div className="w-48 h-48 rounded-full border-[16px] border-black/5 dark:border-white/5 animate-pulse" />
       </div>
     ),
     ssr: false
