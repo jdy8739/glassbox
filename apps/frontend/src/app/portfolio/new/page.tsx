@@ -321,13 +321,14 @@ function PortfolioBuilderContent() {
               </h3>
               
               {/* Donut Chart */}
-              {isPending ? (
-                <div className="w-full h-[250px] flex items-center justify-center">
-                  <div className="w-48 h-48 rounded-full border-[16px] border-black/5 dark:border-white/5 animate-pulse" />
-                </div>
-              ) : (
+              <div className="relative">
                 <PortfolioDonutChart items={items} colors={CHART_COLORS} />
-              )}
+                {isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-black/50 rounded-2xl">
+                    <div className="w-12 h-12 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
 
               {/* Stats Summary */}
               {items.length > 0 && (

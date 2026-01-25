@@ -43,9 +43,9 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
             cornerRadius={6}
           >
             {data.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={isEmpty ? '#334155' : colors[index % colors.length]} 
+              <Cell
+                key={`cell-${entry.name}`}
+                fill={isEmpty ? '#334155' : colors[index % colors.length]}
                 className="transition-all duration-300 hover:opacity-90 hover:scale-105 stroke-2 stroke-white/10"
               />
             ))}
