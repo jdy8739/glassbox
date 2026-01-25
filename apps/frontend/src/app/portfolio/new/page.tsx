@@ -8,6 +8,7 @@ import { PortfolioDonutChart } from './components/PortfolioDonutChart';
 import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
 import { QuickAddAssets } from './components/QuickAddAssets';
+import { HeaderPortal } from '@/lib/header-context';
 
 const CHART_COLORS = [
   '#06b6d4', // Cyan 500
@@ -102,13 +103,33 @@ export default function PortfolioBuilder() {
 
   return (
     <main className="min-h-screen px-6 pt-8 pb-32">
-      {/* Navigation */}
-      <nav className="glass-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
-        <a href="/" className="text-sm font-semibold text-black dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
-          <span>←</span>
-          <span>Back</span>
-        </a>
-      </nav>
+      <HeaderPortal
+        nav={
+          <a href="/" className="text-sm font-semibold text-black dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
+            <span>←</span>
+            <span>Back</span>
+          </a>
+        }
+        actions={
+          <button
+            onClick={handleAnalyze}
+            disabled={items.length === 0 || isAnalyzing}
+            className="hidden lg:flex glass-button text-xs px-4 py-2 items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isAnalyzing ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Analyzing...</span>
+              </>
+            ) : (
+              <>
+                <TrendingUp className="w-5 h-5" />
+                <span>Analyze</span>
+              </>
+            )}
+          </button>
+        }
+      />
 
       <div className="mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-12 gap-8 items-start">

@@ -9,6 +9,7 @@ import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Tar
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
 import { MarketScenarioSimulator } from './components/MarketScenarioSimulator';
+import { HeaderPortal } from '@/lib/header-context';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -138,69 +139,72 @@ function AnalysisResultContent() {
 
   return (
     <main className="min-h-screen px-6 py-8">
-      {/* Navigation */}
-      <nav className="glass-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
-        <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
-          <span>←</span>
-          <span>Back</span>
-        </a>
-        <div className="flex gap-2">
-          {isSnapshot && !isReanalyzing && (
-            <button
-              onClick={handleReanalyze}
-              className="glass-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span>Re-analyze</span>
-            </button>
-          )}
-          {/* Export Dropdown */}
-          <div className="relative" ref={exportMenuRef}>
-            <button
-              onClick={() => setIsExportOpen(!isExportOpen)}
-              className="glass-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
-            >
-              <Download className="w-4 h-4" />
-              <span>Export</span>
-            </button>
-            {isExportOpen && (
-              <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
-                <button
-                  onClick={handleExportCSV}
-                  className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  <span>Export as CSV</span>
-                </button>
-                <button
-                  onClick={handleExportPDF}
-                  className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>Export as PDF</span>
-                </button>
-              </div>
+      <HeaderPortal
+        nav={
+          <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
+            <span>←</span>
+            <span>Back</span>
+          </a>
+        }
+        actions={
+          <div className="flex gap-2 items-center">
+            {isSnapshot && !isReanalyzing && (
+              <button
+                onClick={handleReanalyze}
+                className="glass-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>Re-analyze</span>
+              </button>
             )}
+            {/* Export Dropdown */}
+            <div className="relative" ref={exportMenuRef}>
+              <button
+                onClick={() => setIsExportOpen(!isExportOpen)}
+                className="glass-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
+              >
+                <Download className="w-4 h-4" />
+                <span>Export</span>
+              </button>
+              {isExportOpen && (
+                <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
+                  <button
+                    onClick={handleExportCSV}
+                    className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>Export as CSV</span>
+                  </button>
+                  <button
+                    onClick={handleExportPDF}
+                    className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Export as PDF</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={handleSaveButton}
+              className="glass-button text-xs px-3 py-2 flex items-center gap-1.5"
+              disabled={isReanalyzing || isProcessing}
+            >
+              {isProcessing ? (
+                 <>
+                   <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                   <span>Saving...</span>
+                 </>
+              ) : (
+                 <>
+                   <Save className="w-4 h-4" />
+                   <span>{isSnapshot ? 'Update' : 'Save'}</span>
+                 </>
+              )}
+            </button>
           </div>
-          <button
-            onClick={handleSaveButton}
-            className="glass-button text-xs px-3 py-2 flex items-center gap-1.5"
-            disabled={isReanalyzing || isProcessing}
-          >
-            {isProcessing ? (
-               <>
-                 <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                 <span>Saving...</span>
-               </>
-            ) : (
-               <>
-                 <Save className="w-4 h-4" />
-                 <span>{isSnapshot ? 'Update' : 'Save'}</span>
-               </>
-            )}
-          </button>
-        </div>
-      </nav>
+        }
+      />
 
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}

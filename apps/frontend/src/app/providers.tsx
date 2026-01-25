@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HeaderProvider } from '@/lib/header-context';
 
 type ThemePreference = 'light' | 'dark' | 'system';
 type ResolvedTheme = 'light' | 'dark';
@@ -128,7 +129,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {mounted ? (
         <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
-          {children}
+          <HeaderProvider>
+            {children}
+          </HeaderProvider>
         </ThemeContext.Provider>
       ) : (
         <>{children}</>

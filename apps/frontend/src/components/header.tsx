@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Moon, Sun, Monitor, Zap } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
+import { useHeader } from '@/lib/header-context';
 
 export function Header() {
+  const { navContent, actionContent } = useHeader();
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
@@ -66,23 +68,29 @@ export function Header() {
         </Link>
 
         {/* Navigation Links - Center */}
-        <div className="hidden lg:flex items-center gap-1">
-          <Link
-            href="/portfolio/new"
-            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-          >
-            Analyze
-          </Link>
-          <Link
-            href="/portfolios"
-            className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
-          >
-            Portfolios
-          </Link>
+        <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+          {navContent ? (
+            navContent
+          ) : (
+            <>
+              <Link
+                href="/portfolio/new"
+                className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+              >
+                Analyze
+              </Link>
+              <Link
+                href="/portfolios"
+                className="px-4 h-10 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium"
+              >
+                Portfolios
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2.5 ml-auto">
+        <div className="flex items-center gap-2.5">
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
@@ -103,11 +111,15 @@ export function Header() {
             </div>
           </button>
 
-          {/* Primary CTA Button */}
-          <Link href="/portfolio/new" className="hidden sm:flex glass-button text-xs px-4 py-2">
-            <Zap className="w-4 h-4" />
-            <span>Launch</span>
-          </Link>
+          {actionContent ? (
+            actionContent
+          ) : (
+            /* Primary CTA Button */
+            <Link href="/portfolio/new" className="hidden sm:flex glass-button text-xs px-4 py-2">
+              <Zap className="w-4 h-4" />
+              <span>Launch</span>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
