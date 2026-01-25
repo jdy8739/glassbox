@@ -79,12 +79,24 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
               }}
             />
             <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
-            <Bar dataKey="Unhedged" name="Unhedged Portfolio" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
+            <Bar 
+              dataKey="Unhedged" 
+              name="Unhedged Portfolio" 
+              fill="#8b5cf6" 
+              radius={[4, 4, 0, 0]} 
+              isAnimationActive={false}
+            >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.Unhedged >= 0 ? '#34d399' : '#f472b6'} />
               ))}
             </Bar>
-            <Bar dataKey="Hedged" name="Hedged Portfolio" fill="#22d3ee" radius={[4, 4, 0, 0]} />
+            <Bar 
+              dataKey="Hedged" 
+              name="Hedged Portfolio" 
+              fill="#22d3ee" 
+              radius={[4, 4, 0, 0]} 
+              isAnimationActive={false}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

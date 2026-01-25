@@ -109,7 +109,14 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
           
           {/* Random Portfolios (Background) */}
           {randomData.length > 0 && (
-            <Scatter name="Random Portfolios" data={randomData} fill="#8884d8" opacity={0.3} radius={2}>
+            <Scatter 
+              name="Random Portfolios" 
+              data={randomData} 
+              fill="#8884d8" 
+              opacity={0.3} 
+              radius={2}
+              isAnimationActive={false}
+            >
                {randomData.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill="rgba(100, 100, 100, 0.3)" />
                ))}
@@ -117,15 +124,21 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
           )}
 
           {/* Efficient Frontier Line (approximated by scatter points for now) */}
-          <Scatter name="Efficient Frontier" data={frontierData} line={{ stroke: '#4ade80', strokeWidth: 2 }} shape="circle">
+          <Scatter 
+            name="Efficient Frontier" 
+            data={frontierData} 
+            line={{ stroke: '#4ade80', strokeWidth: 2 }} 
+            shape="circle"
+            isAnimationActive={false}
+          >
             {frontierData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill="transparent" stroke="transparent" />
             ))}
           </Scatter>
 
           {/* Highlights */}
-          <ReferenceDot x={gmvData.x} y={gmvData.y} r={6} fill="#FCD34D" stroke="none" />
-          <ReferenceDot x={maxSharpeData.x} y={maxSharpeData.y} r={6} fill="#F87171" stroke="none" />
+          <ReferenceDot x={gmvData.x} y={gmvData.y} r={6} fill="#FCD34D" stroke="none" isAnimationActive={false} />
+          <ReferenceDot x={maxSharpeData.x} y={maxSharpeData.y} r={6} fill="#F87171" stroke="none" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
     </div>
