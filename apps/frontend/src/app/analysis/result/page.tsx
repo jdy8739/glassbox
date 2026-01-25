@@ -115,7 +115,7 @@ function AnalysisResultContent() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen p-6 flex items-center justify-center">
+      <main className="min-h-screen px-6 py-8 flex items-center justify-center">
         <div className="text-center space-y-4">
           <p className="text-black dark:text-white text-lg">Loading analysis...</p>
         </div>
@@ -134,7 +134,7 @@ function AnalysisResultContent() {
   const backLink = isSnapshot ? '/portfolios' : '/portfolio/new';
 
   return (
-    <main className="min-h-screen p-6">
+    <main className="min-h-screen px-6 py-8">
       {/* Navigation */}
       <nav className="glass-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
         <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
@@ -538,7 +538,7 @@ function AnalysisResultContent() {
 
 export default function AnalysisResult() {
   return (
-    <Suspense fallback={<div className="min-h-screen p-6 flex items-center justify-center"><div className="text-black dark:text-white">Loading...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen px-6 py-8 flex items-center justify-center"><div className="text-black dark:text-white">Loading...</div></div>}>
       <AnalysisResultContent />
     </Suspense>
   );

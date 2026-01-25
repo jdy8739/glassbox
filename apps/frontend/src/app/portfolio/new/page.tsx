@@ -94,9 +94,9 @@ export default function PortfolioBuilder() {
   };
 
   return (
-    <main className="min-h-screen p-6 pb-32">
+    <main className="min-h-screen px-6 pt-8 pb-32">
       {/* Navigation */}
-      <nav className="glass-panel mx-auto max-w-4xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
+      <nav className="glass-panel mx-auto max-w-6xl mb-8 flex items-center justify-between px-6 py-3 relative z-40 rounded-xl">
         <a href="/" className="text-sm font-semibold text-black dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
           <span>←</span>
           <span>Back</span>
@@ -120,7 +120,7 @@ export default function PortfolioBuilder() {
         </button>
       </nav>
 
-      <div className="mx-auto max-w-4xl space-y-10">
+      <div className="mx-auto max-w-6xl space-y-10">
         {/* Header Section */}
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">

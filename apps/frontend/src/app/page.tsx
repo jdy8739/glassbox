@@ -11,7 +11,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative px-4 py-20 sm:py-32 md:py-40">
+      <div className="relative px-6 py-12 sm:py-20 md:py-28">
         <div className="mx-auto max-w-5xl space-y-10 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
@@ -68,7 +68,7 @@ export default function Home() {
       </div>
 
 {/* Features Section */}
-      <div className="relative px-4 py-28">
+      <div className="relative px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-20 space-y-6">
             <h2 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
@@ -169,7 +169,7 @@ export default function Home() {
       </div>
 
       {/* How It Works Section */}
-      <div className="relative px-4 py-28 bg-black/5 dark:bg-white/5">
+      <div className="relative px-6 py-28 bg-black/5 dark:bg-white/5">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-5xl font-bold text-black dark:text-white text-center mb-20">
             How It <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">Works</span>
@@ -225,7 +225,7 @@ export default function Home() {
       </div>
 
       {/* Final CTA Section */}
-      <div className="relative px-4 py-28">
+      <div className="relative px-6 py-28">
         <div className="mx-auto max-w-3xl">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/10 via-cyan-300/10 to-gold-300/10 rounded-3xl blur-xl"></div>
@@ -252,7 +252,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <div className="relative px-4 py-12 border-t border-white/10">
+      <div className="relative px-6 py-12 border-t border-white/10">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-8 text-center sm:text-left">
           <div>
             <h3 className="text-2xl font-bold text-black dark:text-white mb-1">Glassbox</h3>

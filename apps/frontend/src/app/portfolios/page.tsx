@@ -50,7 +50,7 @@ export default function PortfolioLibrary() {
   };
 
   return (
-    <main className="min-h-screen p-6">
+    <main className="min-h-screen px-6 py-8">
       <div className="mx-auto max-w-6xl space-y-12">
         {/* Header */}
         <div className="space-y-6">
