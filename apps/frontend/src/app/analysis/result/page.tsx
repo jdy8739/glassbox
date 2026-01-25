@@ -2,14 +2,39 @@
 
 import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
-import { EfficientFrontierChart } from './efficient-frontier-chart';
 import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
 import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check } from 'lucide-react';
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
-import { MarketScenarioSimulator } from './components/MarketScenarioSimulator';
 import { HeaderPortal } from '@/lib/header-context';
+
+const EfficientFrontierChart = dynamic(
+  () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
+  { 
+    loading: () => (
+      <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40">
+        <div className="w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm font-medium">Loading Chart...</span>
+      </div>
+    ),
+    ssr: false 
+  }
+);
+
+const MarketScenarioSimulator = dynamic(
+  () => import('./components/MarketScenarioSimulator').then((mod) => mod.MarketScenarioSimulator),
+  {
+    loading: () => (
+      <div className="w-full h-[300px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40 glass-panel">
+        <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-medium">Loading Simulator...</span>
+      </div>
+    ),
+    ssr: false
+  }
+);
 
 function AnalysisResultContent() {
   const router = useRouter();

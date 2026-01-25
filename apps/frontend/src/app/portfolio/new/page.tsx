@@ -3,12 +3,24 @@
 import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import dynamic from 'next/dynamic';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
-import { PortfolioDonutChart } from './components/PortfolioDonutChart';
 import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
 import { QuickAddAssets } from './components/QuickAddAssets';
 import { HeaderPortal } from '@/lib/header-context';
+
+const PortfolioDonutChart = dynamic(
+  () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
+  {
+    loading: () => (
+      <div className="w-full h-[250px] flex flex-col items-center justify-center gap-3 text-black/40 dark:text-white/40">
+        <div className="w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      </div>
+    ),
+    ssr: false
+  }
+);
 
 const CHART_COLORS = [
   '#06b6d4', // Cyan 500
