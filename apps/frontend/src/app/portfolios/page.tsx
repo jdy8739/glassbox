@@ -1,38 +1,125 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Package, Rocket, Trash2 } from 'lucide-react';
+import { Package, Rocket, Search, SlidersHorizontal } from 'lucide-react';
+import { PortfolioCard } from './components/PortfolioCard';
+import type { Portfolio } from '@glassbox/types';
 
-interface SavedPortfolio {
-  id: string;
-  name: string;
-  tickers: string[];
-  quantities: number[];
-  updatedAt: string;
-  createdAt: string;
-}
+// Mock Data with rich stats
+const MOCK_PORTFOLIOS: Portfolio[] = [
+  {
+    id: '1',
+    userId: 'user1',
+    name: 'Tech Growth Aggressive',
+    tickers: ['AAPL', 'MSFT', 'NVDA', 'AMD'],
+    quantities: [50, 40, 30, 100],
+    createdAt: new Date('2023-11-15'),
+    updatedAt: new Date('2024-01-20'),
+    analysisSnapshot: {
+      efficientFrontier: [],
+      gmv: { weights: {}, stats: { return: 0.1, volatility: 0.12, sharpe: 0.8 } },
+      maxSharpe: { 
+        weights: {}, 
+        stats: { return: 0.245, volatility: 0.18, sharpe: 1.36 } 
+      },
+      portfolioBeta: 1.25,
+      riskFreeRate: 0.045,
+      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
+    }
+  },
+  {
+    id: '2',
+    userId: 'user1',
+    name: 'Balanced 60/40',
+    tickers: ['SPY', 'TLT'],
+    quantities: [60, 40],
+    createdAt: new Date('2023-10-01'),
+    updatedAt: new Date('2023-12-05'),
+    analysisSnapshot: {
+      efficientFrontier: [],
+      gmv: { weights: {}, stats: { return: 0.08, volatility: 0.09, sharpe: 0.88 } },
+      maxSharpe: { 
+        weights: {}, 
+        stats: { return: 0.095, volatility: 0.11, sharpe: 0.86 } 
+      },
+      portfolioBeta: 0.60,
+      riskFreeRate: 0.045,
+      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
+    }
+  },
+  {
+    id: '3',
+    userId: 'user1',
+    name: 'Crypto & Gold Hedge',
+    tickers: ['BTC', 'ETH', 'GLD'],
+    quantities: [2, 15, 50],
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-24'),
+    analysisSnapshot: {
+      efficientFrontier: [],
+      gmv: { weights: {}, stats: { return: 0.15, volatility: 0.25, sharpe: 0.6 } },
+      maxSharpe: { 
+        weights: {}, 
+        stats: { return: 0.45, volatility: 0.35, sharpe: 1.28 } 
+      },
+      portfolioBeta: 0.8,
+      riskFreeRate: 0.045,
+      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
+    }
+  },
+  {
+    id: '4',
+    userId: 'user1',
+    name: 'Dividend Aristocrats',
+    tickers: ['O', 'KO', 'JNJ', 'PG', 'MMM'],
+    quantities: [100, 200, 50, 80, 40],
+    createdAt: new Date('2024-01-05'),
+    updatedAt: new Date('2024-01-05'),
+    analysisSnapshot: {
+      efficientFrontier: [],
+      gmv: { weights: {}, stats: { return: 0.07, volatility: 0.10, sharpe: 0.7 } },
+      maxSharpe: { 
+        weights: {}, 
+        stats: { return: 0.085, volatility: 0.12, sharpe: 0.71 } 
+      },
+      portfolioBeta: 0.55,
+      riskFreeRate: 0.045,
+      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
+    }
+  }
+];
+
+const CHART_COLORS = [
+  '#06b6d4', // Cyan 500
+  '#f472b6', // Pink 400
+  '#a78bfa', // Violet 400
+  '#fbbf24', // Amber 400
+  '#34d399', // Emerald 400
+  '#60a5fa', // Blue 400
+];
 
 export default function PortfolioLibrary() {
-  const [portfolios, setPortfolios] = useState<SavedPortfolio[]>([]);
+  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO: Implement API call to GET /api/portfolios
-    // const response = await fetch('/api/portfolios');
-    // const data = await response.json();
-    // setPortfolios(data);
-    setLoading(false);
+    // Simulate API Fetch
+    setTimeout(() => {
+      setPortfolios(MOCK_PORTFOLIOS);
+      setLoading(false);
+    }, 800);
   }, []);
 
   const handleDeletePortfolio = async (portfolioId: string) => {
+    // In a real app, use a custom modal
     if (!confirm('Are you sure you want to delete this portfolio?')) return;
 
     setDeleting(portfolioId);
     try {
-      // TODO: Implement API call to DELETE /api/portfolios/:id
-      // await fetch(`/api/portfolios/${portfolioId}`, { method: 'DELETE' });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 600));
       setPortfolios(portfolios.filter(p => p.id !== portfolioId));
     } catch (error) {
       console.error('Error deleting portfolio:', error);
@@ -41,107 +128,102 @@ export default function PortfolioLibrary() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
+  const filteredPortfolios = portfolios.filter(p => 
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.tickers.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <main className="min-h-screen px-6 py-8">
-      <div className="mx-auto max-w-6xl space-y-12">
-        {/* Header */}
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-black dark:text-white/80">Your Saved Analyses</span>
-          </div>
-
+      <div className="mx-auto max-w-7xl space-y-12">
+        {/* Header & Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
-              Portfolio
-              <br />
-              <span className="bg-gradient-to-r from-slate-300 to-orange-300 bg-clip-text text-transparent">
-                Library
-              </span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+              <span className="text-xs font-semibold text-black/70 dark:text-white/70">Library</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white">
+              Your <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">Portfolios</span>
             </h1>
-            <p className="text-xl text-black dark:text-white/70 max-w-2xl">
-              Manage your saved portfolios, view performance, and explore different allocation strategies.
+            <p className="text-lg text-black/60 dark:text-white/60 max-w-xl">
+              Manage your saved strategies and track their theoretical performance over time.
             </p>
           </div>
+
+          {/* Search Bar */}
+          <div className="w-full md:w-auto relative group">
+             <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 to-pink-400 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
+             <div className="relative flex items-center bg-white/80 dark:bg-black/80 rounded-xl px-4 py-3 min-w-[300px] border border-black/5 dark:border-white/10 shadow-sm">
+               <Search className="w-5 h-5 text-black/40 dark:text-white/40 mr-3" />
+               <input 
+                 type="text" 
+                 placeholder="Search portfolios..."
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 className="bg-transparent border-none focus:outline-none text-black dark:text-white w-full font-medium"
+               />
+               <SlidersHorizontal className="w-4 h-4 text-black/40 dark:text-white/40 ml-2 cursor-pointer hover:text-black dark:hover:text-white transition-colors" />
+             </div>
+          </div>
         </div>
 
-        {/* Portfolio Grid */}
-        <div>
-          {portfolios.length === 0 ? (
-            <div className="glass-panel space-y-8 p-16 text-center">
-              <div className="space-y-4">
-                <div className="flex justify-center">
-                  <Package className="w-16 h-16 text-cyan-400" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-black dark:text-white mb-2">No portfolios yet</p>
-                  <p className="text-lg text-black dark:text-white/60 mb-6">Start analyzing stocks to build your first portfolio</p>
-                </div>
-              </div>
-              <a href="/portfolio/new" className="glass-button inline-flex gap-2 text-lg px-8 py-4 hover:scale-105 transition-transform">
-                <Rocket className="w-5 h-5" />
-                <span>Create Your First Portfolio</span>
+        {/* Content */}
+        {loading ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+             {[1, 2, 3].map(i => (
+               <div key={i} className="glass-panel h-64 animate-pulse flex items-center justify-center">
+                 <div className="w-8 h-8 rounded-full border-2 border-black/10 dark:border-white/10 border-t-black/30 dark:border-t-white/30 animate-spin"></div>
+               </div>
+             ))}
+          </div>
+        ) : filteredPortfolios.length === 0 ? (
+          <div className="glass-panel py-20 text-center space-y-6 flex flex-col items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center">
+              <Package className="w-8 h-8 text-black/30 dark:text-white/30" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-black dark:text-white mb-2">
+                {searchQuery ? 'No portfolios found' : 'Your library is empty'}
+              </p>
+              <p className="text-black/50 dark:text-white/50 max-w-sm mx-auto">
+                {searchQuery 
+                  ? `No results matching "${searchQuery}". Try a different term.`
+                  : "Start analyzing stocks to create your first optimized portfolio strategy."}
+              </p>
+            </div>
+            {!searchQuery && (
+              <a href="/portfolio/new" className="glass-button px-8 py-3">
+                <Rocket className="w-5 h-5 mr-2" />
+                Create Portfolio
               </a>
-            </div>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {portfolios.map((portfolio, index) => (
-                <div
-                  key={portfolio.id}
-                  className={`glass-card-gradient ${index % 4 === 0 ? 'cyan-blue' : index % 4 === 1 ? 'coral-pink' : index % 4 === 2 ? 'slate-glow' : 'cyan-blue'} group transform transition-all hover:scale-105 space-y-4`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black dark:text-white mb-1 group-hover:text-cyan-300 transition">{portfolio.name}</h3>
-                      <p className="text-sm text-black dark:text-white/60">Updated {formatDate(portfolio.updatedAt)}</p>
-                    </div>
-                    <button
-                      onClick={() => handleDeletePortfolio(portfolio.id)}
-                      disabled={deleting === portfolio.id}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 flex items-center justify-center disabled:opacity-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* Create New Card (Always first) */}
+            <a href="/portfolio/new" className="group glass-panel border-dashed border-2 border-black/10 dark:border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all p-6 flex flex-col items-center justify-center text-center gap-4 min-h-[280px]">
+              <div className="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Rocket className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-black dark:text-white">New Portfolio</h3>
+                <p className="text-xs text-black/50 dark:text-white/50 mt-1">Start a fresh analysis</p>
+              </div>
+            </a>
 
-                  <div>
-                    <p className="text-xs text-black dark:text-white/60 mb-2">Assets in portfolio:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {portfolio.tickers.slice(0, 4).map((ticker) => (
-                        <span
-                          key={ticker}
-                          className="glass-badge text-xs"
-                        >
-                          {ticker}
-                        </span>
-                      ))}
-                      {portfolio.tickers.length > 4 && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-black/10 dark:bg-white/10 text-black dark:text-white/70">
-                          +{portfolio.tickers.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <Link
-                    href={`/analysis/result?portfolioId=${portfolio.id}`}
-                    className="block w-full rounded-lg bg-gradient-to-r from-cyan-400 to-cyan-300 px-4 py-2 text-sm font-semibold text-black dark:text-white hover:shadow-lg transition-all text-center"
-                  >
-                    View Analysis →
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+            {/* Portfolio Cards */}
+            {filteredPortfolios.map((portfolio) => (
+              <PortfolioCard 
+                key={portfolio.id} 
+                portfolio={portfolio} 
+                onDelete={handleDeletePortfolio}
+                isDeleting={deleting === portfolio.id}
+                colors={CHART_COLORS}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
