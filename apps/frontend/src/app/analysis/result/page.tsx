@@ -9,6 +9,7 @@ import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Tar
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
 import { HeaderPortal } from '@/lib/header-context';
+import { SavePortfolioModal } from './components/SavePortfolioModal';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -54,7 +55,6 @@ function AnalysisResultContent() {
 
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [portfolioName, setPortfolioName] = useState('');
   const [isExportOpen, setIsExportOpen] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   
@@ -99,16 +99,15 @@ function AnalysisResultContent() {
       });
     } else {
       // Open modal for new portfolio
-      setPortfolioName('');
       setIsSaveModalOpen(true);
     }
   };
 
-  const confirmSave = () => {
-    if (!portfolioName.trim() || !portfolioData) return;
+  const confirmSave = (name: string) => {
+    if (!name.trim() || !portfolioData) return;
 
     savePortfolio({
-      name: portfolioName,
+      name: name,
       tickers: portfolioData.items.map(i => i.symbol),
       quantities: portfolioData.items.map(i => i.quantity),
       analysisSnapshot: portfolioData.analysis
@@ -425,39 +424,11 @@ function AnalysisResultContent() {
       </div>
 
       {/* Save Modal */}
-      {isSaveModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-white/10">
-            <h3 className="text-xl font-bold text-black dark:text-white">Save Portfolio</h3>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-black/70 dark:text-white/70">Portfolio Name</label>
-              <input
-                type="text"
-                value={portfolioName}
-                onChange={(e) => setPortfolioName(e.target.value)}
-                placeholder="e.g., My Tech Portfolio"
-                className="glass-input w-full"
-                autoFocus
-              />
-            </div>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setIsSaveModalOpen(false)}
-                className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-black dark:text-white transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmSave}
-                disabled={!portfolioName.trim()}
-                className="glass-button px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SavePortfolioModal 
+        isOpen={isSaveModalOpen} 
+        onClose={() => setIsSaveModalOpen(false)} 
+        onSave={confirmSave} 
+      />
     </main>
   );
 }
