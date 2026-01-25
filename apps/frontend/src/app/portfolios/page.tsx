@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Package, Rocket, Trash2 } from 'lucide-react';
 
 interface SavedPortfolio {
   id: string;
@@ -77,14 +78,16 @@ export default function PortfolioLibrary() {
           {portfolios.length === 0 ? (
             <div className="glass-panel space-y-8 p-16 text-center">
               <div className="space-y-4">
-                <p className="text-7xl">📦</p>
+                <div className="flex justify-center">
+                  <Package className="w-16 h-16 text-cyan-400" />
+                </div>
                 <div>
                   <p className="text-2xl font-bold text-black dark:text-white mb-2">No portfolios yet</p>
                   <p className="text-lg text-black dark:text-white/60 mb-6">Start analyzing stocks to build your first portfolio</p>
                 </div>
               </div>
               <a href="/portfolio/new" className="glass-button inline-flex gap-2 text-lg px-8 py-4 hover:scale-105 transition-transform">
-                <span>🚀</span>
+                <Rocket className="w-5 h-5" />
                 <span>Create Your First Portfolio</span>
               </a>
             </div>
@@ -105,7 +108,7 @@ export default function PortfolioLibrary() {
                       disabled={deleting === portfolio.id}
                       className="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 flex items-center justify-center disabled:opacity-50"
                     >
-                      🗑️
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 

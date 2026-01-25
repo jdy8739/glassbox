@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { EfficientFrontierChart } from './efficient-frontier-chart';
 import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
+import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check } from 'lucide-react';
 
 function AnalysisResultContent() {
   const router = useRouter();
@@ -146,7 +147,7 @@ function AnalysisResultContent() {
               onClick={handleReanalyze}
               className="glass-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
             >
-              <span>🔄</span>
+              <RefreshCw className="w-4 h-4" />
               <span>Re-analyze</span>
             </button>
           )}
@@ -156,7 +157,7 @@ function AnalysisResultContent() {
               onClick={() => setIsExportOpen(!isExportOpen)}
               className="glass-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
             >
-              <span>📥</span>
+              <Download className="w-4 h-4" />
               <span>Export</span>
             </button>
             {isExportOpen && (
@@ -165,14 +166,14 @@ function AnalysisResultContent() {
                   onClick={handleExportCSV}
                   className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
                 >
-                  <span>📊</span>
+                  <BarChart3 className="w-4 h-4" />
                   <span>Export as CSV</span>
                 </button>
                 <button
                   onClick={handleExportPDF}
                   className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
                 >
-                  <span>📄</span>
+                  <FileText className="w-4 h-4" />
                   <span>Export as PDF</span>
                 </button>
               </div>
@@ -190,7 +191,7 @@ function AnalysisResultContent() {
                </>
             ) : (
                <>
-                 <span>💾</span>
+                 <Save className="w-4 h-4" />
                  <span>{isSnapshot ? 'Update' : 'Save'}</span>
                </>
             )}
@@ -235,23 +236,25 @@ function AnalysisResultContent() {
           <div className="flex gap-2 border-b border-white/10">
             <button
               onClick={() => setActiveTab('frontier')}
-              className={`px-6 py-4 font-semibold transition-all border-b-2 ${
+              className={`px-6 py-4 font-semibold transition-all border-b-2 flex items-center gap-2 ${
                 activeTab === 'frontier'
                   ? 'border-b-cyan-300 text-cyan-300'
                   : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
               }`}
             >
-              📈 Efficient Frontier
+              <TrendingUp className="w-4 h-4" />
+              <span>Efficient Frontier</span>
             </button>
             <button
               onClick={() => setActiveTab('hedging')}
-              className={`px-6 py-4 font-semibold transition-all border-b-2 ${
+              className={`px-6 py-4 font-semibold transition-all border-b-2 flex items-center gap-2 ${
                 activeTab === 'hedging'
                   ? 'border-b-slate-300 text-slate-300'
                   : 'border-b-transparent text-black/50 dark:text-white/50 hover:text-black/70 dark:text-white/70'
               }`}
             >
-              🛡️ Beta Hedging
+              <Shield className="w-4 h-4" />
+              <span>Beta Hedging</span>
             </button>
           </div>
 
@@ -298,7 +301,7 @@ function AnalysisResultContent() {
                           </p>
                           <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
                         </div>
-                        <div className="text-3xl">🎯</div>
+                        <Target className="w-8 h-8 text-cyan-400" />
                       </div>
                       <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
                         <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
@@ -324,7 +327,7 @@ function AnalysisResultContent() {
                           </p>
                           <p className="text-xs text-black/50 dark:text-white/50 mt-1">Expected Annual Return</p>
                         </div>
-                        <div className="text-3xl">⚡</div>
+                        <Zap className="w-8 h-8 text-coral-300" />
                       </div>
                       <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
                         <p className="text-xs text-black/60 dark:text-white/60">Portfolio Volatility</p>
@@ -376,7 +379,7 @@ function AnalysisResultContent() {
               <div className="grid gap-6 md:grid-cols-3">
                 {/* Current Beta */}
                 <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="text-3xl mb-4">📊</div>
+                  <div className="mb-4"><BarChart3 className="w-8 h-8 text-cyan-400" /></div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Current Portfolio Beta</p>
                   <p className="text-4xl font-bold text-black dark:text-white">
                     {analysisData.portfolioBeta.toFixed(2)}
@@ -386,7 +389,7 @@ function AnalysisResultContent() {
 
                 {/* Target Beta */}
                 <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="text-3xl mb-4">🎯</div>
+                  <div className="mb-4"><Target className="w-8 h-8 text-cyan-400" /></div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Target Beta</p>
                   <p className="text-4xl font-bold text-black dark:text-white">0.00</p>
                   <p className="text-xs text-black/50 dark:text-white/50 mt-2">Market Neutral</p>
@@ -394,7 +397,7 @@ function AnalysisResultContent() {
 
                 {/* Required Hedge */}
                 <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
-                  <div className="text-3xl mb-4">🛡️</div>
+                  <div className="mb-4"><Shield className="w-8 h-8 text-slate-400" /></div>
                   <p className="text-sm text-black/60 dark:text-white/60 mb-2">Hedge Required</p>
                   <p className="text-4xl font-bold text-black dark:text-white">
                     {(analysisData.portfolioBeta).toFixed(2)}
@@ -410,7 +413,7 @@ function AnalysisResultContent() {
                   {/* SPY Method */}
                   <div className="space-y-4 pb-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">📈</span>
+                      <TrendingUp className="w-6 h-6 text-cyan-400" />
                       <h4 className="text-lg font-semibold text-black dark:text-white">SPY ETF Hedging</h4>
                     </div>
                     <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
@@ -436,7 +439,7 @@ function AnalysisResultContent() {
                   {/* ES Futures Method */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">⚡</span>
+                      <Zap className="w-6 h-6 text-slate-400" />
                       <h4 className="text-lg font-semibold text-black dark:text-white">ES Futures Hedging</h4>
                     </div>
                     <div className="bg-black/5 dark:bg-white/5 rounded-lg p-5 space-y-3">
@@ -464,19 +467,28 @@ function AnalysisResultContent() {
               {/* Key Insights */}
               <div className="glass-card-gradient coral-pink space-y-4">
                 <div className="flex items-start gap-3">
-                  <span className="text-2xl">💡</span>
+                  <Lightbulb className="w-6 h-6 text-coral-300 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-semibold text-black dark:text-white mb-2">Key Insights</h4>
                     <ul className="text-black/70 dark:text-white/70 space-y-2 text-sm">
-                      <li>
-                        ✓ Your portfolio has a beta of{' '}
-                        <span className="text-black dark:text-white">{analysisData.portfolioBeta.toFixed(2)}</span>
-                        {analysisData.portfolioBeta > 1 && `, meaning it's ${((analysisData.portfolioBeta - 1) * 100).toFixed(0)}% more volatile than the market`}
-                        {analysisData.portfolioBeta < 1 && `, meaning it's ${((1 - analysisData.portfolioBeta) * 100).toFixed(0)}% less volatile than the market`}
-                        {analysisData.portfolioBeta === 1 && ', meaning it moves in line with the market'}
+                      <li className="flex gap-2 items-start">
+                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                        <span>
+                          Your portfolio has a beta of{' '}
+                          <span className="text-black dark:text-white">{analysisData.portfolioBeta.toFixed(2)}</span>
+                          {analysisData.portfolioBeta > 1 && `, meaning it's ${((analysisData.portfolioBeta - 1) * 100).toFixed(0)}% more volatile than the market`}
+                          {analysisData.portfolioBeta < 1 && `, meaning it's ${((1 - analysisData.portfolioBeta) * 100).toFixed(0)}% less volatile than the market`}
+                          {analysisData.portfolioBeta === 1 && ', meaning it moves in line with the market'}
+                        </span>
                       </li>
-                      <li>✓ Hedging via SPY is more accessible for retail investors</li>
-                      <li>✓ ES futures provide <span className="text-black dark:text-white">capital efficiency</span> for larger portfolios</li>
+                      <li className="flex gap-2 items-start">
+                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                        <span>Hedging via SPY is more accessible for retail investors</span>
+                      </li>
+                      <li className="flex gap-2 items-start">
+                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                        <span>ES futures provide <span className="text-black dark:text-white">capital efficiency</span> for larger portfolios</span>
+                      </li>
                     </ul>
                   </div>
                 </div>

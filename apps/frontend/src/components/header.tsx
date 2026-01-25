@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Moon, Sun, Monitor, Zap } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 
 export function Header() {
@@ -90,20 +91,11 @@ export function Header() {
             aria-label={`Theme: ${getThemeLabel()}. Click to cycle through light, dark, and system themes.`}
           >
             {theme === 'light' ? (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                {/* Moon Icon */}
-                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-              </svg>
+              <Moon className="w-4 h-4" />
             ) : theme === 'dark' ? (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                {/* Sun Icon */}
-                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l-2.12-2.12a4 4 0 00-5.656 0l-2.12 2.12a1 1 0 001.414 1.414l2.12-2.12a2 2 0 012.828 0l2.12 2.12a1 1 0 001.414-1.414zM2.05 6.464A1 1 0 103.464 5.05l2.12 2.12a4 4 0 015.656 0l2.12-2.12a1 1 0 11-1.414-1.414l-2.12 2.12a2 2 0 01-2.828 0L2.05 6.464zm15.657-1.414a1 1 0 00-1.414-1.414l-2.12 2.12a4 4 0 01-5.656 0l-2.12-2.12a1 1 0 10-1.414 1.414l2.12 2.12a2 2 0 012.828 0l2.12-2.12z" clipRule="evenodd" />
-              </svg>
+              <Sun className="w-4 h-4" />
             ) : (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                {/* System Icon (Monitor) */}
-                <path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v9a2 2 0 01-2 2h-1.586l1.293 1.293a1 1 0 01-1.414 1.414L13 15.414l-1.293 1.293a1 1 0 01-1.414-1.414L10.586 15H4a2 2 0 01-2-2V4zm12 9V4H4v9h10z" />
-              </svg>
+              <Monitor className="w-4 h-4" />
             )}
             {/* Tooltip */}
             <div className="theme-toggle-tooltip">
@@ -113,7 +105,7 @@ export function Header() {
 
           {/* Primary CTA Button */}
           <Link href="/portfolio/new" className="hidden sm:block glass-button text-xs px-4 py-2 flex items-center gap-1.5">
-            <span>🚀</span>
+            <Zap className="w-4 h-4" />
             <span>Launch</span>
           </Link>
         </div>

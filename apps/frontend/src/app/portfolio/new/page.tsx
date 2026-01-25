@@ -1,5 +1,7 @@
 'use client';
 
+import { Sparkles, TrendingUp, Lightbulb, Plus, X as XIcon, Building2, Bitcoin, DollarSign, BarChart3, Wrench, Zap, Clipboard, MapPin, Rocket } from 'lucide-react';
+
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
@@ -111,7 +113,7 @@ export default function PortfolioBuilder() {
             </>
           ) : (
             <>
-              <span>📊</span>
+              <TrendingUp className="w-5 h-5" />
               <span>Analyze</span>
             </>
           )}
@@ -162,7 +164,10 @@ export default function PortfolioBuilder() {
         {/* Search Bar - Enhanced with Autocomplete */}
         <div className="glass-card-gradient cyan-blue overflow-visible">
           <div className="space-y-4 overflow-visible">
-            <label className="block text-sm font-semibold text-black dark:text-white">📍 Add Stock Ticker</label>
+            <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Add Stock Ticker
+            </label>
             <div className="relative overflow-visible" ref={searchRef}>
               <div className="flex gap-3" ref={inputWrapperRef}>
                 <div className="flex-1 relative">
@@ -190,42 +195,52 @@ export default function PortfolioBuilder() {
                 </button>
               </div>
             </div>
-            <p className="text-xs text-black dark:text-white/50">
-              💡 Pro tip: Search by ticker (e.g., AAPL) or company name (e.g., Apple)
+            <p className="text-xs text-black dark:text-white/50 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 flex-shrink-0" />
+              Pro tip: Search by ticker (e.g., AAPL) or company name (e.g., Apple)
             </p>
           </div>
         </div>
 
         {/* Quick Add Presets */}
         <div className="space-y-4">
-          <label className="block text-sm font-semibold text-black dark:text-white">✨ Popular Assets</label>
+          <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            Popular Assets
+          </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
-              { name: 'Treasury Bonds', ticker: 'TLT', icon: '🏦', color: 'slate' },
-              { name: 'Bitcoin', ticker: 'BTC', icon: '₿', color: 'coral' },
-              { name: 'Gold', ticker: 'GLD', icon: '💛', color: 'slate' },
-              { name: 'S&P 500', ticker: 'SPY', icon: '📈', color: 'purple' },
-              { name: 'Tech', ticker: 'QQQ', icon: '🔧', color: 'cyan' },
-              { name: 'Energy', ticker: 'XLE', icon: '⚡', color: 'coral' },
-            ].map((preset) => (
-              <button
-                key={preset.ticker}
-                onClick={() => handleAddItem(preset.ticker)}
-                className={`glass-card-gradient ${preset.color === 'slate' ? 'slate-glow' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'cyan-blue' : 'cyan-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
-              >
-                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{preset.icon}</div>
-                <p className="text-xs font-semibold text-black dark:text-white">{preset.name}</p>
-                <p className="text-xs text-black dark:text-white/60">{preset.ticker}</p>
-              </button>
-            ))}
+              { name: 'Treasury Bonds', ticker: 'TLT', icon: Building2, color: 'slate' },
+              { name: 'Bitcoin', ticker: 'BTC', icon: Bitcoin, color: 'coral' },
+              { name: 'Gold', ticker: 'GLD', icon: DollarSign, color: 'slate' },
+              { name: 'S&P 500', ticker: 'SPY', icon: BarChart3, color: 'cyan' },
+              { name: 'Tech', ticker: 'QQQ', icon: Wrench, color: 'cyan' },
+              { name: 'Energy', ticker: 'XLE', icon: Zap, color: 'coral' },
+            ].map((preset) => {
+              const IconComponent = preset.icon;
+              return (
+                <button
+                  key={preset.ticker}
+                  onClick={() => handleAddItem(preset.ticker)}
+                  className={`glass-card-gradient ${preset.color === 'slate' ? 'slate-glow' : preset.color === 'coral' ? 'coral-pink' : preset.color === 'cyan' ? 'cyan-blue' : 'cyan-blue'} p-4 text-center cursor-pointer transform transition-all hover:scale-105 group`}
+                >
+                  <div className="mb-2 group-hover:scale-110 transition-transform flex justify-center">
+                    <IconComponent className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <p className="text-xs font-semibold text-black dark:text-white">{preset.name}</p>
+                  <p className="text-xs text-black dark:text-white/60">{preset.ticker}</p>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Asset List - Enhanced */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-black dark:text-white">
-              📋 Your Assets <span className="text-cyan-300">({items.length})</span>
+            <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+              <Clipboard className="w-4 h-4" />
+              Your Assets <span className="text-cyan-300">({items.length})</span>
             </label>
             {items.length > 0 && (
               <span className="text-xs px-3 py-1 rounded-full bg-cyan-400/20 border border-cyan-400/30 text-cyan-300">
@@ -237,7 +252,9 @@ export default function PortfolioBuilder() {
           <div className="space-y-3">
             {items.length === 0 ? (
               <div className="glass-panel p-12 text-center space-y-4">
-                <div className="text-5xl">📍</div>
+                <div className="flex justify-center">
+                  <MapPin className="w-12 h-12 text-cyan-400" />
+                </div>
                 <div>
                   <p className="text-lg text-black dark:text-white font-semibold mb-2">No assets added yet</p>
                   <p className="text-black dark:text-white/60">Search for a ticker or use the preset buttons above to get started</p>
@@ -278,7 +295,7 @@ export default function PortfolioBuilder() {
                           onClick={() => removeItem(item.symbol)}
                           className="w-10 h-10 rounded-lg bg-red-400/10 border border-red-400/20 text-red-300 hover:bg-red-400/20 transition-all flex items-center justify-center"
                         >
-                          ✕
+                          <XIcon className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
@@ -321,7 +338,7 @@ export default function PortfolioBuilder() {
               </>
             ) : (
               <>
-                <span>🚀</span>
+                <Rocket className="w-5 h-5" />
                 <span>Analyze Portfolio</span>
               </>
             )}

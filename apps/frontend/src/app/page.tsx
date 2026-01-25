@@ -1,3 +1,5 @@
+import { Sparkles, TrendingUp, Zap, Lock, BarChart3, Shield, Gem, Package, Microscope, BookOpen } from 'lucide-react';
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden">
@@ -35,12 +37,12 @@ export default function Home() {
 
           {/* CTA Buttons with Icons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-            <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105">
-              <span>✨</span>
+            <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
+              <Sparkles className="w-5 h-5" />
               <span>Start Analyzing</span>
             </a>
-            <a href="/portfolios" className="glass-button-secondary text-lg px-8 py-4 hover:scale-105">
-              <span>📊</span>
+            <a href="/portfolios" className="glass-button-secondary text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5" />
               <span>View Portfolios</span>
             </a>
           </div>
@@ -48,17 +50,17 @@ export default function Home() {
           {/* Trust Badges */}
           <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center items-center text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🚀</span>
+              <Zap className="w-5 h-5 text-black/70 dark:text-white/70" />
               <span className="text-black/70 dark:text-white/70">Lightning Fast</span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🔐</span>
+              <Lock className="w-5 h-5 text-black/70 dark:text-white/70" />
               <span className="text-black/70 dark:text-white/70">100% Transparent</span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-black/20 dark:bg-white/20"></div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">📈</span>
+              <BarChart3 className="w-5 h-5 text-black/70 dark:text-white/70" />
               <span className="text-black/70 dark:text-white/70">Math-Backed</span>
             </div>
           </div>
@@ -107,7 +109,7 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Card 1 - Purple Blue */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">📈</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><BarChart3 className="w-8 h-8 text-cyan-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Efficient Frontier</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Discover optimal portfolio allocations using advanced quadratic programming and Monte Carlo sampling.
@@ -121,7 +123,7 @@ export default function Home() {
 
             {/* Card 2 - Coral Pink */}
             <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">🛡️</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><Shield className="w-8 h-8 text-coral-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Beta Hedging</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Calculate portfolio beta and size hedging positions in SPY or futures for market-neutral exposure.
@@ -135,7 +137,7 @@ export default function Home() {
 
             {/* Card 3 - Gold Cyan */}
             <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">💎</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><Gem className="w-8 h-8 text-slate-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Premium Design</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Experience sophisticated glassmorphic interface with stunning animations and intuitive controls.
@@ -149,7 +151,7 @@ export default function Home() {
 
             {/* Card 4 - Indigo Green */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">⚡</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><Zap className="w-8 h-8 text-cyan-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Real-time Analysis</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Get instant results with lightning-fast calculations powered by cutting-edge algorithms.
@@ -163,7 +165,7 @@ export default function Home() {
 
             {/* Card 5 - Purple Blue */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">📦</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><Package className="w-8 h-8 text-cyan-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Portfolio Management</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Store, compare, and manage multiple portfolios with powerful organization and export tools.
@@ -177,7 +179,7 @@ export default function Home() {
 
             {/* Card 6 - Coral Pink */}
             <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
-              <div className="feature-icon group-hover:scale-110 transition-transform">🔬</div>
+              <div className="feature-icon group-hover:scale-110 transition-transform"><Microscope className="w-8 h-8 text-coral-400" /></div>
               <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Advanced Analytics</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
                 Deep-dive into Sharpe ratios, volatility, correlations, and comprehensive portfolio statistics.
@@ -261,12 +263,12 @@ export default function Home() {
                 Join thousands of investors using Glassbox to make smarter portfolio decisions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <a href="/portfolio/new" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform">
-                  <span>🚀</span>
+                <a href="/portfolio/new" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                  <Zap className="w-5 h-5" />
                   <span>Launch App Now</span>
                 </a>
-                <a href="#features" className="glass-button-outline text-lg px-10 py-4 hover:scale-105 transition-transform">
-                  <span>📚</span>
+                <a href="#features" className="glass-button-outline text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                  <BookOpen className="w-5 h-5" />
                   <span>Learn More</span>
                 </a>
               </div>
