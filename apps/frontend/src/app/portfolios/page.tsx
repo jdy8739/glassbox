@@ -171,7 +171,7 @@ export default function PortfolioLibrary() {
         {/* Content */}
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-             {[1, 2, 3].map(i => (
+             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                <div key={i} className="glass-panel h-64 animate-pulse flex items-center justify-center">
                  <div className="w-8 h-8 rounded-full border-2 border-black/10 dark:border-white/10 border-t-black/30 dark:border-t-white/30 animate-spin"></div>
                </div>

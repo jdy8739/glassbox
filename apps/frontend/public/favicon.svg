@@ -1,72 +1,28 @@
-<svg
-  viewBox="0 0 128 128"
-  width="128"
-  height="128"
-  xmlns="http://www.w3.org/2000/svg"
->
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Pure cyan for transparency concept -->
-    <linearGradient id="pureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8" />
-      <stop offset="100%" stopColor="#0891b2" stopOpacity="0.6" />
+    <!-- Vibrant Gradient: Cyan -> Purple -> Pink -->
+    <linearGradient id="mainGrad" x1="64" y1="64" x2="448" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22d3ee"/> <!-- Cyan 400 -->
+      <stop offset="0.5" stop-color="#c084fc"/> <!-- Purple 400 -->
+      <stop offset="1" stop-color="#f472b6"/> <!-- Pink 400 -->
     </linearGradient>
-
-    <!-- Light highlight for glass effect -->
-    <linearGradient id="highlight" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.6" />
-      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.2" />
-      <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+    
+    <!-- Glossy Reflection -->
+    <linearGradient id="glassShine" x1="256" y1="64" x2="256" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="white" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
     </linearGradient>
   </defs>
-
-  <!-- Clean white background -->
-  <rect width="128" height="128" fill="#ffffff" rx="20" />
-
-  <!-- Pure geometric prism - representing transparency and clarity -->
-  <g>
-    <!-- Left triangular face - semi-transparent -->
-    <polygon
-      points="64,20 35,95 64,95"
-      fill="url(#pureGradient)"
-      stroke="#0891b2"
-      strokeWidth="1.5"
-      opacity="0.7"
-    />
-
-    <!-- Right triangular face - less transparent -->
-    <polygon
-      points="64,20 93,95 64,95"
-      fill="url(#pureGradient)"
-      stroke="#0891b2"
-      strokeWidth="1.5"
-      opacity="0.5"
-    />
-
-    <!-- Center light beam - representing pure light through glass -->
-    <polygon
-      points="64,20 64,95 64,95"
-      fill="#ffffff"
-      opacity="0.3"
-    />
-  </g>
-
-  <!-- Subtle highlight on top - glass shine -->
-  <ellipse
-    cx="64"
-    cy="35"
-    rx="16"
-    ry="12"
-    fill="url(#highlight)"
-  />
-
-  <!-- Minimal center line for definition -->
-  <line
-    x1="64"
-    y1="20"
-    x2="64"
-    y2="95"
-    stroke="#0891b2"
-    strokeWidth="1"
-    opacity="0.4"
-  />
+  
+  <!-- Isometric Cube Silhouette -->
+  <path d="M256 64L448 176V336L256 448L64 336V176L256 64Z" fill="url(#mainGrad)" />
+  
+  <!-- Top Face (Lighter for 3D effect) -->
+  <path d="M256 64L448 176L256 288L64 176L256 64Z" fill="white" fill-opacity="0.2" />
+  
+  <!-- Inner "GlassBox" Outline -->
+  <path d="M256 192L352 248V360L256 416L160 360V248L256 192Z" stroke="white" stroke-width="16" stroke-opacity="0.9" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Subtle Overlay for Gloss -->
+  <path d="M256 64L448 176V336L256 448L64 336V176L256 64Z" fill="url(#glassShine)" style="mix-blend-mode:overlay" />
 </svg>
