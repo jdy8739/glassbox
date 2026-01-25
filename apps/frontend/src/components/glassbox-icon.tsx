@@ -10,9 +10,9 @@ export function GlassboxIcon() {
       <defs>
         {/* Gradient for the glass prism */}
         <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4aca80" stopOpacity="0.9" />
-          <stop offset="50%" stopColor="#2fb866" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.9" />
+          <stop offset="50%" stopColor="#0891b2" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#0e7490" stopOpacity="0.9" />
         </linearGradient>
 
         {/* Lighter gradient for highlights */}
@@ -23,8 +23,8 @@ export function GlassboxIcon() {
 
         {/* Gradient for portfolio lines */}
         <linearGradient id="portfolioGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#2fb866" />
-          <stop offset="100%" stopColor="#06b6d4" />
+          <stop offset="0%" stopColor="#06b6d4" />
+          <stop offset="100%" stopColor="#0891b2" />
         </linearGradient>
 
         {/* Shadow filter */}
