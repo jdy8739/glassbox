@@ -114,7 +114,7 @@ export default function PortfolioBuilder() {
           <button
             onClick={handleAnalyze}
             disabled={items.length === 0 || isAnalyzing}
-            className="hidden lg:flex glass-button text-xs px-4 py-2 items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="hidden lg:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isAnalyzing ? (
               <>

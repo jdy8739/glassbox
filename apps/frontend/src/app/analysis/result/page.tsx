@@ -151,7 +151,7 @@ function AnalysisResultContent() {
             {isSnapshot && !isReanalyzing && (
               <button
                 onClick={handleReanalyze}
-                className="glass-button-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+                className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Re-analyze</span>
@@ -161,7 +161,7 @@ function AnalysisResultContent() {
             <div className="relative" ref={exportMenuRef}>
               <button
                 onClick={() => setIsExportOpen(!isExportOpen)}
-                className="glass-button-outline text-xs px-3 py-2 flex items-center gap-1.5"
+                className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <Download className="w-4 h-4" />
                 <span>Export</span>
@@ -187,12 +187,12 @@ function AnalysisResultContent() {
             </div>
             <button
               onClick={handleSaveButton}
-              className="glass-button text-xs px-3 py-2 flex items-center gap-1.5"
+              className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isReanalyzing || isProcessing}
             >
               {isProcessing ? (
                  <>
-                   <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                   <div className="w-3 h-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
                    <span>Saving...</span>
                  </>
               ) : (

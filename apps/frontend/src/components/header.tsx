@@ -118,7 +118,7 @@ export function Header() {
             actionContent
           ) : (
             /* Primary CTA Button */
-            <Link href="/portfolio/new" className="hidden sm:flex glass-button h-9 px-4 flex items-center gap-2 text-xs">
+            <Link href="/portfolio/new" className="hidden sm:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all">
               <Zap className="w-4 h-4" />
               <span>Launch</span>
             </Link>
