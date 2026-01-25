@@ -67,33 +67,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="relative px-4 py-20">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="glass-card text-center p-8 group hover:border-purple-300/50">
-              <div className="text-5xl font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent mb-2">
-                10M+
-              </div>
-              <p className="text-black/70 dark:text-white/70">Portfolio Analyses</p>
-            </div>
-            <div className="glass-card text-center p-8 group hover:border-slate-300/50">
-              <div className="text-5xl font-bold bg-gradient-to-r from-slate-300 to-orange-300 bg-clip-text text-transparent mb-2">
-                99.9%
-              </div>
-              <p className="text-black/70 dark:text-white/70">Accuracy Rate</p>
-            </div>
-            <div className="glass-card text-center p-8 group hover:border-cyan-300/50">
-              <div className="text-5xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-2">
-                &lt;100ms
-              </div>
-              <p className="text-black/70 dark:text-white/70">Average Response</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
+{/* Features Section */}
       <div className="relative px-4 py-28">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-20 space-y-6">
