@@ -7,6 +7,7 @@ import { usePortfolioBuilder } from './usePortfolioBuilder';
 import { PortfolioDonutChart } from './components/PortfolioDonutChart';
 import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
+import { QuickAddAssets } from './components/QuickAddAssets';
 
 const CHART_COLORS = [
   '#06b6d4', // Cyan 500
@@ -210,6 +211,9 @@ export default function PortfolioBuilder() {
                 </div>
               </div>
             </div>
+
+            {/* Quick Add Assets */}
+            <QuickAddAssets onAdd={handleAddItem} />
 
             {/* Main Content Area */}
             <div className="space-y-6">
