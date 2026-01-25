@@ -29,7 +29,7 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
       {/* Background Glow Effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/5 to-purple-400/5 rounded-full blur-3xl scale-75 animate-pulse"></div>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" debounce={50}>
         <PieChart>
           <Pie
             data={data}

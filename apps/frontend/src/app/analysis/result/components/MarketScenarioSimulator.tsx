@@ -42,7 +42,7 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
       </div>
 
       <div className="h-[300px] w-full mt-4">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" debounce={50}>
           <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
             <XAxis 
               dataKey="scenario" 
