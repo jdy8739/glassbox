@@ -25,34 +25,44 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
   const isEmpty = items.length === 0;
 
   return (
-    <div className="h-[250px] w-full relative">
+    <div className="h-[280px] w-full relative group">
+      {/* Background Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/5 to-purple-400/5 rounded-full blur-3xl scale-75 animate-pulse"></div>
+
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            paddingAngle={isEmpty ? 0 : 5}
+            innerRadius={80}
+            outerRadius={100}
+            paddingAngle={isEmpty ? 0 : 4}
             dataKey="value"
             stroke="none"
+            cornerRadius={6}
           >
             {data.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
                 fill={isEmpty ? '#334155' : colors[index % colors.length]} 
-                className="transition-all duration-300 hover:opacity-80"
+                className="transition-all duration-300 hover:opacity-90 hover:scale-105 stroke-2 stroke-white/10"
               />
             ))}
           </Pie>
           <Tooltip 
             content={({ active, payload }) => {
               if (active && payload && payload.length && !isEmpty) {
+                const data = payload[0];
                 return (
-                  <div className="glass-panel px-3 py-2 text-xs font-bold shadow-xl">
-                    <p className="text-black dark:text-white">{payload[0].name}</p>
-                    <p className="text-cyan-600 dark:text-cyan-400">Qty: {payload[0].value}</p>
+                  <div className="glass-panel px-4 py-3 shadow-xl border-white/20 dark:border-white/10 backdrop-blur-xl">
+                    <p className="text-sm font-bold text-black dark:text-white mb-0.5">{data.name}</p>
+                    <div className="flex items-center gap-2">
+                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: data.payload.fill }}></span>
+                       <p className="text-xs font-semibold text-black/60 dark:text-white/60">
+                         Qty: <span className="text-black dark:text-white">{data.value}</span>
+                       </p>
+                    </div>
                   </div>
                 );
               }
@@ -64,11 +74,11 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
       
       {/* Center Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-center">
-          <p className="text-3xl font-bold text-black dark:text-white">
+        <div className="text-center transform transition-transform duration-300 group-hover:scale-110">
+          <p className="text-4xl font-black bg-gradient-to-br from-black to-black/60 dark:from-white dark:to-white/60 bg-clip-text text-transparent tracking-tight">
             {items.length}
           </p>
-          <p className="text-xs text-black/50 dark:text-white/50 uppercase tracking-wider font-semibold">
+          <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-widest font-bold mt-1">
             Assets
           </p>
         </div>

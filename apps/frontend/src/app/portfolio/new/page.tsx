@@ -108,20 +108,6 @@ export default function PortfolioBuilder() {
           <span>←</span>
           <span>Back</span>
         </a>
-        
-        {/* Mobile Analyze Button */}
-        <button
-          onClick={handleAnalyze}
-          disabled={items.length === 0 || isAnalyzing}
-          className="lg:hidden glass-button disabled:opacity-50 disabled:cursor-not-allowed text-xs px-4 py-2 flex items-center gap-1.5"
-        >
-          {isAnalyzing ? (
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          ) : (
-            <TrendingUp className="w-5 h-5" />
-          )}
-          <span>Analyze</span>
-        </button>
       </nav>
 
       <div className="mx-auto max-w-6xl">
@@ -313,6 +299,31 @@ export default function PortfolioBuilder() {
                </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Fixed Bottom Bar */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-white/20 z-50 lg:hidden">
+        <div className="flex items-center gap-4 max-w-lg mx-auto">
+          <div className="flex-1">
+            <p className="text-xs text-black/50 dark:text-white/50 font-medium">Portfolio Summary</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-bold text-black dark:text-white">{items.length} Assets</span>
+              <span className="text-sm text-black/60 dark:text-white/60">~ $100k</span>
+            </div>
+          </div>
+          <button
+            onClick={handleAnalyze}
+            disabled={items.length === 0 || isAnalyzing}
+            className="glass-button px-6 py-3 flex items-center gap-2 disabled:opacity-50"
+          >
+            {isAnalyzing ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <Rocket className="w-4 h-4" />
+            )}
+            <span>Analyze</span>
+          </button>
         </div>
       </div>
 
