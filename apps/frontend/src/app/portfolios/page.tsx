@@ -172,34 +172,7 @@ export default function PortfolioLibrary() {
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-               <div key={i} className="glass-panel p-5 flex flex-col h-full min-h-[280px] animate-pulse">
-                 {/* Header Skeleton */}
-                 <div className="flex justify-between items-start mb-6">
-                   <div className="space-y-3 w-2/3">
-                     <div className="h-6 w-full bg-black/10 dark:bg-white/10 rounded-md" />
-                     <div className="h-3 w-1/2 bg-black/5 dark:bg-white/5 rounded" />
-                   </div>
-                   <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5" />
-                 </div>
-
-                 {/* Bar Skeleton */}
-                 <div className="space-y-2 mb-6">
-                   <div className="h-2 w-full rounded-full bg-black/5 dark:bg-white/5" />
-                   <div className="flex gap-2">
-                     <div className="h-2 w-8 bg-black/5 dark:bg-white/5 rounded" />
-                     <div className="h-2 w-12 bg-black/5 dark:bg-white/5 rounded" />
-                   </div>
-                 </div>
-
-                 {/* Stats Skeleton */}
-                 <div className="grid grid-cols-2 gap-2 mb-6">
-                   <div className="h-12 rounded-lg bg-black/5 dark:bg-white/5" />
-                   <div className="h-12 rounded-lg bg-black/5 dark:bg-white/5" />
-                 </div>
-
-                 {/* Button Skeleton */}
-                 <div className="mt-auto h-9 w-full rounded-lg bg-black/5 dark:bg-white/5" />
-               </div>
+               <div key={i} className="glass-panel h-[280px] animate-pulse bg-black/5 dark:bg-white/5" />
              ))}
           </div>
         ) : filteredPortfolios.length === 0 ? (
