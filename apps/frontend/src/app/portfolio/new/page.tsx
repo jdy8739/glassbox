@@ -1,7 +1,7 @@
 'use client';
 
 import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers, AlertCircle } from 'lucide-react';
-import { useEffect, useRef, useState, Suspense } from 'react';
+import { useEffect, useRef, useState, Suspense, useTransition } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
@@ -89,6 +89,7 @@ function PortfolioBuilderContent() {
   } = usePortfolioBuilder();
 
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [isPending, startTransition] = useTransition();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -146,9 +147,11 @@ function PortfolioBuilderContent() {
   }, [setShowDropdown]);
 
   const handleAddItem = (symbol: string, name?: string) => {
-    if (addItem(symbol, name)) {
-      // Smooth scroll happens via React state update, no need for manual scroll
-    }
+    startTransition(() => {
+      if (addItem(symbol, name)) {
+        // Smooth scroll happens via React state update, no need for manual scroll
+      }
+    });
   };
 
   return (
@@ -318,7 +321,13 @@ function PortfolioBuilderContent() {
               </h3>
               
               {/* Donut Chart */}
-              <PortfolioDonutChart items={items} colors={CHART_COLORS} />
+              {isPending ? (
+                <div className="w-full h-[250px] flex items-center justify-center">
+                  <div className="w-48 h-48 rounded-full border-[16px] border-black/5 dark:border-white/5 animate-pulse" />
+                </div>
+              ) : (
+                <PortfolioDonutChart items={items} colors={CHART_COLORS} />
+              )}
 
               {/* Stats Summary */}
               {items.length > 0 && (
