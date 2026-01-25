@@ -104,7 +104,7 @@ export function Header() {
           </button>
 
           {/* Primary CTA Button */}
-          <Link href="/portfolio/new" className="hidden sm:block glass-button text-xs px-4 py-2 flex items-center gap-1.5">
+          <Link href="/portfolio/new" className="hidden sm:flex glass-button text-xs px-4 py-2">
             <Zap className="w-4 h-4" />
             <span>Launch</span>
           </Link>

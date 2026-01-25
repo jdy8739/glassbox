@@ -179,8 +179,8 @@ export default function Home() {
             {/* Step 1 */}
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-300 to-blue-300 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-black dark:text-white">1</span>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>
+                  <span className="text-2xl font-bold text-white">1</span>
                 </div>
               </div>
               <div className="flex-1">
@@ -194,8 +194,8 @@ export default function Home() {
             {/* Step 2 */}
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-300 to-orange-300 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-black dark:text-white">2</span>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>
+                  <span className="text-2xl font-bold text-white">2</span>
                 </div>
               </div>
               <div className="flex-1">
@@ -209,8 +209,8 @@ export default function Home() {
             {/* Step 3 */}
             <div className="flex gap-6 items-start">
               <div className="min-w-fit">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-300 to-blue-400 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-black dark:text-white">3</span>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>
+                  <span className="text-2xl font-bold text-white">3</span>
                 </div>
               </div>
               <div className="flex-1">
