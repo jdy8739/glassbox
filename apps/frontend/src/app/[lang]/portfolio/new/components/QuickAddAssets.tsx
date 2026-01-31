@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Building2, Bitcoin, DollarSign, BarChart3, Wrench, Zap, Sparkles } from 'lucide-react';
 
 interface QuickAddAssetsProps {
@@ -7,26 +8,28 @@ interface QuickAddAssetsProps {
 }
 
 export function QuickAddAssets({ onAdd }: QuickAddAssetsProps) {
+  const { t } = useTranslation();
+
   const assets = [
-    { name: 'Treasury Bonds', ticker: 'TLT', icon: Building2, color: 'slate' },
-    { name: 'Bitcoin', ticker: 'BTC', icon: Bitcoin, color: 'coral' },
-    { name: 'Gold', ticker: 'GLD', icon: DollarSign, color: 'amber' },
-    { name: 'S&P 500', ticker: 'SPY', icon: BarChart3, color: 'cyan' },
-    { name: 'Tech', ticker: 'QQQ', icon: Wrench, color: 'cyan' },
-    { name: 'Energy', ticker: 'XLE', icon: Zap, color: 'coral' },
+    { nameKey: 'portfolio.quick-add.treasury-bonds', ticker: 'TLT', icon: Building2, color: 'slate' },
+    { nameKey: 'portfolio.quick-add.bitcoin', ticker: 'BTC', icon: Bitcoin, color: 'coral' },
+    { nameKey: 'portfolio.quick-add.gold', ticker: 'GLD', icon: DollarSign, color: 'amber' },
+    { nameKey: 'portfolio.quick-add.sp500', ticker: 'SPY', icon: BarChart3, color: 'cyan' },
+    { nameKey: 'portfolio.quick-add.tech', ticker: 'QQQ', icon: Wrench, color: 'cyan' },
+    { nameKey: 'portfolio.quick-add.energy', ticker: 'XLE', icon: Zap, color: 'coral' },
   ];
 
   return (
     <div className="space-y-4">
       <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
         <Sparkles className="w-4 h-4" />
-        Popular Assets
+        {t('portfolio.quick-add.title')}
       </label>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
         {assets.map((asset) => {
           const IconComponent = asset.icon;
           let colorClass = '';
-          
+
           if (asset.color === 'slate') colorClass = 'slate-glow';
           else if (asset.color === 'coral') colorClass = 'coral-pink';
           else if (asset.color === 'cyan') colorClass = 'cyan-blue';
@@ -43,7 +46,7 @@ export function QuickAddAssets({ onAdd }: QuickAddAssetsProps) {
                 <IconComponent className={`w-6 h-6 ${asset.ticker === 'GLD' ? 'text-amber-400' : 'text-cyan-400'}`} />
               </div>
               <div>
-                <p className="text-xs font-bold text-black dark:text-white">{asset.name}</p>
+                <p className="text-xs font-bold text-black dark:text-white">{t(asset.nameKey)}</p>
                 <p className="text-[10px] text-black/60 dark:text-white/60 font-mono mt-0.5">{asset.ticker}</p>
               </div>
             </button>

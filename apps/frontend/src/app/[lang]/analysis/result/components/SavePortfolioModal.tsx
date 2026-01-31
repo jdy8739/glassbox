@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { AlertCircle, Check } from 'lucide-react';
 import { getAllPortfolios } from '@/lib/api/portfolio';
@@ -12,6 +13,7 @@ interface SavePortfolioModalProps {
 }
 
 export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioModalProps) {
+  const { t } = useTranslation();
   const [portfolioName, setPortfolioName] = useState('');
   const [existingNames, setExistingNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,16 +73,16 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
             <Check className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Save Portfolio</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t('portfolio.save-modal.title')}</h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-              Give your portfolio a name to save it to your library.
+              {t('portfolio.save-modal.description')}
             </p>
           </div>
         </div>
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Portfolio Name</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('portfolio.save-modal.label')}</label>
             <span className={`text-xs ${trimmedName.length > 40 ? 'text-orange-500' : 'text-slate-400 dark:text-slate-500'}`}>
               {trimmedName.length}/50
             </span>
@@ -91,7 +93,7 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
             value={portfolioName}
             onChange={(e) => setPortfolioName(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g., My Tech Portfolio"
+            placeholder={t('portfolio.save-modal.placeholder')}
             className={`w-full rounded-lg border px-4 py-3 font-medium bg-white/60 dark:bg-slate-800/60 transition-all duration-200 focus:outline-none focus:ring-2 ${
               trimmedName.length > 0 && !isValid
                 ? 'border-red-400/50 focus:border-red-500 focus:ring-red-500/20'
@@ -107,28 +109,28 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
           {isTooShort && (
             <div className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400">
               <AlertCircle className="w-3 h-3" />
-              <span>Name must be at least 3 characters</span>
+              <span>{t('portfolio.save-modal.error-short')}</span>
             </div>
           )}
 
           {isTooLong && (
             <div className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400">
               <AlertCircle className="w-3 h-3" />
-              <span>Name must be 50 characters or less</span>
+              <span>{t('portfolio.save-modal.error-long')}</span>
             </div>
           )}
 
           {isDuplicate && !isTooShort && (
             <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400">
               <AlertCircle className="w-3 h-3" />
-              <span>A portfolio with this name already exists</span>
+              <span>{t('portfolio.save-modal.error-duplicate')}</span>
             </div>
           )}
 
           {isValid && (
             <div className="flex items-center gap-2 text-xs text-cyan-600 dark:text-cyan-400">
               <Check className="w-3 h-3" />
-              <span>Ready to save</span>
+              <span>{t('portfolio.save-modal.success')}</span>
             </div>
           )}
         </div>
@@ -138,14 +140,14 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
             onClick={onClose}
             className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors"
           >
-            Cancel
+            {t('portfolio.save-modal.cancel')}
           </button>
           <button
             onClick={handleSubmit}
             disabled={!isValid || isLoading}
             className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-medium shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Loading...' : 'Save'}
+            {isLoading ? t('portfolio.save-modal.loading') : t('portfolio.save-modal.save')}
           </button>
         </div>
       </div>

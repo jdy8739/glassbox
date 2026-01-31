@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Sparkles, TrendingUp, Lightbulb, MapPin, Rocket, Layers, AlertCircle } from 'lucide-react';
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { createPortal } from 'react-dom';
@@ -34,6 +35,7 @@ const CHART_COLORS = [
 ];
 
 function BuilderErrorFallback() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen px-6 py-8 flex items-center justify-center">
       <div className="glass-panel p-8 max-w-md w-full text-center space-y-6 border-orange-500/20 bg-orange-500/5">
@@ -43,10 +45,10 @@ function BuilderErrorFallback() {
 
         <div>
           <h2 className="text-xl font-bold text-black dark:text-white mb-2">
-            Portfolio Build Failed
+            {t('portfolio.builder.error.title')}
           </h2>
           <p className="text-sm text-black/60 dark:text-white/60">
-            Something went wrong while loading the portfolio builder. Please try again.
+            {t('portfolio.builder.error.description')}
           </p>
         </div>
 
@@ -55,14 +57,14 @@ function BuilderErrorFallback() {
             onClick={() => window.location.href = '/'}
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
-            <span>Back to Home</span>
+            <span>{t('common.button.back-home')}</span>
           </button>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"
           >
             <Rocket className="w-4 h-4" />
-            Retry
+            {t('common.button.retry')}
           </button>
         </div>
       </div>
@@ -71,6 +73,7 @@ function BuilderErrorFallback() {
 }
 
 function PortfolioBuilderContent() {
+  const { t } = useTranslation();
   const {
     items,
     searchInput,
@@ -343,7 +346,7 @@ function PortfolioBuilderContent() {
 
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
 
-                  <span>Analyzing...</span>
+                  <span>{t('portfolio.builder.analyze.analyzing')}</span>
 
                 </>
 
@@ -353,7 +356,7 @@ function PortfolioBuilderContent() {
 
                   <TrendingUp className="w-5 h-5" />
 
-                  <span>Analyze</span>
+                  <span>{t('nav.analyze')}</span>
 
                 </>
 
@@ -387,7 +390,7 @@ function PortfolioBuilderContent() {
 
                   <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
 
-                  <span className="text-sm font-medium text-black dark:text-white/80">Step 1: Build Portfolio</span>
+                  <span className="text-sm font-medium text-black dark:text-white/80">{t('portfolio.builder.step')}</span>
 
                 </div>
 
@@ -397,13 +400,13 @@ function PortfolioBuilderContent() {
 
                   <h1 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
 
-                    Build Your
+                    {t('portfolio.builder.title.part1')}
 
                     <br />
 
                     <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
 
-                      Investment Portfolio
+                      {t('portfolio.builder.title.part2')}
 
                     </span>
 
@@ -411,7 +414,7 @@ function PortfolioBuilderContent() {
 
                   <p className="text-xl text-black dark:text-white/70 max-w-2xl">
 
-                    Mix and match assets to create your perfect portfolio.
+                    {t('portfolio.builder.description')}
 
                   </p>
 
@@ -433,7 +436,7 @@ function PortfolioBuilderContent() {
 
                     <div className="flex-1">
 
-                      <h4 className="font-semibold text-black dark:text-white mb-1">Analysis Failed</h4>
+                      <h4 className="font-semibold text-black dark:text-white mb-1">{t('portfolio.builder.analysis.failed')}</h4>
 
                       <p className="text-sm text-black/70 dark:text-white/70">{analysisError}</p>
 
@@ -445,7 +448,7 @@ function PortfolioBuilderContent() {
 
                       >
 
-                        Dismiss
+                        {t('portfolio.builder.analysis.dismiss')}
 
                       </button>
 
@@ -469,7 +472,7 @@ function PortfolioBuilderContent() {
 
                     <MapPin className="w-4 h-4" />
 
-                    Add Stock Ticker
+                    {t('portfolio.builder.search.label')}
 
                   </label>
 
@@ -495,7 +498,7 @@ function PortfolioBuilderContent() {
 
                           onKeyDown={handleKeyDown}
 
-                          placeholder="Search ticker (e.g. AAPL)..."
+                          placeholder={t('portfolio.builder.search.placeholder')}
 
                           className="glass-input w-full text-lg pr-10"
 
@@ -521,7 +524,7 @@ function PortfolioBuilderContent() {
 
                       >
 
-                        Add
+                        {t('portfolio.builder.search.add')}
 
                       </button>
 
@@ -555,7 +558,7 @@ function PortfolioBuilderContent() {
 
                       <Sparkles className="w-5 h-5 text-cyan-400" />
 
-                      <h3 className="text-lg font-semibold">Start with a Template</h3>
+                      <h3 className="text-lg font-semibold">{t('portfolio.builder.templates.title')}</h3>
 
                     </div>
 
@@ -575,11 +578,11 @@ function PortfolioBuilderContent() {
 
                         <Layers className="w-4 h-4" />
 
-                        Your Assets
+                        {t('portfolio.builder.assets.label')}
 
                       </label>
 
-                      <button 
+                      <button
 
                         onClick={() => loadTemplate([])}
 
@@ -587,7 +590,7 @@ function PortfolioBuilderContent() {
 
                       >
 
-                        Clear All
+                        {t('portfolio.builder.assets.clear')}
 
                       </button>
 
@@ -625,7 +628,7 @@ function PortfolioBuilderContent() {
 
                   <TrendingUp className="w-5 h-5 text-cyan-400" />
 
-                  Live Preview
+                  {t('portfolio.builder.preview.title')}
 
                 </h3>
 
@@ -651,25 +654,25 @@ function PortfolioBuilderContent() {
 
                                   <div>
 
-  
 
-                                    <p className="text-xs text-black/50 dark:text-white/50">Total Assets</p>
 
-  
+                                    <p className="text-xs text-black/50 dark:text-white/50">{t('portfolio.builder.preview.total')}</p>
+
+
 
                                     <p className="text-lg font-bold text-black dark:text-white">{items.length}</p>
 
-  
+
 
                                   </div>
 
-  
+
 
                                   <div>
 
-  
 
-                                    <p className="text-xs text-black/50 dark:text-white/50">Est. Value</p>
+
+                                    <p className="text-xs text-black/50 dark:text-white/50">{t('portfolio.builder.preview.value')}</p>
 
   
 
@@ -706,15 +709,15 @@ function PortfolioBuilderContent() {
 
                                 <label className="text-xs font-semibold text-black dark:text-white flex items-center gap-2">
 
-  
+
 
                                    <Lightbulb className="w-3 h-3 text-cyan-500" />
 
-  
 
-                                   Analysis Start Date (Optional)
 
-  
+                                   {t('portfolio.builder.analysis.settings.label')}
+
+
 
                                 </label>
 
@@ -746,11 +749,11 @@ function PortfolioBuilderContent() {
 
                                                 <p className="text-[10px] text-black/40 dark:text-white/40 pl-1">
 
-  
 
-                                                  Leave blank for default (3 years ago)
 
-  
+                                                  {t('portfolio.builder.analysis.settings.hint')}
+
+
 
                                                 </p>
 
@@ -782,7 +785,7 @@ function PortfolioBuilderContent() {
 
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
 
-                      <span>Analyzing...</span>
+                      <span>{t('portfolio.builder.analyze.analyzing')}</span>
 
                     </>
 
@@ -792,7 +795,7 @@ function PortfolioBuilderContent() {
 
                       <Rocket className="w-5 h-5 group-hover:animate-bounce" />
 
-                      <span>Analyze Portfolio</span>
+                      <span>{t('portfolio.builder.analyze.button')}</span>
 
                     </>
 
@@ -806,7 +809,7 @@ function PortfolioBuilderContent() {
 
                   <p className="text-xs text-center text-black/40 dark:text-white/40">
 
-                    Add at least one asset to enable analysis.
+                    {t('portfolio.builder.analysis.empty')}
 
                   </p>
 
@@ -826,7 +829,7 @@ function PortfolioBuilderContent() {
 
                    <p className="text-xs text-black/70 dark:text-white/70 leading-relaxed">
 
-                     <strong>Pro Tip:</strong> Try to include a mix of assets (Stocks, Bonds, Crypto) to see how diversification affects your efficient frontier.
+                     <strong>{t('portfolio.builder.tip.title')}</strong> {t('portfolio.builder.tip.description')}
 
                    </p>
 
@@ -850,11 +853,11 @@ function PortfolioBuilderContent() {
 
             <div className="flex-1">
 
-              <p className="text-xs text-black/50 dark:text-white/50 font-medium">Portfolio Summary</p>
+              <p className="text-xs text-black/50 dark:text-white/50 font-medium">{t('portfolio.builder.summary.label')}</p>
 
               <div className="flex items-baseline gap-2">
 
-                <span className="text-lg font-bold text-black dark:text-white">{items.length} Assets</span>
+                <span className="text-lg font-bold text-black dark:text-white">{items.length} {t('portfolio.builder.summary.assets')}</span>
 
                 <span className="text-sm text-black/60 dark:text-white/60">~ 
   00k</span>
@@ -883,7 +886,7 @@ function PortfolioBuilderContent() {
 
               )}
 
-              <span>Analyze</span>
+              <span>{t('nav.analyze')}</span>
 
             </button>
 

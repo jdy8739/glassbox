@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { X, Plus, Minus } from 'lucide-react';
 
 interface PortfolioItem {
@@ -15,6 +16,7 @@ interface AssetListProps {
 }
 
 export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetListProps) {
+  const { t } = useTranslation();
   if (items.length === 0) return null;
 
   return (
@@ -57,7 +59,7 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                   {item.symbol}
                 </h3>
                 <p className="text-xs font-medium text-black/50 dark:text-white/50 mt-0.5 truncate">
-                  Asset #{index + 1}
+                  {t('portfolio.asset.label')} #{index + 1}
                 </p>
               </div>
 
@@ -78,7 +80,7 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                     className="w-full text-center bg-transparent font-bold text-sm text-black dark:text-white focus:outline-none p-0"
                     min="0"
                   />
-                  <span className="text-[9px] text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold block -mt-0.5">Units</span>
+                  <span className="text-[9px] text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold block -mt-0.5">{t('portfolio.asset.units')}</span>
                 </div>
 
                 <button 

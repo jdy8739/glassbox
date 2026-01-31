@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { LocalizedLink } from '@/components/LocalizedLink';
 import { Trash2, TrendingUp, Activity, Calendar } from 'lucide-react';
 import type { Portfolio } from '@glassbox/types';
@@ -13,6 +14,7 @@ interface PortfolioCardProps {
 }
 
 export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: PortfolioCardProps) {
+  const { t } = useTranslation();
   const stats = portfolio.analysisSnapshot?.maxSharpe?.stats;
 
   // Calculate composition based on quantities (simple visual approximation)
@@ -36,7 +38,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
             {formatShortDate(portfolio.updatedAt)}
             {portfolio.analysisSnapshot?.analysisDate && (
               <span className="ml-1 opacity-70">
-                (Start: {portfolio.analysisSnapshot.analysisDate})
+                ({t('portfolio.card.start-date')}: {portfolio.analysisSnapshot.analysisDate})
               </span>
             )}
           </p>
@@ -61,8 +63,8 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
       {/* Composition Bar */}
       <div className="mb-6 space-y-2">
         <div className="flex justify-between text-xs text-black/60 dark:text-white/60 mb-1">
-          <span>Composition</span>
-          <span>{portfolio.tickers.length} Assets</span>
+          <span>{t('portfolio.card.composition')}</span>
+          <span>{portfolio.tickers.length} {t('portfolio.card.assets')}</span>
         </div>
         <div className="h-2 w-full flex rounded-full overflow-hidden bg-black/5 dark:bg-white/5">
           {composition.map((item) => (
@@ -90,14 +92,14 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
       {stats && (
         <div className="grid grid-cols-2 gap-2 mb-6">
           <div className="bg-black/5 dark:bg-white/5 rounded-lg p-2 text-center">
-            <p className="text-[10px] text-black/50 dark:text-white/50 uppercase tracking-wider mb-0.5">Sharpe</p>
+            <p className="text-[10px] text-black/50 dark:text-white/50 uppercase tracking-wider mb-0.5">{t('portfolio.card.sharpe')}</p>
             <div className="flex items-center justify-center gap-1 text-black dark:text-white font-bold">
               <TrendingUp className="w-3 h-3 text-cyan-500" />
               {stats.sharpe.toFixed(2)}
             </div>
           </div>
           <div className="bg-black/5 dark:bg-white/5 rounded-lg p-2 text-center">
-            <p className="text-[10px] text-black/50 dark:text-white/50 uppercase tracking-wider mb-0.5">Vol</p>
+            <p className="text-[10px] text-black/50 dark:text-white/50 uppercase tracking-wider mb-0.5">{t('portfolio.card.volatility')}</p>
             <div className="flex items-center justify-center gap-1 text-black dark:text-white font-bold">
               <Activity className="w-3 h-3 text-pink-500" />
               {(stats.volatility * 100).toFixed(1)}%
@@ -111,7 +113,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
           href={`/analysis/result?portfolioId=${portfolio.id}`}
           className="block w-full text-center py-2 rounded-lg bg-black text-white dark:bg-white dark:text-black font-semibold text-sm hover:opacity-90 transition-opacity"
         >
-          Open Analysis
+          {t('portfolio.card.open-analysis')}
         </LocalizedLink>
       </div>
     </div>

@@ -42,3 +42,89 @@ footer.description,Smart portfolio optimization for modern investors,현대 투�
 footer.docs,Docs,문서
 footer.github,GitHub,깃허브
 footer.contact,Contact,문의
+portfolio.builder.step,Step 1: Build Portfolio,1단계: 포트폴리오 빌드
+portfolio.builder.title.part1,Build Your,포트폴리오를
+portfolio.builder.title.part2,Investment Portfolio,구성하세요
+portfolio.builder.description,Mix and match assets to create your perfect portfolio.,자산을 조합하여 완벽한 포트폴리오를 구성하세요.
+portfolio.builder.error.title,Portfolio Build Failed,포트폴리오 빌드 실패
+portfolio.builder.error.description,Something went wrong while loading the portfolio builder. Please try again.,포트폴리오 빌더를 로드하는 중 오류가 발생했습니다. 다시 시도해주세요.
+portfolio.builder.analysis.failed,Analysis Failed,분석 실패
+portfolio.builder.analysis.dismiss,Dismiss,닫기
+portfolio.builder.search.label,Add Stock Ticker,주식 티커 추가
+portfolio.builder.search.placeholder,Search ticker (e.g. AAPL)...,티커 검색 (예: AAPL)...
+portfolio.builder.search.add,Add,추가
+portfolio.builder.templates.title,Start with a Template,템플릿으로 시작
+portfolio.builder.assets.label,Your Assets,보유 자산
+portfolio.builder.assets.clear,Clear All,모두 삭제
+portfolio.builder.preview.title,Live Preview,라이브 미리보기
+portfolio.builder.preview.total,Total Assets,총 자산
+portfolio.builder.preview.value,Est. Value,예상 가치
+portfolio.builder.analysis.settings.label,Analysis Start Date (Optional),분석 시작일 (선택사항)
+portfolio.builder.analysis.settings.hint,Leave blank for default (3 years ago),공백으로 두면 기본값 (3년 전)
+portfolio.builder.analysis.empty,Add at least one asset to enable analysis.,분석을 활성화하려면 최소 하나의 자산을 추가하세요.
+portfolio.builder.analyze.button,Analyze Portfolio,포트폴리오 분석
+portfolio.builder.analyze.analyzing,Analyzing...,분석 중...
+portfolio.builder.summary.label,Portfolio Summary,포트폴리오 요약
+portfolio.builder.summary.assets,Assets,자산
+portfolio.builder.tip.title,Pro Tip:,팁:
+portfolio.builder.tip.description,"Try to include a mix of assets (Stocks, Bonds, Crypto) to see how diversification affects your efficient frontier.","다양한 자산 (주식, 채권, 암호화폐)을 포함하여 분산 투자가 효율적 투자선에 미치는 영향을 확인하세요.",
+portfolio.library.label,Library,라이브러리
+portfolio.library.title.part1,Your,당신의
+portfolio.library.title.part2,Portfolios,포트폴리오
+portfolio.library.description,Manage your saved strategies and track their theoretical performance over time.,저장된 전략을 관리하고 시간에 따른 이론적 성과를 추적하세요.
+portfolio.library.search,Search portfolios...,포트폴리오 검색...
+portfolio.library.empty.message,Your library is empty,라이브러리가 비어있습니다
+portfolio.library.empty.create,Start creating your first portfolio,첫 포트폴리오를 만들어보세요
+portfolio.library.search.empty,No portfolios found,포트폴리오를 찾을 수 없습니다
+portfolio.library.search.no-results,No results matching,일치하는 결과 없음
+portfolio.library.search.try-again,Try a different term.,다른 검색어를 시도하세요.
+portfolio.library.error.title,Portfolio Load Failed,포트폴리오 로드 실패
+portfolio.library.error.description,We couldn't load your portfolio library. Please try again.,포트폴리오 라이브러리를 로드할 수 없습니다. 다시 시도해주세요.
+common.button.back-home,Back to Home,홈으로 돌아가기
+common.button.retry,Retry,다시 시도
+analysis.tabs.frontier,Efficient Frontier,효율적 투자선
+analysis.tabs.hedging,Beta Hedging,베타 헤징
+analysis.title.part1,Portfolio Analysis,포트폴리오
+analysis.title.part2,Results,분석 결과
+analysis.export.csv,Export as CSV,CSV로 내보내기
+analysis.export.pdf,Export as PDF,PDF로 내보내기
+analysis.button.re-analyze,Re-analyze,다시 분석
+analysis.button.save,Save Portfolio,포트폴리오 저장
+analysis.button.analyze,Analyze,분석
+portfolio.card.new,New Portfolio,새 포트폴리오
+portfolio.card.new-description,Start a fresh analysis,새로운 분석 시작
+portfolio.save-modal.title,Save Portfolio,포트폴리오 저장
+portfolio.save-modal.description,Give your portfolio a name to save it to your library.,포트폴리오에 이름을 지정하여 라이브러리에 저장하세요.
+portfolio.save-modal.label,Portfolio Name,포트폴리오 이름
+portfolio.save-modal.placeholder,e.g., My Tech Portfolio,예: 내 기술 포트폴리오
+portfolio.save-modal.error-short,Name must be at least 3 characters,이름은 최소 3자 이상이어야 합니다
+portfolio.save-modal.error-long,Name must be 50 characters or less,이름은 50자 이하여야 합니다
+portfolio.save-modal.error-duplicate,A portfolio with this name already exists,이 이름의 포트폴리오가 이미 존재합니다
+portfolio.save-modal.success,Ready to save,저장할 준비 완료
+portfolio.save-modal.cancel,Cancel,취소
+portfolio.save-modal.loading,Loading...,로드 중...
+portfolio.save-modal.save,Save,저장
+portfolio.template.assets,Assets,자산
+portfolio.template.classic-60-40.name,The Classic 60/40,클래식 60/40
+portfolio.template.classic-60-40.description,60% Stocks 40% Bonds. A time-tested balance.,60% 주식, 40% 채권. 검증된 균형 배분.
+portfolio.template.big-tech.name,Big Tech Growth,빅 테크 성장
+portfolio.template.big-tech.description,High exposure to major US technology companies.,미국 주요 기술 기업에 높은 노출.
+portfolio.template.all-weather.name,All Weather,올 웨더
+portfolio.template.all-weather.description,Ray Dalio's strategy for any economic season.,모든 경제 시즌을 위한 레이 달리오의 전략.
+portfolio.template.crypto-heavy.name,Crypto Future,암호화폐 미래
+portfolio.template.crypto-heavy.description,Aggressive allocation to digital assets and miners.,디지털 자산 및 채굴자에 공격적 배분.
+portfolio.quick-add.title,Popular Assets,인기 자산
+portfolio.quick-add.treasury-bonds,Treasury Bonds,국채
+portfolio.quick-add.bitcoin,Bitcoin,비트코인
+portfolio.quick-add.gold,Gold,금
+portfolio.quick-add.sp500,S&P 500,S&P 500
+portfolio.quick-add.tech,Tech,기술
+portfolio.quick-add.energy,Energy,에너지
+portfolio.card.composition,Composition,구성
+portfolio.card.assets,Assets,자산
+portfolio.card.start-date,Start,시작
+portfolio.card.sharpe,Sharpe,샤프
+portfolio.card.volatility,Vol,변동성
+portfolio.card.open-analysis,Open Analysis,분석 보기
+portfolio.asset.label,Asset,자산
+portfolio.asset.units,Units,개

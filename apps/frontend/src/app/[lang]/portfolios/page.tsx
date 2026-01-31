@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { Package, Rocket, Search, SlidersHorizontal, AlertCircle } from 'lucide-react';
 import { PortfolioCard } from './components/PortfolioCard';
@@ -17,6 +18,7 @@ const CHART_COLORS = [
 ];
 
 function LibraryErrorFallback() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen px-6 py-8 flex items-center justify-center">
       <div className="glass-panel p-8 max-w-md w-full text-center space-y-6 border-orange-500/20 bg-orange-500/5">
@@ -26,10 +28,10 @@ function LibraryErrorFallback() {
 
         <div>
           <h2 className="text-xl font-bold text-black dark:text-white mb-2">
-            Portfolio Load Failed
+            {t('portfolio.library.error.title')}
           </h2>
           <p className="text-sm text-black/60 dark:text-white/60">
-            We couldn't load your portfolio library. Please try again.
+            {t('portfolio.library.error.description')}
           </p>
         </div>
 
@@ -38,14 +40,14 @@ function LibraryErrorFallback() {
             onClick={() => window.location.href = '/'}
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
-            <span>Back to Home</span>
+            <span>{t('common.button.back-home')}</span>
           </button>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"
           >
             <Rocket className="w-4 h-4" />
-            Retry
+            {t('common.button.retry')}
           </button>
         </div>
       </div>
@@ -54,6 +56,7 @@ function LibraryErrorFallback() {
 }
 
 function PortfolioLibraryContent() {
+  const { t } = useTranslation();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -102,13 +105,13 @@ function PortfolioLibraryContent() {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-              <span className="text-xs font-semibold text-black/70 dark:text-white/70">Library</span>
+              <span className="text-xs font-semibold text-black/70 dark:text-white/70">{t('portfolio.library.label')}</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white">
-              Your <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">Portfolios</span>
+              {t('portfolio.library.title.part1')} <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">{t('portfolio.library.title.part2')}</span>
             </h1>
             <p className="text-lg text-black/60 dark:text-white/60 max-w-xl">
-              Manage your saved strategies and track their theoretical performance over time.
+              {t('portfolio.library.description')}
             </p>
           </div>
 
@@ -117,9 +120,9 @@ function PortfolioLibraryContent() {
              <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 to-pink-400 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
              <div className="relative flex items-center bg-white/80 dark:bg-black/80 rounded-xl px-4 py-3 min-w-[300px] border border-black/5 dark:border-white/10 shadow-sm">
                <Search className="w-5 h-5 text-black/40 dark:text-white/40 mr-3" />
-               <input 
-                 type="text" 
-                 placeholder="Search portfolios..."
+               <input
+                 type="text"
+                 placeholder={t('portfolio.library.search')}
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
                  className="bg-transparent border-none focus:outline-none text-black dark:text-white w-full font-medium"
@@ -143,18 +146,18 @@ function PortfolioLibraryContent() {
             </div>
             <div>
               <p className="text-xl font-bold text-black dark:text-white mb-2">
-                {searchQuery ? 'No portfolios found' : 'Your library is empty'}
+                {searchQuery ? t('portfolio.library.search.empty') : t('portfolio.library.empty.message')}
               </p>
               <p className="text-black/50 dark:text-white/50 max-w-sm mx-auto">
-                {searchQuery 
-                  ? `No results matching "${searchQuery}". Try a different term.`
-                  : "Start analyzing stocks to create your first optimized portfolio strategy."}
+                {searchQuery
+                  ? `${t('portfolio.library.search.no-results')} "${searchQuery}". ${t('portfolio.library.search.try-again')}`
+                  : t('portfolio.library.empty.create')}
               </p>
             </div>
             {!searchQuery && (
               <a href="/portfolio/new" className="glass-button px-8 py-3">
                 <Rocket className="w-5 h-5 mr-2" />
-                Create Portfolio
+                {t('nav.analyze')}
               </a>
             )}
           </div>
