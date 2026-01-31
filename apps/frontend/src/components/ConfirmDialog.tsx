@@ -63,21 +63,21 @@ export const ConfirmDialog = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className={`bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border ${style.border} ${style.bg}`}>
+      <div className={`bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border ${style.border} ${style.bg}`}>
         <div className="flex items-start gap-4">
           <div className={`p-3 rounded-full bg-black/5 dark:bg-white/5 ${style.iconColor}`}>
             <Icon className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-black dark:text-white mb-2">{title}</h3>
-            <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed">{message}</p>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{message}</p>
           </div>
         </div>
 
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-black dark:text-white transition-colors font-medium"
+            className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors font-medium"
           >
             {cancelText}
           </button>
