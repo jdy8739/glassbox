@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Package, Rocket, Search, SlidersHorizontal, AlertCircle } from 'lucide-react';
 import { PortfolioCard } from './components/PortfolioCard';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { getAllPortfolios, deletePortfolio } from '@/lib/api/portfolio';
 import type { Portfolio } from '@glassbox/types';
 
@@ -61,6 +62,8 @@ function PortfolioLibraryContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [portfolioToDelete, setPortfolioToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPortfolios = async () => {
@@ -77,18 +80,24 @@ function PortfolioLibraryContent() {
     fetchPortfolios();
   }, []);
 
-  const handleDeletePortfolio = async (portfolioId: string) => {
-    if (!confirm(t('portfolio.delete.confirm-message'))) return;
+  const handleDeleteClick = (portfolioId: string) => {
+    setPortfolioToDelete(portfolioId);
+    setDeleteDialogOpen(true);
+  };
 
-    setDeleting(portfolioId);
+  const handleConfirmDelete = async () => {
+    if (!portfolioToDelete) return;
+
+    setDeleting(portfolioToDelete);
     try {
-      await deletePortfolio(portfolioId);
-      setPortfolios(portfolios.filter(p => p.id !== portfolioId));
+      await deletePortfolio(portfolioToDelete);
+      setPortfolios(portfolios.filter(p => p.id !== portfolioToDelete));
     } catch (error) {
       console.error('Error deleting portfolio:', error);
       alert(t('portfolio.delete.failed'));
     } finally {
       setDeleting(null);
+      setPortfolioToDelete(null);
     }
   };
 
@@ -176,10 +185,10 @@ function PortfolioLibraryContent() {
 
             {/* Portfolio Cards */}
             {filteredPortfolios.map((portfolio) => (
-              <PortfolioCard 
-                key={portfolio.id} 
-                portfolio={portfolio} 
-                onDelete={handleDeletePortfolio}
+              <PortfolioCard
+                key={portfolio.id}
+                portfolio={portfolio}
+                onDelete={handleDeleteClick}
                 isDeleting={deleting === portfolio.id}
                 colors={CHART_COLORS}
               />
@@ -187,6 +196,18 @@ function PortfolioLibraryContent() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={t('portfolio.delete.confirm-title')}
+        message={t('portfolio.delete.confirm-message')}
+        confirmText={t('portfolio.delete.confirm-button')}
+        cancelText={t('common.button.cancel')}
+        variant="danger"
+      />
     </main>
   );
 }
