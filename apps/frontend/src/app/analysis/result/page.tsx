@@ -63,6 +63,8 @@ function AnalysisResultContent() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isReanalyzeConfirmOpen, setIsReanalyzeConfirmOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isSaveAsMode, setIsSaveAsMode] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   
   const { 
@@ -83,6 +85,20 @@ function AnalysisResultContent() {
       router.push('/portfolio/new');
     }
   }, [isError, router]);
+
+  // Track unsaved changes
+  useEffect(() => {
+    if (!portfolioId || !portfolioData?.savedPortfolio || !portfolioData?.analysis) {
+      setHasUnsavedChanges(false);
+      return;
+    }
+
+    // Compare current analysis with saved snapshot
+    const currentAnalysisJSON = JSON.stringify(portfolioData.analysis);
+    const savedAnalysisJSON = JSON.stringify(portfolioData.savedPortfolio.analysisSnapshot);
+
+    setHasUnsavedChanges(currentAnalysisJSON !== savedAnalysisJSON);
+  }, [portfolioId, portfolioData]);
 
   const handleReanalyzeClick = () => {
     setIsReanalyzeConfirmOpen(true);
@@ -191,7 +207,9 @@ function AnalysisResultContent() {
       ctrl: true,
       meta: true,
       handler: () => {
-        if (!isProcessing && !isReanalyzing) {
+        // Don't save if processing or if no changes on existing portfolio
+        const canSave = !isProcessing && !isReanalyzing && !(isSnapshot && !hasUnsavedChanges);
+        if (canSave) {
           handleSaveButton();
         }
       },
@@ -320,14 +338,27 @@ function AnalysisResultContent() {
             </div>
             <button
               onClick={handleSaveButton}
-              className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative"
-              disabled={isReanalyzing || isProcessing}
-              title="Save portfolio (Ctrl+S)"
+              className={`h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative ${
+                isSnapshot && !hasUnsavedChanges
+                  ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                  : 'text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
+              }`}
+              disabled={isReanalyzing || isProcessing || (isSnapshot && !hasUnsavedChanges)}
+              title={
+                isSnapshot && !hasUnsavedChanges
+                  ? 'No changes to save'
+                  : 'Save portfolio (Ctrl+S)'
+              }
             >
               {isProcessing ? (
                  <>
                    <div className="w-3 h-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
                    <span>Saving...</span>
+                 </>
+              ) : isSnapshot && !hasUnsavedChanges ? (
+                 <>
+                   <Check className="w-4 h-4" />
+                   <span>Saved</span>
                  </>
               ) : (
                  <>
