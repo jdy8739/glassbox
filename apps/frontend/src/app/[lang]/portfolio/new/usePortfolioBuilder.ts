@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
+import { useTranslation } from 'react-i18next';
 import { analyzePortfolio } from '@/lib/api/portfolio';
 import { searchTickers } from '@/lib/api/tickers';
 import { saveAnalysisSession, clearAnalysisSession } from '@/lib/storage/analysis-session';
@@ -8,6 +9,7 @@ import { useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export function usePortfolioBuilder() {
+  const { t } = useTranslation();
   const router = useLocalizedRouter();
   const queryClient = useQueryClient();
   const [items, setItems] = useState<PortfolioItem[]>([]);
@@ -86,13 +88,13 @@ export function usePortfolioBuilder() {
     const nonZeroItems = items.filter((item) => item.quantity > 0);
 
     if (nonZeroItems.length === 0) {
-      window.alert('At least one asset must have a positive quantity');
+      window.alert(t('portfolio.builder.validation.no-positive-quantity'));
       return;
     }
 
     // Validate date range
     if (dateRange.startDate && dateRange.endDate && dateRange.startDate >= dateRange.endDate) {
-      window.alert('Start date must be before end date');
+      window.alert(t('portfolio.builder.validation.start-before-end'));
       return;
     }
 
@@ -103,7 +105,7 @@ export function usePortfolioBuilder() {
       today.setHours(0, 0, 0, 0); // Reset time for fair comparison
 
       if (endDate > today) {
-        window.alert('End date cannot be in the future');
+        window.alert(t('portfolio.builder.validation.end-not-future'));
         return;
       }
 
@@ -133,7 +135,7 @@ export function usePortfolioBuilder() {
       today.setHours(0, 0, 0, 0);
 
       if (startDate > today) {
-        window.alert('Start date cannot be in the future');
+        window.alert(t('portfolio.builder.validation.start-not-future'));
         return;
       }
     }
@@ -145,7 +147,7 @@ export function usePortfolioBuilder() {
       const daysDiff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
 
       if (daysDiff < 45) {
-        window.alert('Date range must be at least 45 days to ensure sufficient data (minimum 30 trading days required)');
+        window.alert(t('portfolio.builder.validation.date-range-minimum'));
         return;
       }
     }
