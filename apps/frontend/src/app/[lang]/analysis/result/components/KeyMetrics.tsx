@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Activity, TrendingUp, Zap, Target } from 'lucide-react';
 
 interface MetricProps {
@@ -48,35 +49,37 @@ interface PortfolioStats {
 }
 
 export function KeyMetrics({ stats }: { stats: PortfolioStats }) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <MetricCard 
-        label="Expected Return" 
-        value={`${(stats.maxSharpe.return * 100).toFixed(1)}%`} 
-        subValue="Annualized"
-        icon={TrendingUp} 
-        color="emerald" 
+      <MetricCard
+        label={t('analysis.metrics.return')}
+        value={`${(stats.maxSharpe.return * 100).toFixed(1)}%`}
+        subValue={t('analysis.metrics.return-sub')}
+        icon={TrendingUp}
+        color="emerald"
       />
-      <MetricCard 
-        label="Sharpe Ratio" 
-        value={stats.maxSharpe.sharpe.toFixed(2)} 
-        subValue="Risk-Adjusted Return"
-        icon={Zap} 
-        color="purple" 
+      <MetricCard
+        label={t('analysis.metrics.sharpe')}
+        value={stats.maxSharpe.sharpe.toFixed(2)}
+        subValue={t('analysis.metrics.sharpe-sub')}
+        icon={Zap}
+        color="purple"
       />
-      <MetricCard 
-        label="Volatility" 
-        value={`${(stats.maxSharpe.volatility * 100).toFixed(1)}%`} 
-        subValue={`Min Var: ${(stats.gmv.volatility * 100).toFixed(1)}%`}
-        icon={Activity} 
-        color="pink" 
+      <MetricCard
+        label={t('analysis.metrics.volatility')}
+        value={`${(stats.maxSharpe.volatility * 100).toFixed(1)}%`}
+        subValue={`${t('analysis.metrics.volatility-sub')}: ${(stats.gmv.volatility * 100).toFixed(1)}%`}
+        icon={Activity}
+        color="pink"
       />
-      <MetricCard 
-        label="Portfolio Beta" 
-        value={stats.beta.toFixed(2)} 
-        subValue="Market Correlation"
-        icon={Target} 
-        color="cyan" 
+      <MetricCard
+        label={t('analysis.metrics.beta')}
+        value={stats.beta.toFixed(2)}
+        subValue={t('analysis.metrics.beta-sub')}
+        icon={Target}
+        color="cyan"
       />
     </div>
   );

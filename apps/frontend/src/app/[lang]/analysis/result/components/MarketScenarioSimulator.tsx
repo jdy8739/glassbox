@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { memo } from 'react';
 
@@ -9,6 +10,8 @@ interface MarketScenarioProps {
 }
 
 function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketScenarioProps) {
+  const { t } = useTranslation();
+
   // Scenarios: Market moves -5%, 0%, +5%
   const marketMoves = [-0.05, 0, 0.05];
 
@@ -18,11 +21,11 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
     const hedgedChange = 0; // Ideally 0
 
     return {
-      scenario: marketMove === 0 ? 'Flat Market' : marketMove > 0 ? 'Market +5%' : 'Market -5%',
+      scenario: marketMove === 0 ? t('analysis.stress-test.flat-market') : marketMove > 0 ? t('analysis.stress-test.market-up') : t('analysis.stress-test.market-down'),
       Market: marketChange,
       Unhedged: unhedgedChange,
       Hedged: hedgedChange,
-      
+
       // For Tooltip Value display
       unhedgedValue: portfolioValue * (1 + (marketMove * beta)),
       hedgedValue: portfolioValue,
@@ -33,9 +36,9 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
     <div className="glass-panel p-6 space-y-6 hover:bg-cyan-500/5 hover:border-cyan-400/20 dark:hover:bg-cyan-500/10 dark:hover:border-cyan-400/30">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-lg font-bold text-black dark:text-white">Stress Test Simulator</h3>
+          <h3 className="text-lg font-bold text-black dark:text-white">{t('analysis.stress-test.title')}</h3>
           <p className="text-sm text-black/60 dark:text-white/60 mt-1">
-            Projected P&L impact based on your Beta of <strong>{beta.toFixed(2)}</strong>
+            {t('analysis.stress-test.description')} <strong>{beta.toFixed(2)}</strong>
           </p>
         </div>
       </div>
@@ -84,7 +87,7 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
             <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
             <Bar
               dataKey="Unhedged"
-              name="Unhedged Portfolio"
+              name={t('analysis.stress-test.unhedged')}
               fill="#8b5cf6"
               radius={[4, 4, 0, 0]}
               isAnimationActive={false}
@@ -96,7 +99,7 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
             </Bar>
             <Bar
               dataKey="Hedged"
-              name="Hedged Portfolio"
+              name={t('analysis.stress-test.hedged')}
               fill="#22d3ee"
               radius={[4, 4, 0, 0]}
               isAnimationActive={false}
@@ -110,15 +113,15 @@ function MarketScenarioSimulatorBase({ beta, portfolioValue = 100000 }: MarketSc
       <div className="flex gap-6 justify-center text-xs text-black/70 dark:text-white/70">
          <div className="flex items-center gap-2">
            <span className="w-3 h-3 rounded bg-emerald-400"></span>
-           <span>Profit (Unhedged)</span>
+           <span>{t('analysis.simulator.legend.profit-unhedged')}</span>
          </div>
          <div className="flex items-center gap-2">
            <span className="w-3 h-3 rounded bg-pink-400"></span>
-           <span>Loss (Unhedged)</span>
+           <span>{t('analysis.simulator.legend.loss-unhedged')}</span>
          </div>
          <div className="flex items-center gap-2">
            <span className="w-3 h-3 rounded bg-cyan-400"></span>
-           <span>Hedged (Neutral)</span>
+           <span>{t('analysis.simulator.legend.hedged-neutral')}</span>
          </div>
       </div>
     </div>

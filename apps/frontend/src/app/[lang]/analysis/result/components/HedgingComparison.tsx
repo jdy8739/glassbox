@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { TrendingUp, Shield } from 'lucide-react';
 
 interface HedgingProps {
@@ -15,9 +16,11 @@ interface HedgingProps {
 }
 
 export function HedgingComparison({ data }: { data: HedgingProps }) {
+  const { t } = useTranslation();
+
   // Determine recommendation based on portfolio size/efficiency (simple logic: > $100k implies ES is efficient)
   // Since we assume $100k, we'll mark SPY as "Retail Friendly" and ES as "Capital Efficient"
-  
+
   if (!data?.spy || !data?.es) return null;
 
   return (
@@ -25,31 +28,31 @@ export function HedgingComparison({ data }: { data: HedgingProps }) {
       {/* SPY Strategy */}
       <div className="glass-panel p-6 relative overflow-hidden group hover:border-cyan-400/30 transition-all">
         <div className="absolute top-0 right-0 bg-cyan-500/10 px-3 py-1 rounded-bl-xl border-b border-l border-cyan-500/20">
-          <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">Retail Friendly</span>
+          <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">{t('analysis.hedging.spy.badge')}</span>
         </div>
-        
+
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
             <TrendingUp className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-black dark:text-white">SPY ETF</h3>
-            <p className="text-xs text-black/50 dark:text-white/50">Direct Equity Hedge</p>
+            <h3 className="font-bold text-lg text-black dark:text-white">{t('analysis.hedging.spy.title')}</h3>
+            <p className="text-xs text-black/50 dark:text-white/50">{t('analysis.hedging.spy.subtitle')}</p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="flex justify-between items-end border-b border-black/5 dark:border-white/5 pb-3">
-            <span className="text-sm text-black/60 dark:text-white/60">Short Position</span>
-            <span className="text-xl font-bold text-black dark:text-white">{Math.abs(data.spy.shares)} <span className="text-sm font-normal text-black/40 dark:text-white/40">shares</span></span>
+            <span className="text-sm text-black/60 dark:text-white/60">{t('analysis.hedging.spy.position')}</span>
+            <span className="text-xl font-bold text-black dark:text-white">{Math.abs(data.spy.shares)} <span className="text-sm font-normal text-black/40 dark:text-white/40">{t('analysis.hedging.spy.shares')}</span></span>
           </div>
           <div className="flex justify-between items-end border-b border-black/5 dark:border-white/5 pb-3">
-            <span className="text-sm text-black/60 dark:text-white/60">Notional Value</span>
+            <span className="text-sm text-black/60 dark:text-white/60">{t('analysis.hedging.spy.notional')}</span>
             <span className="text-xl font-bold text-black dark:text-white">${Math.abs(data.spy.notional).toLocaleString()}</span>
           </div>
           <div className="pt-2">
             <p className="text-xs text-black/50 dark:text-white/50 leading-relaxed">
-              <strong>Why choose this?</strong> Best for accounts under $100k. No expiration dates to manage, simply short the ETF to neutralize delta.
+              <strong>{t('analysis.hedging.spy.why')}</strong> {t('analysis.hedging.spy.reason')}
             </p>
           </div>
         </div>
@@ -58,7 +61,7 @@ export function HedgingComparison({ data }: { data: HedgingProps }) {
       {/* ES Strategy */}
       <div className="glass-panel p-6 relative overflow-hidden group hover:border-purple-400/30 transition-all">
         <div className="absolute top-0 right-0 bg-purple-500/10 px-3 py-1 rounded-bl-xl border-b border-l border-purple-500/20">
-          <span className="text-xs font-bold text-purple-600 dark:text-purple-400">Capital Efficient</span>
+          <span className="text-xs font-bold text-purple-600 dark:text-purple-400">{t('analysis.hedging.es.badge')}</span>
         </div>
 
         <div className="flex items-center gap-3 mb-6">
@@ -66,23 +69,23 @@ export function HedgingComparison({ data }: { data: HedgingProps }) {
             <Shield className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-black dark:text-white">ES Futures</h3>
-            <p className="text-xs text-black/50 dark:text-white/50">E-mini S&P 500</p>
+            <h3 className="font-bold text-lg text-black dark:text-white">{t('analysis.hedging.es.title')}</h3>
+            <p className="text-xs text-black/50 dark:text-white/50">{t('analysis.hedging.es.subtitle')}</p>
           </div>
         </div>
 
         <div className="space-y-4">
            <div className="flex justify-between items-end border-b border-black/5 dark:border-white/5 pb-3">
-            <span className="text-sm text-black/60 dark:text-white/60">Short Contracts</span>
-            <span className="text-xl font-bold text-black dark:text-white">{Math.abs(data.es.contracts)} <span className="text-sm font-normal text-black/40 dark:text-white/40">contracts</span></span>
+            <span className="text-sm text-black/60 dark:text-white/60">{t('analysis.hedging.es.contracts')}</span>
+            <span className="text-xl font-bold text-black dark:text-white">{Math.abs(data.es.contracts)} <span className="text-sm font-normal text-black/40 dark:text-white/40">{t('analysis.hedging.es.contracts-label')}</span></span>
           </div>
           <div className="flex justify-between items-end border-b border-black/5 dark:border-white/5 pb-3">
-            <span className="text-sm text-black/60 dark:text-white/60">Notional Value</span>
+            <span className="text-sm text-black/60 dark:text-white/60">{t('analysis.hedging.es.notional')}</span>
             <span className="text-xl font-bold text-black dark:text-white">${Math.abs(data.es.notional).toLocaleString()}</span>
           </div>
           <div className="pt-2">
             <p className="text-xs text-black/50 dark:text-white/50 leading-relaxed">
-              <strong>Why choose this?</strong> Requires significantly less buying power (margin). Ideal for larger portfolios to free up capital.
+              <strong>{t('analysis.hedging.es.why')}</strong> {t('analysis.hedging.es.reason')}
             </p>
           </div>
         </div>

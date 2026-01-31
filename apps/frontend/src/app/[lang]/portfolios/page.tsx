@@ -169,8 +169,8 @@ function PortfolioLibraryContent() {
                 <Rocket className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
               </div>
               <div>
-                <h3 className="font-bold text-black dark:text-white">New Portfolio</h3>
-                <p className="text-xs text-black/50 dark:text-white/50 mt-1">Start a fresh analysis</p>
+                <h3 className="font-bold text-black dark:text-white">{t('portfolio.card.new')}</h3>
+                <p className="text-xs text-black/50 dark:text-white/50 mt-1">{t('portfolio.card.new-description')}</p>
               </div>
             </a>
 

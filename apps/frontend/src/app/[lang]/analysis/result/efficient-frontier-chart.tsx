@@ -13,6 +13,7 @@ import {
   Label
 } from 'recharts';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AnalysisSnapshot } from '@glassbox/types';
 
 interface EfficientFrontierChartProps {
@@ -20,6 +21,7 @@ interface EfficientFrontierChartProps {
 }
 
 function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
+  const { t } = useTranslation();
   const { efficientFrontier, gmv, maxSharpe, randomPortfolios } = data;
 
   // Format data for chart
@@ -51,22 +53,42 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
   };
 
   // Custom Tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload, t }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+      let translatedName = data.name;
+
+      switch (data.name) {
+        case 'Random Portfolio':
+          translatedName = t('analysis.graph.tooltip.random-portfolio');
+          break;
+        case 'Efficient Frontier':
+          translatedName = t('analysis.tab.frontier');
+          break;
+        case 'Global Min Variance':
+          translatedName = t('analysis.section.gmv-portfolio');
+          break;
+        case 'Max Sharpe Ratio':
+          translatedName = t('analysis.section.max-sharpe');
+          break;
+        default:
+          translatedName = data.name;
+          break;
+      }
+
       return (
         <div className="rounded-xl p-3 shadow-xl text-xs border bg-white/95 dark:bg-slate-900/95 border-cyan-400/30 dark:border-cyan-400/40" style={{ backdropFilter: 'blur(12px)' }}>
-          <p className="font-bold text-black dark:text-white mb-2">{data.name}</p>
+          <p className="font-bold text-black dark:text-white mb-2">{translatedName}</p>
           <div className="space-y-1 text-sm">
             <p className="text-black/70 dark:text-white/70">
-              Return: <span className="font-mono text-black dark:text-white">{(data.y * 100).toFixed(2)}%</span>
+              {t('analysis.graph.tooltip.return')}: <span className="font-mono text-black dark:text-white">{(data.y * 100).toFixed(2)}%</span>
             </p>
             <p className="text-black/70 dark:text-white/70">
-              Risk (Vol): <span className="font-mono text-black dark:text-white">{(data.x * 100).toFixed(2)}%</span>
+              {t('analysis.graph.tooltip.risk')}: <span className="font-mono text-black dark:text-white">{(data.x * 100).toFixed(2)}%</span>
             </p>
             {data.sharpe && (
               <p className="text-black/70 dark:text-white/70">
-                Sharpe: <span className="font-mono text-black dark:text-white">{data.sharpe.toFixed(2)}</span>
+                {t('analysis.graph.tooltip.sharpe')}: <span className="font-mono text-black dark:text-white">{data.sharpe.toFixed(2)}</span>
               </p>
             )}
           </div>
@@ -91,7 +113,7 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
             fontSize={12}
             domain={['auto', 'auto']}
           >
-            <Label value="Risk (Volatility)" offset={-10} position="insideBottom" style={{ fill: 'rgba(128,128,128,0.7)' }} />
+            <Label value={t('analysis.chart.risk-volatility-label')} offset={-10} position="insideBottom" style={{ fill: 'rgba(128,128,128,0.7)' }} />
           </XAxis>
           <YAxis
             type="number"
@@ -103,9 +125,9 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
             fontSize={12}
             domain={['auto', 'auto']}
           >
-            <Label value="Expected Return" angle={-90} position="insideLeft" style={{ fill: 'rgba(128,128,128,0.7)' }} />
+            <Label value={t('analysis.chart.expected-return-label')} angle={-90} position="insideLeft" style={{ fill: 'rgba(128,128,128,0.7)' }} />
           </YAxis>
-          <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3', stroke: '#06b6d4', strokeWidth: 1.5 }} />
+          <Tooltip content={<CustomTooltip t={t} />} cursor={{ strokeDasharray: '3 3', stroke: '#06b6d4', strokeWidth: 1.5 }} />
           
           {/* Random Portfolios (Background) */}
           {randomData.length > 0 && (

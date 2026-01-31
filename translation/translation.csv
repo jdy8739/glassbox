@@ -66,6 +66,8 @@ portfolio.builder.analyze.button,Analyze Portfolio,포트폴리오 분석
 portfolio.builder.analyze.analyzing,Analyzing...,분석 중...
 portfolio.builder.summary.label,Portfolio Summary,포트폴리오 요약
 portfolio.builder.summary.assets,Assets,자산
+portfolio.analysis.optimized-allocation-desc,"Optimized allocation for {{numAssets}} assets based on historical data.","히스토리컬 데이터를 기반으로 {{numAssets}}개 자산에 대한 최적화된 배분."
+portfolio.analysis.viewing-snapshot,"Viewing saved snapshot: {{portfolioName}}","저장된 스냅샷 보기: {{portfolioName}}"
 portfolio.builder.tip.title,Pro Tip:,팁:
 portfolio.builder.tip.description,"Try to include a mix of assets (Stocks, Bonds, Crypto) to see how diversification affects your efficient frontier.","다양한 자산 (주식, 채권, 암호화폐)을 포함하여 분산 투자가 효율적 투자선에 미치는 영향을 확인하세요.",
 portfolio.library.label,Library,라이브러리
@@ -82,6 +84,9 @@ portfolio.library.error.title,Portfolio Load Failed,포트폴리오 로드 실�
 portfolio.library.error.description,We couldn't load your portfolio library. Please try again.,포트폴리오 라이브러리를 로드할 수 없습니다. 다시 시도해주세요.
 common.button.back-home,Back to Home,홈으로 돌아가기
 common.button.retry,Retry,다시 시도
+common.button.cancel,Cancel,취소
+common.more,more,더
+common.less,less,덜
 analysis.tabs.frontier,Efficient Frontier,효율적 투자선
 analysis.tabs.hedging,Beta Hedging,베타 헤징
 analysis.title.part1,Portfolio Analysis,포트폴리오
@@ -128,3 +133,92 @@ portfolio.card.volatility,Vol,변동성
 portfolio.card.open-analysis,Open Analysis,분석 보기
 portfolio.asset.label,Asset,자산
 portfolio.asset.units,Units,개
+analysis.loading,Loading analysis...,분석 중...
+analysis.success.title,Portfolio Saved!,포트폴리오 저장됨!
+analysis.success.saved,Portfolio updated successfully,포트폴리오가 성공적으로 업데이트됨
+analysis.success.redirecting,Redirecting to your library...,라이브러리로 이동 중...
+analysis.error.title,Error,오류
+analysis.error.update-failed,Failed to update portfolio. Please try again.,포트폴리오 업데이트에 실패했습니다. 다시 시도해주세요.
+analysis.error.save-failed,Failed to save portfolio. Please try again.,포트폴리오 저장에 실패했습니다. 다시 시도해주세요.
+analysis.button.re-analyze,Re-analyze,다시 분석
+analysis.button.re-analyzing,Re-analyzing...,다시 분석 중...
+analysis.button.saving,Saving...,저장 중...
+analysis.button.export,Export,내보내기
+analysis.button.export-csv,Export as CSV,CSV로 내보내기
+analysis.button.export-pdf,Export as PDF,PDF로 내보내기
+analysis.button.save,Save,저장
+analysis.button.save-portfolio,Save portfolio (Ctrl+S),포트폴리오 저장 (Ctrl+S)
+analysis.button.update,Update,업데이트
+analysis.button.saved,Saved,저장됨
+analysis.tab.frontier,Efficient Frontier,효율적 투자선
+analysis.tab.hedging,Beta Hedging,베타 헤징
+analysis.metrics.return,Expected Return,예상 수익률
+analysis.metrics.return-sub,Annualized,연간화
+analysis.metrics.sharpe,Sharpe Ratio,샤프 비율
+analysis.metrics.sharpe-sub,Risk-Adjusted Return,위험조정수익률
+analysis.metrics.volatility,Volatility,변동성
+analysis.metrics.volatility-sub,Min Var,최소분산
+analysis.metrics.beta,Portfolio Beta,포트폴리오 베타
+analysis.metrics.beta-sub,Market Correlation,시장상관관계
+analysis.section.gmv-portfolio,Global Minimum Variance Portfolio,전역 최소분산 포트폴리오
+analysis.section.max-sharpe,Maximum Sharpe Ratio Portfolio,최대 샤프 비율 포트폴리오
+analysis.section.portfolio-weights,Portfolio Weights,포트폴리오 비중
+analysis.section.risk-free-rate,Risk-Free Rate,무위험 수익률
+analysis.section.analysis-date,Analysis Date,분석 날짜
+analysis.section.sharpe-quality,Sharpe Ratio Quality,샤프 비율 품질
+analysis.section.quality.excellent,Excellent,우수
+analysis.section.quality.good,Good,좋음
+analysis.section.quality.fair,Fair,보통
+analysis.hedging.spy.title,SPY ETF,SPY ETF
+analysis.hedging.spy.subtitle,Direct Equity Hedge,직접 주식 헤징
+analysis.hedging.spy.badge,Retail Friendly,소매 친화적
+analysis.hedging.spy.position,Short Position,숏 포지션
+analysis.hedging.spy.notional,Notional Value,명목가치
+analysis.hedging.spy.shares,shares,주
+analysis.hedging.spy.why,Why choose this?,이것을 선택해야 하는 이유?
+analysis.hedging.spy.reason,"Best for accounts under $100k. No expiration dates to manage, simply short the ETF to neutralize delta.","$100k 이하 계정에 최고. 만기일을 관리할 필요가 없으며, ETF를 간단히 숏으로 쌍하여 델타를 중립화합니다."
+analysis.hedging.es.title,ES Futures,ES 선물
+analysis.hedging.es.subtitle,E-mini S&P 500,이미니 S&P 500
+analysis.hedging.es.badge,Capital Efficient,자본 효율적
+analysis.hedging.es.contracts,Short Contracts,숏 계약
+analysis.hedging.es.notional,Notional Value,명목가치
+analysis.hedging.es.contracts-label,contracts,계약
+analysis.hedging.es.why,Why choose this?,이것을 선택해야 하는 이유?
+analysis.hedging.es.reason,"Requires significantly less buying power (margin). Ideal for larger portfolios to free up capital.","훨씬 적은 구매력(증거금)이 필요합니다. 더 큰 포트폴리오의 경우 자본을 확보하기에 이상적입니다."
+analysis.stress-test.title,Stress Test Simulator,스트레스 테스트 시뮬레이터
+analysis.stress-test.description,"Projected P&L impact based on your Beta of",베타 기준 예상 손익 영향
+analysis.stress-test.flat-market,Flat Market,평탄 시장
+analysis.stress-test.market-up,Market +5%,시장 +5%
+analysis.stress-test.market-down,Market -5%,시장 -5%
+analysis.stress-test.unhedged,Unhedged Portfolio,헤징되지 않은 포트폴리오
+analysis.stress-test.hedged,Hedged Portfolio,헤징된 포트폴리오
+analysis.simulator.legend.profit-unhedged,Profit (Unhedged),이익 (헤징되지 않음)
+analysis.simulator.legend.loss-unhedged,Loss (Unhedged),손실 (헤징되지 않음)
+analysis.simulator.legend.hedged-neutral,Hedged (Neutral),헤징됨 (중립)
+analysis.reanalyze.title,Re-analyze Portfolio?,포트폴리오를 다시 분석할까요?
+analysis.reanalyze.message,This will fetch the latest market data and update your analysis. Your current snapshot will be replaced with new calculations based on real-time prices.,최신 시장 데이터를 가져오고 분석을 업데이트합니다. 현재 스냅샷은 실시간 가격에 기반한 새로운 계산으로 대체됩니다.
+analysis.reanalyze.confirm,Re-analyze,다시 분석
+analysis.title,Portfolio Analysis,포트폴리오 분석
+analysis.status.complete,Analysis Complete,분석 완료
+analysis.button.no-changes,No changes to save,저장할 변경사항 없음
+analysis.chart.risk-return,Risk vs. Return Profile,위험 vs. 수익률 프로필
+analysis.chart.optimal-line,Optimal Line,최적선
+analysis.chart.max-sharpe-label,Max Sharpe,최대 샤프
+analysis.section.optimal-allocation,Optimal Allocation,최적 배분
+analysis.section.optimal-description,Suggested weights to maximize Sharpe ratio (Risk-adjusted return).,샤프 비율을 최대화하기 위한 제안된 가중치 (위험조정수익률).
+analysis.section.risk-profile,Risk Profile,위험 프로필
+analysis.section.risk-free-rate-label,Risk-Free Rate Used,사용된 무위험 수익률
+analysis.section.analysis-start-date,Analysis Start Date,분석 시작 날짜
+analysis.section.sharpe-rating,Sharpe Rating,샤프 등급
+analysis.hedging.how-it-works,How this works,작동 원리
+analysis.hedging.how-it-works.description,"Since your portfolio has a Beta of {{portfolioBeta}}, it is theoretically {{volatilityPercentage}}% {{volatilityDirection}} volatile than the market. To make your portfolio ""Market Neutral"" (Beta ≈ 0), you need to short sell an equivalent amount of market exposure. This protects you from systematic market crashes while allowing you to profit from the individual performance (Alpha) of your chosen stocks.","포트폴리오의 베타가 {{portfolioBeta}}이므로, 이론적으로 시장보다 {{volatilityPercentage}}% 더 {{volatilityDirection}} 변동성이 있습니다. 포트폴리오를 ""시장 중립적""(베타 ≈ 0)으로 만들려면, 시장 노출량과 동일한 금액을 공매도해야 합니다. 이는 체계적인 시장 붕괴로부터 보호하면서, 선택한 주식의 개별 성과(알파)로부터 이익을 얻을 수 있게 해줍니다."
+analysis.chart.risk,Risk (Volatility),위험 (변동성)
+analysis.chart.return,Expected Return,예상 수익률
+analysis.chart.your-portfolio,Your Portfolio,당신의 포트폴리오
+analysis.chart.all-assets,All Assets,모든 자산
+analysis.graph.tooltip.random-portfolio,Random Portfolio,임의 포트폴리오
+analysis.graph.tooltip.return,Return,수익률
+analysis.graph.tooltip.risk,Risk (Vol),위험 (변동성)
+analysis.graph.tooltip.sharpe,Sharpe,샤프
+analysis.chart.risk-volatility-label,Risk (Volatility),위험 (변동성)
+analysis.chart.expected-return-label,Expected Return,예상 수익률

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
@@ -55,6 +56,7 @@ const MarketScenarioSimulator = dynamic(
 );
 
 function AnalysisResultContent() {
+  const { t } = useTranslation();
   const router = useLocalizedRouter();
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
@@ -131,7 +133,7 @@ function AnalysisResultContent() {
         setTimeout(() => setSaveSuccess(false), 3000);
       } catch (error) {
         console.error('Failed to update portfolio:', error);
-        setError('Failed to update portfolio. Please try again.');
+        setError(t('analysis.error.update-failed'));
         setTimeout(() => setError(null), 3000);
       }
     } else {
@@ -159,7 +161,7 @@ function AnalysisResultContent() {
       }, 1500);
     } catch (error) {
       console.error('Failed to save portfolio:', error);
-      setError('Failed to save portfolio. Please try again.');
+      setError(t('analysis.error.save-failed'));
       setTimeout(() => setError(null), 3000);
       setIsSaveModalOpen(false);
     }
@@ -236,7 +238,7 @@ function AnalysisResultContent() {
     return (
       <main className="min-h-screen px-6 py-8 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="text-black dark:text-white text-lg">Loading analysis...</p>
+          <p className="text-black dark:text-white text-lg">{t('analysis.loading')}</p>
         </div>
       </main>
     );
@@ -260,9 +262,9 @@ function AnalysisResultContent() {
           <div className="flex items-center gap-3">
             <Check className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
             <div>
-              <p className="font-bold text-black dark:text-white">Portfolio Saved!</p>
+              <p className="font-bold text-black dark:text-white">{t('analysis.success.title')}</p>
               <p className="text-sm text-black/60 dark:text-white/60">
-                {portfolioId ? 'Portfolio updated successfully' : 'Redirecting to your library...'}
+                {portfolioId ? t('analysis.success.saved') : t('analysis.success.redirecting')}
               </p>
             </div>
           </div>
@@ -275,7 +277,7 @@ function AnalysisResultContent() {
           <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
             <div>
-              <p className="font-bold text-black dark:text-white">Error</p>
+              <p className="font-bold text-black dark:text-white">{t('analysis.error.title')}</p>
               <p className="text-sm text-black/60 dark:text-white/60">{error}</p>
             </div>
           </div>
@@ -295,12 +297,12 @@ function AnalysisResultContent() {
                 {isReanalyzing ? (
                   <>
                     <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Re-analyzing...</span>
+                    <span>{t('analysis.button.re-analyzing')}</span>
                   </>
                 ) : (
                   <>
                     <RefreshCw className="w-4 h-4" />
-                    <span>Re-analyze</span>
+                    <span>{t('analysis.button.re-analyze')}</span>
                   </>
                 )}
               </button>
@@ -312,7 +314,7 @@ function AnalysisResultContent() {
                 className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <Download className="w-4 h-4" />
-                <span>Export</span>
+                <span>{t('analysis.button.export')}</span>
               </button>
               {isExportOpen && (
                 <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
@@ -321,14 +323,14 @@ function AnalysisResultContent() {
                     className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
                   >
                     <BarChart3 className="w-4 h-4" />
-                    <span>Export as CSV</span>
+                    <span>{t('analysis.button.export-csv')}</span>
                   </button>
                   <button
                     onClick={handleExportPDF}
                     className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
                   >
                     <FileText className="w-4 h-4" />
-                    <span>Export as PDF</span>
+                    <span>{t('analysis.button.export-pdf')}</span>
                   </button>
                 </div>
               )}
@@ -343,24 +345,24 @@ function AnalysisResultContent() {
               disabled={isReanalyzing || isProcessing || (isSnapshot && !hasUnsavedChanges)}
               title={
                 isSnapshot && !hasUnsavedChanges
-                  ? 'No changes to save'
-                  : 'Save portfolio (Ctrl+S)'
+                  ? t('analysis.button.no-changes')
+                  : t('analysis.button.save-portfolio')
               }
             >
               {isProcessing ? (
                  <>
                    <div className="w-3 h-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
-                   <span>Saving...</span>
+                   <span>{t('analysis.button.saving')}</span>
                  </>
               ) : isSnapshot && !hasUnsavedChanges ? (
                  <>
                    <Check className="w-4 h-4" />
-                   <span>Saved</span>
+                   <span>{t('analysis.button.saved')}</span>
                  </>
               ) : (
                  <>
                    <Save className="w-4 h-4" />
-                   <span>{isSnapshot ? 'Update' : 'Save'}</span>
+                   <span>{t(isSnapshot ? 'analysis.button.update' : 'analysis.button.save')}</span>
                    <kbd className="hidden sm:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">⌘S</kbd>
                  </>
               )}
@@ -376,7 +378,7 @@ function AnalysisResultContent() {
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="text-xs font-semibold text-black/70 dark:text-white/70">Analysis Complete</span>
+                <span className="text-xs font-semibold text-black/70 dark:text-white/70">{t('analysis.status.complete')}</span>
               </div>
 
               {/* Timestamp Badge */}
@@ -388,12 +390,12 @@ function AnalysisResultContent() {
 
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-2">
-                Portfolio Analysis
+                {t('analysis.title')}
               </h1>
               <p className="text-lg text-black/60 dark:text-white/60 max-w-2xl">
                 {isSnapshot
-                  ? `Viewing saved snapshot: ${savedPortfolio?.name}`
-                  : `Optimized allocation for ${portfolioItems.length} assets based on historical data.`}
+                  ? t('portfolio.analysis.viewing-snapshot', { portfolioName: savedPortfolio?.name })
+                  : t('portfolio.analysis.optimized-allocation-desc', { numAssets: portfolioItems.length })}
               </p>
             </div>
           </div>
@@ -424,7 +426,7 @@ function AnalysisResultContent() {
                 }`}
               >
                 <TrendingUp className="w-4 h-4" />
-                <span>Efficient Frontier</span>
+                <span>{t('analysis.tab.frontier')}</span>
               </button>
               <button
                 onClick={() => setActiveTab('hedging')}
@@ -435,7 +437,7 @@ function AnalysisResultContent() {
                 }`}
               >
                 <Shield className="w-4 h-4" />
-                <span>Beta Hedging</span>
+                <span>{t('analysis.tab.hedging')}</span>
               </button>
             </div>
           </div>
@@ -446,17 +448,17 @@ function AnalysisResultContent() {
                 {/* Main Chart Area */}
                 <div className="lg:col-span-2 glass-panel p-6 min-h-[500px] flex flex-col max-h-fit">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-bold text-black dark:text-white">Risk vs. Return Profile</h3>
-                    
+                    <h3 className="font-bold text-black dark:text-white">{t('analysis.chart.risk-return')}</h3>
+
                     {/* Legend */}
                     <div className="flex gap-4 text-xs">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                        <span className="opacity-70">Optimal Line</span>
+                        <span className="opacity-70">{t('analysis.chart.optimal-line')}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-red-400"></span>
-                        <span className="opacity-70">Max Sharpe</span>
+                        <span className="opacity-70">{t('analysis.chart.max-sharpe-label')}</span>
                       </div>
                     </div>
                   </div>
@@ -470,10 +472,10 @@ function AnalysisResultContent() {
                   <div className="glass-panel p-6">
                     <h3 className="font-bold text-black dark:text-white mb-4 flex items-center gap-2">
                       <Zap className="w-4 h-4 text-yellow-500" />
-                      Optimal Allocation
+                      {t('analysis.section.optimal-allocation')}
                     </h3>
                     <p className="text-xs text-black/50 dark:text-white/50 mb-4">
-                      Suggested weights to maximize Sharpe ratio (Risk-adjusted return).
+                      {t('analysis.section.optimal-description')}
                     </p>
                     
                     <div className="space-y-3">
@@ -508,23 +510,23 @@ function AnalysisResultContent() {
                   <div className="glass-panel p-6 space-y-4">
                     <h3 className="font-bold text-black dark:text-white flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-pink-500" />
-                      Risk Profile
+                      {t('analysis.section.risk-profile')}
                     </h3>
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
-                        <span className="text-black/60 dark:text-white/60">Risk-Free Rate Used</span>
+                        <span className="text-black/60 dark:text-white/60">{t('analysis.section.risk-free-rate-label')}</span>
                         <span className="font-mono text-black dark:text-white">{(analysisData.riskFreeRate * 100).toFixed(2)}%</span>
                       </div>
                       {analysisData.analysisDate && (
                         <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
-                          <span className="text-black/60 dark:text-white/60">Analysis Start Date</span>
+                          <span className="text-black/60 dark:text-white/60">{t('analysis.section.analysis-start-date')}</span>
                           <span className="font-mono text-black dark:text-white">{analysisData.analysisDate}</span>
                         </div>
                       )}
                       <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
-                         <span className="text-black/60 dark:text-white/60">Sharpe Rating</span>
+                         <span className="text-black/60 dark:text-white/60">{t('analysis.section.sharpe-rating')}</span>
                          <span className={`font-bold ${analysisData.maxSharpe.stats.sharpe > 1 ? 'text-emerald-500' : 'text-yellow-500'}`}>
-                           {analysisData.maxSharpe.stats.sharpe > 1 ? 'Excellent' : analysisData.maxSharpe.stats.sharpe > 0.5 ? 'Good' : 'Fair'}
+                           {analysisData.maxSharpe.stats.sharpe > 1 ? t('analysis.section.quality.excellent') : analysisData.maxSharpe.stats.sharpe > 0.5 ? t('analysis.section.quality.good') : t('analysis.section.quality.fair')}
                          </span>
                       </div>
                     </div>
@@ -554,14 +556,15 @@ function AnalysisResultContent() {
                  <div className="glass-panel p-6 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border-dashed">
                     <h4 className="font-bold text-black dark:text-white mb-2 flex items-center gap-2">
                       <Lightbulb className="w-4 h-4 text-yellow-500" />
-                      How this works
+                      {t('analysis.hedging.how-it-works')}
                     </h4>
-                    <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed max-w-3xl">
-                      Since your portfolio has a Beta of <strong>{analysisData.portfolioBeta.toFixed(2)}</strong>, it is theoretically {((Math.abs(1 - analysisData.portfolioBeta)) * 100).toFixed(0)}% {analysisData.portfolioBeta > 1 ? 'more' : 'less'} volatile than the market. 
-                      To make your portfolio "Market Neutral" (Beta ≈ 0), you need to short sell an equivalent amount of market exposure. 
-                      This protects you from systematic market crashes while allowing you to profit from the individual performance (Alpha) of your chosen stocks.
-                    </p>
-                 </div>
+                                        <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed max-w-3xl">
+                                          {t('analysis.hedging.how-it-works.description', {
+                                            portfolioBeta: analysisData.portfolioBeta.toFixed(2),
+                                            volatilityPercentage: ((Math.abs(1 - analysisData.portfolioBeta)) * 100).toFixed(0),
+                                            volatilityDirection: analysisData.portfolioBeta > 1 ? t('common.more') : t('common.less'),
+                                          })}
+                                        </p>                 </div>
             </div>
           </div>
         </div>
@@ -579,10 +582,10 @@ function AnalysisResultContent() {
         isOpen={isReanalyzeConfirmOpen}
         onClose={() => setIsReanalyzeConfirmOpen(false)}
         onConfirm={confirmReanalyze}
-        title="Re-analyze Portfolio?"
-        message="This will fetch the latest market data and update your analysis. Your current snapshot will be replaced with new calculations based on real-time prices."
-        confirmText="Re-analyze"
-        cancelText="Cancel"
+        title={t('analysis.reanalyze.title')}
+        message={t('analysis.reanalyze.message')}
+        confirmText={t('analysis.reanalyze.confirm')}
+        cancelText={t('common.button.cancel')}
         variant="info"
       />
     </main>
