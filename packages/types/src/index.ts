@@ -129,6 +129,7 @@ export interface AnalysisSnapshot {
     esNotional: number;
   };
   analysisDate?: string; // Optional start date for the analysis
+  analysisEndDate?: string; // Optional end date for the analysis
 }
 
 /**

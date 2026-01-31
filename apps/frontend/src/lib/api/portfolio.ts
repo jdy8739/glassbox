@@ -14,6 +14,7 @@ export interface AnalyzePortfolioRequest {
   portfolioValue?: number;
   targetBeta?: number;
   startDate?: string;
+  endDate?: string;
 }
 
 export interface CreatePortfolioRequest {
@@ -63,6 +64,7 @@ export interface AnalyzePortfolioResponse {
   hedging: HedgingRecommendation;
   riskFreeRate: number;
   analysisDate?: string;
+  analysisEndDate?: string;
 }
 
 /**
