@@ -26,6 +26,7 @@ export class PortfolioService {
     const portfolioValue = dto.portfolioValue || 100000;
     const targetBeta = dto.targetBeta !== undefined ? dto.targetBeta : 0;
     const startDate = dto.startDate;
+    const endDate = dto.endDate;
 
     // Execute Python script
     const result = await this.pythonExecutor.executeEfficientFrontier({
@@ -34,6 +35,7 @@ export class PortfolioService {
       portfolioValue,
       targetBeta,
       startDate,
+      endDate,
     });
 
     this.logger.log('Portfolio analysis completed successfully');
@@ -48,6 +50,7 @@ export class PortfolioService {
       hedging: result.hedging,
       riskFreeRate: result.riskFreeRate,
       analysisDate: startDate,
+      analysisEndDate: endDate,
     };
   }
 

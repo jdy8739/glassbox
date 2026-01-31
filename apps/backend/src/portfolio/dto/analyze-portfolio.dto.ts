@@ -46,4 +46,12 @@ export class AnalyzePortfolioDto {
   })
   @IsOptional()
   startDate?: string;
+
+  @ApiProperty({
+    description: 'End date for historical data (YYYY-MM-DD)',
+    example: '2024-12-31',
+    required: false,
+  })
+  @IsOptional()
+  endDate?: string;
 }

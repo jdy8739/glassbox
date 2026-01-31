@@ -85,4 +85,11 @@ export class PortfolioAnalysisResultDto {
     required: false,
   })
   analysisDate?: string;
+
+  @ApiProperty({
+    description: 'End date used for historical analysis',
+    example: '2024-12-31',
+    required: false,
+  })
+  analysisEndDate?: string;
 }

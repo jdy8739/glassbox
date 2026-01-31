@@ -8,6 +8,7 @@ export interface PythonExecutorInput {
   portfolioValue?: number;
   targetBeta?: number;
   startDate?: string;
+  endDate?: string;
 }
 
 export interface PythonExecutorResult {
