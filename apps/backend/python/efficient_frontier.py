@@ -278,12 +278,13 @@ def main():
         quantities = input_data.get('quantities', [])
         portfolio_value = input_data.get('portfolioValue', 100000)
         target_beta = input_data.get('targetBeta', 0)
+        start_date = input_data.get('startDate')
 
         if not tickers:
             raise ValueError("No tickers provided")
 
         # Fetch price data
-        prices = fetch_price_data(tickers)
+        prices = fetch_price_data(tickers, start_date=start_date)
 
         # Calculate efficient frontier
         frontier_result = calculate_efficient_frontier(prices)

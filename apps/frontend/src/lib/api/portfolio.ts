@@ -13,6 +13,7 @@ export interface AnalyzePortfolioRequest {
   quantities: number[];
   portfolioValue?: number;
   targetBeta?: number;
+  startDate?: string;
 }
 
 export interface CreatePortfolioRequest {

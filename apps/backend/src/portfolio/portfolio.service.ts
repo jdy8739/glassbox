@@ -25,6 +25,7 @@ export class PortfolioService {
     // Set defaults
     const portfolioValue = dto.portfolioValue || 100000;
     const targetBeta = dto.targetBeta !== undefined ? dto.targetBeta : 0;
+    const startDate = dto.startDate;
 
     // Execute Python script
     const result = await this.pythonExecutor.executeEfficientFrontier({
@@ -32,6 +33,7 @@ export class PortfolioService {
       quantities: dto.quantities,
       portfolioValue,
       targetBeta,
+      startDate,
     });
 
     this.logger.log('Portfolio analysis completed successfully');

@@ -38,4 +38,12 @@ export class AnalyzePortfolioDto {
   @IsOptional()
   @IsNumber()
   targetBeta?: number;
+
+  @ApiProperty({
+    description: 'Start date for historical data (YYYY-MM-DD)',
+    example: '2023-01-01',
+    required: false,
+  })
+  @IsOptional()
+  startDate?: string;
 }

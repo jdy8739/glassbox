@@ -13,6 +13,7 @@ export function usePortfolioBuilder() {
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearchInput = useDebounce(searchInput, 300);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [startDate, setStartDate] = useState<string>('');
 
   // Query for searching tickers
   const searchQuery = useQuery({
@@ -80,6 +81,7 @@ export function usePortfolioBuilder() {
       quantities,
       portfolioValue,
       targetBeta: 0, // Market-neutral by default
+      startDate: startDate || undefined,
     });
   };
 
@@ -99,5 +101,7 @@ export function usePortfolioBuilder() {
     updateQuantity,
     handleAnalyze,
     clearError: analyzeMutation.reset,
+    startDate,
+    setStartDate,
   };
 }
