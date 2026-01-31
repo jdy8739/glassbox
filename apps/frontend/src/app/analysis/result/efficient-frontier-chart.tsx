@@ -55,8 +55,8 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white/90 dark:bg-black/90 p-3 rounded-lg border border-black/10 dark:border-white/10 shadow-xl backdrop-blur-md">
-          <p className="font-bold text-black dark:text-white mb-1">{data.name}</p>
+        <div className="rounded-xl p-3 shadow-xl text-xs border bg-white/95 dark:bg-slate-900/95 border-cyan-400/30 dark:border-cyan-400/40" style={{ backdropFilter: 'blur(12px)' }}>
+          <p className="font-bold text-black dark:text-white mb-2">{data.name}</p>
           <div className="space-y-1 text-sm">
             <p className="text-black/70 dark:text-white/70">
               Return: <span className="font-mono text-black dark:text-white">{(data.y * 100).toFixed(2)}%</span>
@@ -77,7 +77,7 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
   };
 
   return (
-    <div className="w-full h-[400px] w-full">
+    <div className="w-full h-[400px] w-full [&_*]:outline-none [&_*]:focus:outline-none">
       <ResponsiveContainer width="100%" height="100%" debounce={50}>
         <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.2)" />
@@ -105,17 +105,18 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
           >
             <Label value="Expected Return" angle={-90} position="insideLeft" style={{ fill: 'rgba(128,128,128,0.7)' }} />
           </YAxis>
-          <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3', stroke: '#06b6d4', strokeWidth: 1.5 }} />
           
           {/* Random Portfolios (Background) */}
           {randomData.length > 0 && (
-            <Scatter 
-              name="Random Portfolios" 
-              data={randomData} 
-              fill="#8884d8" 
-              opacity={0.3} 
+            <Scatter
+              name="Random Portfolios"
+              data={randomData}
+              fill="#8884d8"
+              opacity={0.3}
               radius={2}
               isAnimationActive={false}
+              activeShape={false}
             >
                {randomData.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill="rgba(100, 100, 100, 0.3)" />
@@ -124,12 +125,13 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
           )}
 
           {/* Efficient Frontier Line (approximated by scatter points for now) */}
-          <Scatter 
-            name="Efficient Frontier" 
-            data={frontierData} 
-            line={{ stroke: '#4ade80', strokeWidth: 2 }} 
+          <Scatter
+            name="Efficient Frontier"
+            data={frontierData}
+            line={{ stroke: '#4ade80', strokeWidth: 2 }}
             shape="circle"
             isAnimationActive={false}
+            activeShape={false}
           >
             {frontierData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill="transparent" stroke="transparent" />
