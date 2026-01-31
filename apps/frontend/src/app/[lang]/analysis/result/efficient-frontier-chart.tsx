@@ -15,6 +15,7 @@ import {
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisSnapshot } from '@glassbox/types';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface EfficientFrontierChartProps {
   data: AnalysisSnapshot;
@@ -54,8 +55,10 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
 
   // Custom Tooltip
   const CustomTooltip = ({ active, payload, t }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
+    const debouncedPayload = useDebounce(payload, 500);
+
+    if (active && debouncedPayload && debouncedPayload.length) {
+      const data = debouncedPayload[0].payload;
       let translatedName = data.name;
 
       switch (data.name) {
@@ -78,18 +81,21 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
 
       return (
         <div className="rounded-xl p-3 shadow-xl text-xs border bg-white/95 dark:bg-slate-900/95 border-cyan-400/30 dark:border-cyan-400/40" style={{ backdropFilter: 'blur(12px)' }}>
-          <p className="font-bold text-black dark:text-white mb-2">{translatedName}</p>
-          <div className="space-y-1 text-sm">
-            <p className="text-black/70 dark:text-white/70">
-              {t('analysis.graph.tooltip.return')}: <span className="font-mono text-black dark:text-white">{(data.y * 100).toFixed(2)}%</span>
-            </p>
-            <p className="text-black/70 dark:text-white/70">
-              {t('analysis.graph.tooltip.risk')}: <span className="font-mono text-black dark:text-white">{(data.x * 100).toFixed(2)}%</span>
-            </p>
+          <p className="font-bold mb-2 text-black dark:text-white">{translatedName}</p>
+          <div className="space-y-1">
+            <div className="flex justify-between gap-4 mb-1">
+              <span className="text-black/70 dark:text-white/70">{t('analysis.graph.tooltip.return')}:</span>
+              <span className="font-mono text-black dark:text-white">{(data.y * 100).toFixed(2)}%</span>
+            </div>
+            <div className="flex justify-between gap-4 mb-1">
+              <span className="text-black/70 dark:text-white/70">{t('analysis.graph.tooltip.risk')}:</span>
+              <span className="font-mono text-black dark:text-white">{(data.x * 100).toFixed(2)}%</span>
+            </div>
             {data.sharpe && (
-              <p className="text-black/70 dark:text-white/70">
-                {t('analysis.graph.tooltip.sharpe')}: <span className="font-mono text-black dark:text-white">{data.sharpe.toFixed(2)}</span>
-              </p>
+              <div className="flex justify-between gap-4 mb-1">
+                <span className="text-black/70 dark:text-white/70">{t('analysis.graph.tooltip.sharpe')}:</span>
+                <span className="font-mono text-black dark:text-white">{data.sharpe.toFixed(2)}</span>
+              </div>
             )}
           </div>
         </div>
