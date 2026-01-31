@@ -84,10 +84,10 @@ function HomeContent() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-20 space-y-6">
             <h2 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
-              Intelligent <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">Features</span>
+              {t('features.title.intelligent')} <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">{t('features.title.features')}</span>
             </h2>
             <p className="text-xl text-black/60 dark:text-white/60 max-w-2xl mx-auto">
-              Everything you need to become a smarter investor
+              {t('features.description')}
             </p>
           </div>
 
@@ -96,9 +96,9 @@ function HomeContent() {
             {/* Card 1 - Purple Blue */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><BarChart3 className="w-8 h-8 text-cyan-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Efficient Frontier</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card1.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Discover optimal portfolio allocations using advanced quadratic programming and Monte Carlo sampling.
+                {t('features.card1.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge text-xs">GMV</span>
@@ -110,9 +110,9 @@ function HomeContent() {
             {/* Card 2 - Coral Pink */}
             <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><Shield className="w-8 h-8 text-coral-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Beta Hedging</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card2.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Calculate portfolio beta and size hedging positions in SPY or futures for market-neutral exposure.
+                {t('features.card2.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge coral text-xs">SPY</span>
@@ -124,9 +124,9 @@ function HomeContent() {
             {/* Card 3 - Gold Cyan */}
             <div className="glass-card-gradient slate-glow group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><Gem className="w-8 h-8 text-slate-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Premium Design</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card3.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Experience sophisticated glassmorphic interface with stunning animations and intuitive controls.
+                {t('features.card3.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge slate text-xs">Glass</span>
@@ -138,9 +138,9 @@ function HomeContent() {
             {/* Card 4 - Indigo Green */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><Zap className="w-8 h-8 text-cyan-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Real-time Analysis</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card4.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Get instant results with lightning-fast calculations powered by cutting-edge algorithms.
+                {t('features.card4.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge text-xs">Fast</span>
@@ -152,9 +152,9 @@ function HomeContent() {
             {/* Card 5 - Purple Blue */}
             <div className="glass-card-gradient cyan-blue group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><Package className="w-8 h-8 text-cyan-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Portfolio Management</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card5.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Store, compare, and manage multiple portfolios with powerful organization and export tools.
+                {t('features.card5.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge purple text-xs">Save</span>
@@ -166,9 +166,9 @@ function HomeContent() {
             {/* Card 6 - Coral Pink */}
             <div className="glass-card-gradient coral-pink group cursor-pointer transform transition-all hover:scale-105">
               <div className="feature-icon group-hover:scale-110 transition-transform"><Microscope className="w-8 h-8 text-coral-400" /></div>
-              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">Advanced Analytics</h3>
+              <h3 className="text-2xl font-bold text-black dark:text-white mb-3">{t('features.card6.title')}</h3>
               <p className="text-black dark:text-white/70 leading-relaxed mb-4 text-sm">
-                Deep-dive into Sharpe ratios, volatility, correlations, and comprehensive portfolio statistics.
+                {t('features.card6.desc')}
               </p>
               <div className="flex gap-2 flex-wrap">
                 <span className="glass-badge coral text-xs">Metrics</span>
@@ -184,7 +184,7 @@ function HomeContent() {
       <div className="relative px-6 py-28 bg-black/5 dark:bg-white/5">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-5xl font-bold text-black dark:text-white text-center mb-20">
-            How It <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">Works</span>
+            {t('howitworks.title.how')} <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">{t('howitworks.title.works')}</span>
           </h2>
 
           <div className="space-y-8">
@@ -196,9 +196,9 @@ function HomeContent() {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Add Your Stocks</h3>
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">{t('howitworks.step1.title')}</h3>
                 <p className="text-black dark:text-white/70">
-                  Simply enter stock tickers you want to analyze. Our system fetches historical data from Yahoo Finance.
+                  {t('howitworks.step1.desc')}
                 </p>
               </div>
             </div>
@@ -211,9 +211,9 @@ function HomeContent() {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Run Analysis</h3>
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">{t('howitworks.step2.title')}</h3>
                 <p className="text-black dark:text-white/70">
-                  Our algorithms compute the efficient frontier and identify optimal portfolio weights in real-time.
+                  {t('howitworks.step2.desc')}
                 </p>
               </div>
             </div>
@@ -226,9 +226,9 @@ function HomeContent() {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">Get Insights</h3>
+                <h3 className="text-2xl font-bold text-black dark:text-white mb-2">{t('howitworks.step3.title')}</h3>
                 <p className="text-black dark:text-white/70">
-                  View optimal allocations, calculate hedging positions, and save your analysis for future reference.
+                  {t('howitworks.step3.desc')}
                 </p>
               </div>
             </div>
@@ -243,19 +243,19 @@ function HomeContent() {
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/10 via-cyan-300/10 to-gold-300/10 rounded-3xl blur-xl"></div>
             <div className="glass-panel p-12 sm:p-16 text-center space-y-8 relative">
               <h2 className="text-5xl font-bold text-black dark:text-white">
-                Ready to <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">Optimize?</span>
+                {t('cta.ready')} <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">{t('cta.optimize')}</span>
               </h2>
               <p className="text-xl text-black dark:text-white/70 max-w-xl mx-auto">
-                Join thousands of investors using Glassbox to make smarter portfolio decisions.
+                {t('cta.description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <a href="/portfolio/new" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2">
                   <Zap className="w-5 h-5" />
-                  <span>Launch App Now</span>
+                  <span>{t('cta.launch')}</span>
                 </a>
                 <a href="#features" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm">
                   <BookOpen className="w-5 h-5" />
-                  <span>Learn More</span>
+                  <span>{t('cta.learn')}</span>
                 </a>
               </div>
             </div>
@@ -268,12 +268,12 @@ function HomeContent() {
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-8 text-center sm:text-left">
           <div>
             <h3 className="text-2xl font-bold text-black dark:text-white mb-1">Glassbox</h3>
-            <p className="text-black dark:text-white/50 text-sm">Smart portfolio optimization for modern investors</p>
+            <p className="text-black dark:text-white/50 text-sm">{t('footer.description')}</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">Docs</a>
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">GitHub</a>
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">Contact</a>
+            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.docs')}</a>
+            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.github')}</a>
+            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.contact')}</a>
           </div>
         </div>
       </div>
