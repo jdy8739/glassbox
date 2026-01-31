@@ -364,7 +364,7 @@ function AnalysisResultContent() {
                  <>
                    <Save className="w-4 h-4" />
                    <span>{isSnapshot ? 'Update' : 'Save'}</span>
-                   <kbd className="hidden sm:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity">⌘S</kbd>
+                   <kbd className="hidden sm:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">⌘S</kbd>
                  </>
               )}
             </button>
