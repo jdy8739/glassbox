@@ -58,6 +58,7 @@ function AnalysisResultContent() {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   
   const { 
@@ -104,6 +105,8 @@ function AnalysisResultContent() {
         setTimeout(() => setSaveSuccess(false), 3000);
       } catch (error) {
         console.error('Failed to update portfolio:', error);
+        setError('Failed to update portfolio. Please try again.');
+        setTimeout(() => setError(null), 3000);
       }
     } else {
       // Open modal for new portfolio
@@ -130,7 +133,9 @@ function AnalysisResultContent() {
       }, 1500);
     } catch (error) {
       console.error('Failed to save portfolio:', error);
-      alert('Failed to save portfolio. Please try again.');
+      setError('Failed to save portfolio. Please try again.');
+      setTimeout(() => setError(null), 3000);
+      setIsSaveModalOpen(false);
     }
   };
 
@@ -203,6 +208,19 @@ function AnalysisResultContent() {
               <p className="text-sm text-black/60 dark:text-white/60">
                 {portfolioId ? 'Portfolio updated successfully' : 'Redirecting to your library...'}
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Notification */}
+      {error && (
+        <div className="fixed top-20 right-6 z-50 glass-panel px-6 py-4 border-red-400/30 bg-red-500/10 animate-fade-in shadow-xl">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+            <div>
+              <p className="font-bold text-black dark:text-white">Error</p>
+              <p className="text-sm text-black/60 dark:text-white/60">{error}</p>
             </div>
           </div>
         </div>
