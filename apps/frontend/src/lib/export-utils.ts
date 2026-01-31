@@ -1,6 +1,10 @@
 import type { AnalysisSnapshot, PortfolioItem } from '@glassbox/types';
 import jsPDF from 'jspdf';
 
+// ============================================================================
+// Types
+// ============================================================================
+
 interface ExportData {
   portfolioName?: string;
   items: PortfolioItem[];
@@ -8,239 +12,240 @@ interface ExportData {
   timestamp?: Date;
 }
 
-/**
- * Export portfolio analysis as CSV
- */
-export function exportAsCSV(data: ExportData): void {
-  const { portfolioName, items, analysis, timestamp } = data;
+type WeightEntry = [string, number];
 
-  const csv: string[] = [];
-  const dateStr = timestamp ? timestamp.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+// ============================================================================
+// Pure Formatters
+// ============================================================================
 
-  // Header
-  csv.push('Glassbox Portfolio Analysis Report');
-  csv.push(`Generated: ${dateStr}`);
-  if (portfolioName) {
-    csv.push(`Portfolio: ${portfolioName}`);
+const formatPercent = (value: number, decimals = 2): string =>
+  `${(value * 100).toFixed(decimals)}%`;
+
+const formatNumber = (value: number, decimals = 2): string =>
+  value.toFixed(decimals);
+
+const formatCurrency = (value: number): string =>
+  `$${Math.abs(value).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+
+const formatDateISO = (date?: Date): string =>
+  (date ?? new Date()).toISOString().split('T')[0];
+
+const formatDateLocale = (date?: Date): string =>
+  (date ?? new Date()).toLocaleString();
+
+// ============================================================================
+// Data Transformers
+// ============================================================================
+
+const sortedWeights = (weights: Record<string, number>, minWeight = 0.001): WeightEntry[] =>
+  Object.entries(weights)
+    .filter(([, w]) => w > minWeight)
+    .sort(([, a], [, b]) => b - a);
+
+const topWeights = (weights: Record<string, number>, limit = 5): WeightEntry[] =>
+  sortedWeights(weights).slice(0, limit);
+
+// ============================================================================
+// CSV Builders (Pure)
+// ============================================================================
+
+const csvHeader = (portfolioName?: string, date?: Date): string[] => [
+  'Glassbox Portfolio Analysis Report',
+  `Generated: ${formatDateISO(date)}`,
+  ...(portfolioName ? [`Portfolio: ${portfolioName}`] : []),
+  '',
+];
+
+const csvComposition = (items: PortfolioItem[]): string[] => [
+  'Portfolio Composition',
+  'Ticker,Quantity',
+  ...items.map((i) => `${i.symbol},${i.quantity}`),
+  '',
+];
+
+const csvStats = (analysis: AnalysisSnapshot): string[] => [
+  'Portfolio Statistics',
+  'Metric,Value',
+  `Portfolio Beta,${formatNumber(analysis.portfolioBeta)}`,
+  `Risk-Free Rate,${formatPercent(analysis.riskFreeRate)}`,
+  '',
+];
+
+const csvPortfolio = (
+  title: string,
+  stats: { return: number; volatility: number; sharpe: number },
+  weights: Record<string, number>,
+  weightsTitle: string
+): string[] => [
+  title,
+  'Metric,Value',
+  `Expected Return,${formatPercent(stats.return)}`,
+  `Volatility,${formatPercent(stats.volatility)}`,
+  `Sharpe Ratio,${formatNumber(stats.sharpe)}`,
+  '',
+  weightsTitle,
+  'Ticker,Weight',
+  ...sortedWeights(weights).map(([t, w]) => `${t},${formatPercent(w)}`),
+  '',
+];
+
+const csvHedging = (hedging: AnalysisSnapshot['hedging']): string[] => [
+  'Beta Hedging Recommendations',
+  'Hedging Method,Quantity,Notional Value',
+  `SPY ETF,Short ${Math.abs(hedging.spyShares).toLocaleString()} shares,${formatCurrency(hedging.spyNotional)}`,
+  `ES Futures,Short ${Math.abs(hedging.esContracts).toLocaleString()} contracts,${formatCurrency(hedging.esNotional)}`,
+];
+
+const buildCSV = (data: ExportData): string =>
+  [
+    ...csvHeader(data.portfolioName, data.timestamp),
+    ...csvComposition(data.items),
+    ...csvStats(data.analysis),
+    ...csvPortfolio('Global Minimum Variance (GMV) Portfolio', data.analysis.gmv.stats, data.analysis.gmv.weights, 'GMV Weights'),
+    ...csvPortfolio('Maximum Sharpe Ratio Portfolio', data.analysis.maxSharpe.stats, data.analysis.maxSharpe.weights, 'Max Sharpe Weights'),
+    ...csvHedging(data.analysis.hedging),
+  ].join('\n');
+
+// ============================================================================
+// PDF Builders (Pure Helpers)
+// ============================================================================
+
+type PDFState = { pdf: jsPDF; y: number; margin: number; contentWidth: number; pageHeight: number };
+
+const createPDFState = (): PDFState => {
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  return {
+    pdf,
+    y: 15,
+    margin: 15,
+    contentWidth: pdf.internal.pageSize.getWidth() - 30,
+    pageHeight: pdf.internal.pageSize.getHeight(),
+  };
+};
+
+const checkPageBreak = (state: PDFState, needed = 40): PDFState => {
+  if (state.y > state.pageHeight - needed) {
+    state.pdf.addPage();
+    return { ...state, y: 15 };
   }
-  csv.push('');
+  return state;
+};
 
-  // Portfolio Composition
-  csv.push('Portfolio Composition');
-  csv.push('Ticker,Quantity');
-  items.forEach(item => {
-    csv.push(`${item.symbol},${item.quantity}`);
-  });
-  csv.push('');
+const addTitle = (state: PDFState, text: string): PDFState => {
+  state.pdf.setFontSize(16).setFont('helvetica', 'bold').text(text, state.margin, state.y);
+  return { ...state, y: state.y + 10 };
+};
 
-  // Portfolio Statistics
-  csv.push('Portfolio Statistics');
-  csv.push('Metric,Value');
-  csv.push(`Portfolio Beta,${analysis.portfolioBeta.toFixed(2)}`);
-  csv.push(`Risk-Free Rate,${(analysis.riskFreeRate * 100).toFixed(2)}%`);
-  csv.push('');
+const addMeta = (state: PDFState, text: string): PDFState => {
+  state.pdf.setFontSize(9).setFont('helvetica', 'normal').text(text, state.margin, state.y);
+  return { ...state, y: state.y + 5 };
+};
 
-  // Global Minimum Variance (GMV)
-  csv.push('Global Minimum Variance (GMV) Portfolio');
-  csv.push('Metric,Value');
-  csv.push(`Expected Return,${(analysis.gmv.stats.return * 100).toFixed(2)}%`);
-  csv.push(`Volatility,${(analysis.gmv.stats.volatility * 100).toFixed(2)}%`);
-  csv.push(`Sharpe Ratio,${analysis.gmv.stats.sharpe.toFixed(2)}`);
-  csv.push('');
-  csv.push('GMV Weights');
-  csv.push('Ticker,Weight');
-  Object.entries(analysis.gmv.weights)
-    .filter(([_, weight]) => (weight as number) > 0.001)
-    .sort((a, b) => (b[1] as number) - (a[1] as number))
-    .forEach(([ticker, weight]) => {
-      csv.push(`${ticker},${((weight as number) * 100).toFixed(2)}%`);
-    });
-  csv.push('');
+const addSection = (state: PDFState, text: string): PDFState => {
+  state.pdf.setFontSize(12).setFont('helvetica', 'bold').text(text, state.margin, state.y);
+  return { ...state, y: state.y + 8 };
+};
 
-  // Maximum Sharpe Ratio
-  csv.push('Maximum Sharpe Ratio Portfolio');
-  csv.push('Metric,Value');
-  csv.push(`Expected Return,${(analysis.maxSharpe.stats.return * 100).toFixed(2)}%`);
-  csv.push(`Volatility,${(analysis.maxSharpe.stats.volatility * 100).toFixed(2)}%`);
-  csv.push(`Sharpe Ratio,${analysis.maxSharpe.stats.sharpe.toFixed(2)}`);
-  csv.push('');
-  csv.push('Max Sharpe Weights');
-  csv.push('Ticker,Weight');
-  Object.entries(analysis.maxSharpe.weights)
-    .filter(([_, weight]) => (weight as number) > 0.001)
-    .sort((a, b) => (b[1] as number) - (a[1] as number))
-    .forEach(([ticker, weight]) => {
-      csv.push(`${ticker},${((weight as number) * 100).toFixed(2)}%`);
-    });
-  csv.push('');
+const addSubsection = (state: PDFState, text: string): PDFState => {
+  state.pdf.setFontSize(10).setFont('helvetica', 'bold').text(text, state.margin + 2, state.y);
+  return { ...state, y: state.y + 6 };
+};
 
-  // Beta Hedging Recommendations
-  csv.push('Beta Hedging Recommendations');
-  csv.push('Hedging Method,Quantity,Notional Value');
-  csv.push(
-    `SPY ETF,Short ${Math.abs(analysis.hedging.spyShares).toLocaleString()} shares,$${Math.abs(analysis.hedging.spyNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
-  );
-  csv.push(
-    `ES Futures,Short ${Math.abs(analysis.hedging.esContracts).toLocaleString()} contracts,$${Math.abs(analysis.hedging.esNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
-  );
+const addRow = (state: PDFState, label: string, value: string): PDFState => {
+  state.pdf.setFontSize(9).setFont('helvetica', 'normal');
+  state.pdf.text(label, state.margin + 2, state.y);
+  state.pdf.text(value, state.margin + state.contentWidth - 30, state.y, { align: 'right' });
+  return { ...state, y: state.y + 5 };
+};
 
-  // Generate CSV file
-  const csvContent = csv.join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
+const addGap = (state: PDFState, gap = 3): PDFState => ({ ...state, y: state.y + gap });
+
+const pdfHeader = (state: PDFState, portfolioName?: string, date?: Date): PDFState => {
+  let s = addTitle(state, 'Glassbox Portfolio Analysis');
+  s = addMeta(s, `Generated: ${formatDateLocale(date)}`);
+  if (portfolioName) s = addMeta(s, `Portfolio: ${portfolioName}`);
+  return addGap(s);
+};
+
+const pdfComposition = (state: PDFState, items: PortfolioItem[]): PDFState => {
+  let s = addSection(state, 'Portfolio Composition');
+  items.forEach((item) => { s = addRow(s, item.symbol, `${item.quantity} shares`); });
+  return addGap(s);
+};
+
+const pdfStats = (state: PDFState, analysis: AnalysisSnapshot): PDFState => {
+  let s = addSection(state, 'Portfolio Statistics');
+  s = addRow(s, 'Portfolio Beta', formatNumber(analysis.portfolioBeta));
+  s = addRow(s, 'Risk-Free Rate', formatPercent(analysis.riskFreeRate));
+  return addGap(s);
+};
+
+const pdfPortfolio = (
+  state: PDFState,
+  title: string,
+  stats: { return: number; volatility: number; sharpe: number },
+  weights: Record<string, number>,
+  weightsTitle: string
+): PDFState => {
+  let s = addSection(state, title);
+  s = addRow(s, 'Expected Return', formatPercent(stats.return));
+  s = addRow(s, 'Volatility', formatPercent(stats.volatility));
+  s = addRow(s, 'Sharpe Ratio', formatNumber(stats.sharpe));
+  s = addGap(s, 2);
+  s = addSubsection(s, weightsTitle);
+  topWeights(weights).forEach(([t, w]) => { s = addRow(s, t, formatPercent(w)); });
+  return addGap(s);
+};
+
+const pdfHedging = (state: PDFState, hedging: AnalysisSnapshot['hedging']): PDFState => {
+  let s = addSection(state, 'Beta Hedging Recommendations');
+  s = addSubsection(s, 'SPY ETF Hedging');
+  s = addRow(s, 'Action', `Short ${Math.abs(hedging.spyShares).toLocaleString()} shares`);
+  s = addRow(s, 'Notional Value', formatCurrency(hedging.spyNotional));
+  s = addGap(s, 2);
+  s = addSubsection(s, 'ES Futures Hedging');
+  s = addRow(s, 'Action', `Short ${Math.abs(hedging.esContracts).toLocaleString()} contracts`);
+  s = addRow(s, 'Notional Value', formatCurrency(hedging.esNotional));
+  return s;
+};
+
+const buildPDF = (data: ExportData): jsPDF => {
+  let state = createPDFState();
+  state = pdfHeader(state, data.portfolioName, data.timestamp);
+  state = pdfComposition(state, data.items);
+  state = pdfStats(state, data.analysis);
+  state = pdfPortfolio(state, 'Global Minimum Variance (GMV) Portfolio', data.analysis.gmv.stats, data.analysis.gmv.weights, 'GMV Weights');
+  state = checkPageBreak(state);
+  state = pdfPortfolio(state, 'Maximum Sharpe Ratio Portfolio', data.analysis.maxSharpe.stats, data.analysis.maxSharpe.weights, 'Max Sharpe Weights');
+  state = checkPageBreak(state);
+  state = pdfHedging(state, data.analysis.hedging);
+  return state.pdf;
+};
+
+// ============================================================================
+// Download Utilities
+// ============================================================================
+
+const downloadBlob = (blob: Blob, filename: string): void => {
   const url = URL.createObjectURL(blob);
-
-  const filename = `glassbox-analysis-${dateStr}.csv`;
-  link.setAttribute('href', url);
-  link.setAttribute('download', filename);
-  link.style.visibility = 'hidden';
+  const link = Object.assign(document.createElement('a'), { href: url, download: filename, style: 'display:none' });
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
+  URL.revokeObjectURL(url);
+};
 
-/**
- * Export portfolio analysis as PDF
- */
-export function exportAsPDF(data: ExportData): void {
-  const { portfolioName, items, analysis, timestamp } = data;
+// ============================================================================
+// Public API
+// ============================================================================
 
-  const dateStr = timestamp ? timestamp.toLocaleString() : new Date().toLocaleString();
+export const exportAsCSV = (data: ExportData): void => {
+  const csv = buildCSV(data);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  downloadBlob(blob, `glassbox-analysis-${formatDateISO(data.timestamp)}.csv`);
+};
 
-  // Create PDF with portrait orientation
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-  });
-
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  let yPosition = 15;
-  const margin = 15;
-  const contentWidth = pageWidth - 2 * margin;
-
-  // Helper function to add section
-  const addSection = (title: string, yPos: number): number => {
-    pdf.setFontSize(12);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(title, margin, yPos);
-    return yPos + 8;
-  };
-
-  // Helper function to add subsection
-  const addSubsection = (title: string, yPos: number): number => {
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(title, margin + 2, yPos);
-    return yPos + 6;
-  };
-
-  // Helper function to add data row
-  const addDataRow = (label: string, value: string, yPos: number): number => {
-    pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text(label, margin + 2, yPos);
-    pdf.text(value, margin + contentWidth - 30, yPos, { align: 'right' });
-    return yPos + 5;
-  };
-
-  // Title
-  pdf.setFontSize(16);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('Glassbox Portfolio Analysis', margin, yPosition);
-  yPosition += 10;
-
-  // Metadata
-  pdf.setFontSize(9);
-  pdf.setFont('helvetica', 'normal');
-  pdf.text(`Generated: ${dateStr}`, margin, yPosition);
-  yPosition += 5;
-  if (portfolioName) {
-    pdf.text(`Portfolio: ${portfolioName}`, margin, yPosition);
-    yPosition += 5;
-  }
-  yPosition += 3;
-
-  // Portfolio Composition
-  yPosition = addSection('Portfolio Composition', yPosition);
-  items.forEach((item) => {
-    yPosition = addDataRow(item.symbol, `${item.quantity} shares`, yPosition);
-  });
-  yPosition += 3;
-
-  // Portfolio Statistics
-  yPosition = addSection('Portfolio Statistics', yPosition);
-  yPosition = addDataRow('Portfolio Beta', analysis.portfolioBeta.toFixed(2), yPosition);
-  yPosition = addDataRow('Risk-Free Rate', `${(analysis.riskFreeRate * 100).toFixed(2)}%`, yPosition);
-  yPosition += 3;
-
-  // Global Minimum Variance (GMV)
-  yPosition = addSection('Global Minimum Variance (GMV) Portfolio', yPosition);
-  yPosition = addDataRow('Expected Return', `${(analysis.gmv.stats.return * 100).toFixed(2)}%`, yPosition);
-  yPosition = addDataRow('Volatility', `${(analysis.gmv.stats.volatility * 100).toFixed(2)}%`, yPosition);
-  yPosition = addDataRow('Sharpe Ratio', analysis.gmv.stats.sharpe.toFixed(2), yPosition);
-  yPosition += 2;
-
-  yPosition = addSubsection('GMV Weights', yPosition);
-  Object.entries(analysis.gmv.weights)
-    .filter(([_, weight]) => (weight as number) > 0.001)
-    .sort((a, b) => (b[1] as number) - (a[1] as number))
-    .slice(0, 5)
-    .forEach(([ticker, weight]) => {
-      yPosition = addDataRow(ticker, `${((weight as number) * 100).toFixed(2)}%`, yPosition);
-    });
-  yPosition += 3;
-
-  // Check if new page needed
-  if (yPosition > pageHeight - 40) {
-    pdf.addPage();
-    yPosition = 15;
-  }
-
-  // Maximum Sharpe Ratio
-  yPosition = addSection('Maximum Sharpe Ratio Portfolio', yPosition);
-  yPosition = addDataRow('Expected Return', `${(analysis.maxSharpe.stats.return * 100).toFixed(2)}%`, yPosition);
-  yPosition = addDataRow('Volatility', `${(analysis.maxSharpe.stats.volatility * 100).toFixed(2)}%`, yPosition);
-  yPosition = addDataRow('Sharpe Ratio', analysis.maxSharpe.stats.sharpe.toFixed(2), yPosition);
-  yPosition += 2;
-
-  yPosition = addSubsection('Max Sharpe Weights', yPosition);
-  Object.entries(analysis.maxSharpe.weights)
-    .filter(([_, weight]) => (weight as number) > 0.001)
-    .sort((a, b) => (b[1] as number) - (a[1] as number))
-    .slice(0, 5)
-    .forEach(([ticker, weight]) => {
-      yPosition = addDataRow(ticker, `${((weight as number) * 100).toFixed(2)}%`, yPosition);
-    });
-  yPosition += 3;
-
-  // Check if new page needed
-  if (yPosition > pageHeight - 40) {
-    pdf.addPage();
-    yPosition = 15;
-  }
-
-  // Beta Hedging Recommendations
-  yPosition = addSection('Beta Hedging Recommendations', yPosition);
-  yPosition = addSubsection('SPY ETF Hedging', yPosition);
-  yPosition = addDataRow('Action', `Short ${Math.abs(analysis.hedging.spyShares).toLocaleString()} shares`, yPosition);
-  yPosition = addDataRow(
-    'Notional Value',
-    `$${Math.abs(analysis.hedging.spyNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}`,
-    yPosition
-  );
-  yPosition += 2;
-
-  yPosition = addSubsection('ES Futures Hedging', yPosition);
-  yPosition = addDataRow('Action', `Short ${Math.abs(analysis.hedging.esContracts).toLocaleString()} contracts`, yPosition);
-  yPosition = addDataRow(
-    'Notional Value',
-    `$${Math.abs(analysis.hedging.esNotional).toLocaleString('en-US', { maximumFractionDigits: 0 })}`,
-    yPosition
-  );
-
-  // Save PDF
-  const filename = `glassbox-analysis-${new Date().toISOString().split('T')[0]}.pdf`;
-  pdf.save(filename);
-}
+export const exportAsPDF = (data: ExportData): void => {
+  const pdf = buildPDF(data);
+  pdf.save(`glassbox-analysis-${formatDateISO(data.timestamp)}.pdf`);
+};
