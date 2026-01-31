@@ -25,7 +25,7 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
   const isEmpty = items.length === 0;
 
   return (
-    <div className="h-[280px] w-full relative group">
+    <div className="h-[280px] w-full relative group [&_*]:outline-none [&_*]:focus:outline-none">
       {/* Background Glow Effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/5 to-purple-400/5 rounded-full blur-3xl scale-75 animate-pulse"></div>
 
@@ -41,21 +41,21 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
             dataKey="value"
             stroke="none"
             cornerRadius={6}
+            activeShape={false}
           >
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${entry.name}`}
                 fill={isEmpty ? '#334155' : colors[index % colors.length]}
-                className="transition-all duration-300 hover:opacity-90 hover:scale-105 stroke-2 stroke-white/10"
               />
             ))}
           </Pie>
-          <Tooltip 
+          <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length && !isEmpty) {
                 const data = payload[0];
                 return (
-                  <div className="glass-panel px-4 py-3 shadow-xl border-white/20 dark:border-white/10 backdrop-blur-xl">
+                  <div className="rounded-xl px-4 py-3 shadow-xl border bg-white/95 dark:bg-slate-900/95 border-cyan-400/30 dark:border-cyan-400/40" style={{ backdropFilter: 'blur(12px)' }}>
                     <p className="text-sm font-bold text-black dark:text-white mb-0.5">{data.name}</p>
                     <div className="flex items-center gap-2">
                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: data.payload.fill }}></span>
