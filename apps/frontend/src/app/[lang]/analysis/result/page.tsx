@@ -130,6 +130,8 @@ function AnalysisResultContent() {
     reanalyze({
       tickers: portfolioData.savedPortfolio.tickers,
       quantities: portfolioData.savedPortfolio.quantities,
+      startDate: portfolioData.analysis.analysisDate,
+      endDate: portfolioData.analysis.analysisEndDate,
     });
   };
 
@@ -537,6 +539,12 @@ function AnalysisResultContent() {
                         <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
                           <span className="text-black/60 dark:text-white/60">{t('analysis.section.analysis-start-date')}</span>
                           <span className="font-mono text-black dark:text-white">{analysisData.analysisDate}</span>
+                        </div>
+                      )}
+                      {analysisData.analysisEndDate && (
+                        <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
+                          <span className="text-black/60 dark:text-white/60">{t('analysis.section.analysis-end-date')}</span>
+                          <span className="font-mono text-black dark:text-white">{analysisData.analysisEndDate}</span>
                         </div>
                       )}
                       <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">

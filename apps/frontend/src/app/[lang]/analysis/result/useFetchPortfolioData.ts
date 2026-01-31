@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { analyzePortfolio, getPortfolio, savePortfolio, updatePortfolio } from '@/lib/api/portfolio';
-import type { AnalyzePortfolioResponse, AnalyzePortfolioRequest, CreatePortfolioRequest, UpdatePortfolioRequest } from '@/lib/api/portfolio';
+import { loadAnalysisSession } from '@/lib/storage/analysis-session';
+import type { AnalyzePortfolioRequest, CreatePortfolioRequest, UpdatePortfolioRequest } from '@/lib/api/portfolio';
 import type { PortfolioItem, AnalysisSnapshot, Portfolio } from '@glassbox/types';
 
 export interface PortfolioData {
@@ -39,26 +40,17 @@ export function useFetchPortfolioData(portfolioId: string | null) {
         }
       } else {
         // Load fresh analysis from sessionStorage
-        if (typeof window === 'undefined') {
-          throw new Error('Window not defined');
-        }
-        
-        const storedResult = sessionStorage.getItem('portfolioAnalysisResult');
-        const storedItems = sessionStorage.getItem('portfolioItems');
+        const sessionData = loadAnalysisSession();
 
-        if (storedResult && storedItems) {
-          try {
-            return {
-              analysis: JSON.parse(storedResult),
-              items: JSON.parse(storedItems),
-              savedPortfolio: null
-            };
-          } catch (error) {
-            throw new Error('Failed to parse stored data');
-          }
-        } else {
+        if (!sessionData) {
           throw new Error('No analysis data found');
         }
+
+        return {
+          analysis: sessionData.analysis,
+          items: sessionData.items,
+          savedPortfolio: null
+        };
       }
     },
     retry: false,
@@ -67,11 +59,12 @@ export function useFetchPortfolioData(portfolioId: string | null) {
 
   // Mutation for re-analyzing
   const reanalyzeMutation = useMutation({
-    mutationFn: async (data: { tickers: string[], quantities: number[] }) => {
+    mutationFn: async (data: { tickers: string[], quantities: number[], startDate?: string, endDate?: string }) => {
       const request: AnalyzePortfolioRequest = {
         tickers: data.tickers,
         quantities: data.quantities,
-        // Add other params if needed
+        startDate: data.startDate,
+        endDate: data.endDate,
       };
       return analyzePortfolio(request);
     },
