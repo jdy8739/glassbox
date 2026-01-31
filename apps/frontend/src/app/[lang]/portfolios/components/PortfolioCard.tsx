@@ -1,10 +1,11 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'next/navigation';
 import { LocalizedLink } from '@/components/LocalizedLink';
 import { Trash2, TrendingUp, Activity, Calendar } from 'lucide-react';
 import type { Portfolio } from '@glassbox/types';
-import { formatShortDate } from '@/lib/utils/date';
+import { formatShortDate, type DateLocale } from '@/lib/utils/date';
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
@@ -15,6 +16,8 @@ interface PortfolioCardProps {
 
 export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: PortfolioCardProps) {
   const { t } = useTranslation();
+  const params = useParams();
+  const locale = (params?.lang as DateLocale) || 'en';
   const stats = portfolio.analysisSnapshot?.maxSharpe?.stats;
 
   // Calculate composition based on quantities (simple visual approximation)
@@ -35,7 +38,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
           </h3>
           <p className="text-xs text-black/50 dark:text-white/50 flex items-center gap-1 mt-1">
             <Calendar className="w-3 h-3" />
-            {formatShortDate(portfolio.updatedAt)}
+            {formatShortDate(portfolio.updatedAt, locale)}
             {portfolio.analysisSnapshot?.analysisDate && (
               <span className="ml-1 opacity-70">
                 ({t('portfolio.card.start-date')}: {portfolio.analysisSnapshot.analysisDate})
