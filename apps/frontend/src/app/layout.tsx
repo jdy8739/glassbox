@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from './providers';
 import { Header } from '@/components/header';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Glassbox - Portfolio Optimization Tool',
@@ -11,9 +12,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const acceptLanguage = headersList.get('accept-language') || '';
+  const lang = acceptLanguage.toLowerCase().includes('ko') ? 'ko' : 'en';
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -22,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <ThemeProvider>
+        <ThemeProvider lang={lang}>
           <Header />
           {children}
         </ThemeProvider>

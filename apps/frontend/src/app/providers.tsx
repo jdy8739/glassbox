@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HeaderProvider } from '@/lib/header-context';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '@/lib/i18n';
+import { createI18nInstance } from '@/lib/i18n';
 
 type ThemePreference = 'light' | 'dark' | 'system';
 type ResolvedTheme = 'light' | 'dark';
@@ -71,10 +71,13 @@ const setupMediaQueryListener = (
   return undefined;
 };
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; lang?: string }) {
   const [theme, setThemeState] = useState<ThemePreference>('system');
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light');
   const [mounted, setMounted] = useState(false);
+  
+  // Create i18n instance once with the server-provided language
+  const [i18n] = useState(() => createI18nInstance(lang));
   
   // Ensure QueryClient is created once per component lifecycle
   const [queryClient] = useState(() => new QueryClient({
@@ -111,21 +114,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // Language detection (client-side only to prevent hydration mismatch)
+    // Handle language persistence and override
     const savedLang = localStorage.getItem('i18nextLng');
-    if (savedLang) {
+    if (savedLang && savedLang !== lang) {
       i18n.changeLanguage(savedLang);
-    } else {
-      const detectedLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
-      i18n.changeLanguage(detectedLang);
-      localStorage.setItem('i18nextLng', detectedLang);
+    } else if (!savedLang) {
+      // If no preference saved, save the one detected by server
+      localStorage.setItem('i18nextLng', lang);
     }
 
     // Mark as mounted (prevents hydration mismatch)
     setMounted(true);
 
     return cleanup;
-  }, []);
+  }, [lang, i18n]);
 
   // Update theme
   const setTheme = (newTheme: ThemePreference) => {

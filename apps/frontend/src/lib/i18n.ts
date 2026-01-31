@@ -3,23 +3,32 @@ import { initReactI18next } from 'react-i18next';
 import en from '../../../../translation/en.json';
 import ko from '../../../../translation/ko.json';
 
-i18n
-  .use(initReactI18next)
-  .init({
-    lng: 'en', // Force initial language to match server
-    debug: true,
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false, 
-    },
-    resources: {
-      en: {
-        translation: en,
-      },
-      ko: {
-        translation: ko,
-      },
-    },
-  });
+export const resources = {
+  en: {
+    translation: en,
+  },
+  ko: {
+    translation: ko,
+  },
+};
 
-export default i18n;
+export const createI18nInstance = (lang: string) => {
+  const instance = i18n.createInstance();
+  instance
+    .use(initReactI18next)
+    .init({
+      lng: lang,
+      fallbackLng: 'en',
+      resources,
+      debug: process.env.NODE_ENV === 'development',
+      interpolation: {
+        escapeValue: false,
+      },
+    });
+  return instance;
+};
+
+// Default instance for usage outside of components if needed, 
+// though we'll rely on the Provider for the app.
+const defaultInstance = createI18nInstance('en');
+export default defaultInstance;
