@@ -12,6 +12,7 @@ import { HeaderPortal } from '@/lib/header-context';
 import { SavePortfolioModal } from './components/SavePortfolioModal';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { TimestampBadge } from '@/components/TimestampBadge';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -337,11 +338,19 @@ function AnalysisResultContent() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs font-semibold text-black/70 dark:text-white/70">Analysis Complete</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="text-xs font-semibold text-black/70 dark:text-white/70">Analysis Complete</span>
+              </div>
+
+              {/* Timestamp Badge */}
+              <TimestampBadge
+                date={savedPortfolio?.updatedAt}
+                isFresh={!isSnapshot}
+              />
             </div>
-            
+
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-2">
                 Portfolio Analysis

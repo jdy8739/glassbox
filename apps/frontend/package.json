@@ -16,6 +16,7 @@
     "@glassbox/utils": "workspace:*",
     "@tanstack/react-query": "^5.90.16",
     "axios": "^1.13.2",
+    "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.563.0",

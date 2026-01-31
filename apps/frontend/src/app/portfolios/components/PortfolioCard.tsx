@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Trash2, TrendingUp, Activity, Calendar } from 'lucide-react';
 import type { Portfolio } from '@glassbox/types';
+import { formatShortDate } from '@/lib/utils/date';
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
@@ -13,7 +14,7 @@ interface PortfolioCardProps {
 
 export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: PortfolioCardProps) {
   const stats = portfolio.analysisSnapshot?.maxSharpe?.stats;
-  
+
   // Calculate composition based on quantities (simple visual approximation)
   const totalQuantity = portfolio.quantities.reduce((a, b) => a + b, 0);
   const composition = portfolio.tickers.map((ticker, index) => ({
@@ -21,14 +22,6 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
     percentage: (portfolio.quantities[index] / totalQuantity) * 100,
     color: colors[index % colors.length]
   }));
-
-  const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
 
   return (
     <div className="glass-panel p-5 group hover:border-cyan-500/30 transition-all flex flex-col h-full">
@@ -40,7 +33,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
           </h3>
           <p className="text-xs text-black/50 dark:text-white/50 flex items-center gap-1 mt-1">
             <Calendar className="w-3 h-3" />
-            {formatDate(portfolio.updatedAt)}
+            {formatShortDate(portfolio.updatedAt)}
           </p>
         </div>
         <button
