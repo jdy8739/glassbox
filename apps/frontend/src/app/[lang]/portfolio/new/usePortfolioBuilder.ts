@@ -1,19 +1,20 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { analyzePortfolio } from '@/lib/api/portfolio';
 import { searchTickers } from '@/lib/api/tickers';
-import type { TickerSearchResult } from '@/lib/api/tickers';
+import { saveAnalysisSession, clearAnalysisSession } from '@/lib/storage/analysis-session';
 import type { PortfolioItem } from '@glassbox/types';
 import { useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export function usePortfolioBuilder() {
   const router = useLocalizedRouter();
+  const queryClient = useQueryClient();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearchInput = useDebounce(searchInput, 300);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [startDate, setStartDate] = useState<string>('');
+  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
 
   // Query for searching tickers
   const searchQuery = useQuery({
@@ -30,10 +31,13 @@ export function usePortfolioBuilder() {
   const analyzeMutation = useMutation({
     mutationFn: analyzePortfolio,
     onSuccess: (result) => {
-      // Store results in sessionStorage
-      sessionStorage.setItem('portfolioAnalysisResult', JSON.stringify(result));
-      sessionStorage.setItem('portfolioItems', JSON.stringify(items));
-      
+      // Clear old session and save new analysis
+      clearAnalysisSession();
+      saveAnalysisSession(result, items);
+
+      // Invalidate the portfolio query cache to force fresh data
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+
       // Navigate to results page
       router.push('/analysis/result');
     },
@@ -81,7 +85,8 @@ export function usePortfolioBuilder() {
       quantities,
       portfolioValue,
       targetBeta: 0, // Market-neutral by default
-      startDate: startDate || undefined,
+      startDate: dateRange.startDate || undefined,
+      endDate: dateRange.endDate || undefined,
     });
   };
 
@@ -101,7 +106,7 @@ export function usePortfolioBuilder() {
     updateQuantity,
     handleAnalyze,
     clearError: analyzeMutation.reset,
-    startDate,
-    setStartDate,
+    dateRange,
+    setDateRange,
   };
 }

@@ -90,8 +90,8 @@ function PortfolioBuilderContent() {
     updateQuantity,
     handleAnalyze,
     clearError,
-    startDate,
-    setStartDate,
+    dateRange,
+    setDateRange,
   } = usePortfolioBuilder();
 
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -721,41 +721,49 @@ function PortfolioBuilderContent() {
 
                                 </label>
 
-  
+                                <div className="space-y-3">
 
-                                                                <input
+                                  <div>
 
-  
+                                    <p className="text-xs text-black/60 dark:text-white/60 mb-1">{t('portfolio.builder.analysis.settings.start-date')}</p>
 
-                                                                  type="date"
+                                    <input
 
-  
+                                      type="date"
 
-                                                                  value={startDate}
+                                      value={dateRange.startDate}
 
-  
+                                      onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
 
-                                                                  onChange={(e) => setStartDate(e.target.value)}
+                                      className="w-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 transition-colors"
 
-  
+                                    />
 
-                                                                  className="w-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                                    <p className="text-[10px] text-black/40 dark:text-white/40 mt-1">{t('portfolio.builder.analysis.settings.hint')}</p>
 
-  
+                                  </div>
 
-                                                                />
+                                  <div>
 
-  
+                                    <p className="text-xs text-black/60 dark:text-white/60 mb-1">{t('portfolio.builder.analysis.settings.end-date')}</p>
 
-                                                <p className="text-[10px] text-black/40 dark:text-white/40 pl-1">
+                                    <input
 
+                                      type="date"
 
+                                      value={dateRange.endDate}
 
-                                                  {t('portfolio.builder.analysis.settings.hint')}
+                                      onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
 
+                                      className="w-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 transition-colors"
 
+                                    />
 
-                                                </p>
+                                    <p className="text-[10px] text-black/40 dark:text-white/40 mt-1">{t('portfolio.builder.analysis.settings.end-date-hint')}</p>
+
+                                  </div>
+
+                                </div>
 
   
 
