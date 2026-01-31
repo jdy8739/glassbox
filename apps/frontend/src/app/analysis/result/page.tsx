@@ -582,7 +582,7 @@ function AnalysisResultContent() {
         message="This will fetch the latest market data and update your analysis. Your current snapshot will be replaced with new calculations based on real-time prices."
         confirmText="Re-analyze"
         cancelText="Cancel"
-        variant="warning"
+        variant="info"
       />
     </main>
   );
