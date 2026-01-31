@@ -1,6 +1,6 @@
 key,en,ko
-hero.title.part1,Master Your,마스터하세요
-hero.title.part2,Portfolio Risk,포트폴리오 리스크
+hero.title.part1,Master Your,포트폴리오
+hero.title.part2,Portfolio Risk,리스크를 정복하세요
 hero.badge,New: Advanced Beta Hedging,새로운 기능: 고급 베타 헤징
 hero.description,"Harness the power of modern portfolio theory with a beautiful glassmorphic interface. Calculate efficient frontiers, optimize allocations, and hedge market beta in seconds.","현대 포트폴리오 이론으로 포트폴리오 리스크를 관리하세요. 효율적 투자선을 계산하고, 자산 배분을 최적화하며, 시장 베타를 몇 초 만에 헤징할 수 있습니다."
 hero.cta.start,Start Analyzing,분석 시작하기
@@ -8,7 +8,9 @@ hero.cta.library,View Library,라이브러리 보기
 hero.trust.instant,Instant Analysis,즉각적인 분석
 hero.trust.local,Local Computation,로컬 연산
 common.language,English,한국어
-features.title.intelligent,Intelligent,지능적인
+nav.analyze,Analyze,분석
+nav.portfolios,Portfolios,포트폴리오
+features.title.intelligent,Intelligent,스마트한
 features.title.features,Features,기능
 features.description,Everything you need to become a smarter investor,더 현명한 투자자가 되기 위해 필요한 모든 것
 features.card1.title,Efficient Frontier,효율적 투자선
@@ -24,15 +26,15 @@ features.card5.desc,"Store, compare, and manage multiple portfolios with powerfu
 features.card6.title,Advanced Analytics,고급 분석
 features.card6.desc,"Deep-dive into Sharpe ratios, volatility, correlations, and comprehensive portfolio statistics.","샤프 비율, 변동성, 상관관계 및 종합적인 포트폴리오 통계에 대해 깊이 알아보세요."
 howitworks.title.how,How It,어떻게
-howitworks.title.works,Works,작동하나
+howitworks.title.works,Works,동작하나요
 howitworks.step1.title,Add Your Stocks,주식 추가
 howitworks.step1.desc,"Simply enter stock tickers you want to analyze. Our system fetches historical data from Yahoo Finance.","분석하고 싶은 주식 티커를 입력하기만 하세요. 시스템이 야후 파이낸스에서 과거 데이터를 가져옵니다."
 howitworks.step2.title,Run Analysis,분석 실행
 howitworks.step2.desc,"Our algorithms compute the efficient frontier and identify optimal portfolio weights in real-time.","알고리즘이 실시간으로 효율적 투자선을 계산하고 최적의 포트폴리오 비중을 식별합니다."
 howitworks.step3.title,Get Insights,인사이트 확보
 howitworks.step3.desc,"View optimal allocations, calculate hedging positions, and save your analysis for future reference.","최적 배분을 확인하고, 헤징 포지션을 계산하며, 나중을 위해 분석을 저장하세요."
-cta.ready,Ready to,준비되셨나요?
-cta.optimize,Optimize?,최적화할
+cta.ready,Ready to,지금 바로
+cta.optimize,Optimize?,포트폴리오를 최적화하세요
 cta.description,"Join thousands of investors using Glassbox to make smarter portfolio decisions.","Glassbox를 사용하여 더 스마트한 포트폴리오 결정을 내리는 수천 명의 투자자들과 함께하세요."
 cta.launch,Launch App Now,앱 지금 실행하기
 cta.learn,Learn More,더 알아보기
