@@ -309,7 +309,7 @@ function AnalysisResultContent() {
           <div className="animate-fade-in">
             <div className={`grid lg:grid-cols-3 gap-6 ${activeTab === 'frontier' ? 'block' : 'hidden'}`}>
                 {/* Main Chart Area */}
-                <div className="lg:col-span-2 glass-panel p-6 min-h-[500px] flex flex-col">
+                <div className="lg:col-span-2 glass-panel p-6 min-h-[500px] flex flex-col max-h-fit">
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="font-bold text-black dark:text-white">Risk vs. Return Profile</h3>
                     
