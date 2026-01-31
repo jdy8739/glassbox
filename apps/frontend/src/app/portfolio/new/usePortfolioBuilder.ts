@@ -5,7 +5,7 @@ import { searchTickers } from '@/lib/api/tickers';
 import type { TickerSearchResult } from '@/lib/api/tickers';
 import type { PortfolioItem } from '@glassbox/types';
 import { useState } from 'react';
-import { useDebounce } from '@/lib/hooks';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export function usePortfolioBuilder() {
   const router = useRouter();

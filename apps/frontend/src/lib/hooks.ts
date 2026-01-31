@@ -7,20 +7,7 @@ import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { get, post, put, del } from './api-client';
 
-// Debounce hook for delaying value updates
-export function useDebounce<T>(value: T, delay: number = 300): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 // Example: Fetch portfolios list
 export function usePortfolios(options?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) {
