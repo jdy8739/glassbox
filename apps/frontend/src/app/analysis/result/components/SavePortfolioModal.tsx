@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, Check } from 'lucide-react';
 import { getAllPortfolios } from '@/lib/api/portfolio';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface SavePortfolioModalProps {
   isOpen: boolean;
@@ -31,6 +32,9 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
         .finally(() => setIsLoading(false));
     }
   }, [isOpen]);
+
+  // Lock scroll when modal is open
+  useScrollLock(isOpen);
 
   // Validation
   const trimmedName = portfolioName.trim();

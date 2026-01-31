@@ -13,6 +13,7 @@ import { SavePortfolioModal } from './components/SavePortfolioModal';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { TimestampBadge } from '@/components/TimestampBadge';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -61,6 +62,7 @@ function AnalysisResultContent() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isReanalyzeConfirmOpen, setIsReanalyzeConfirmOpen] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   
   const { 
@@ -82,9 +84,13 @@ function AnalysisResultContent() {
     }
   }, [isError, router]);
 
-  const handleReanalyze = () => {
+  const handleReanalyzeClick = () => {
+    setIsReanalyzeConfirmOpen(true);
+  };
+
+  const confirmReanalyze = () => {
     if (!portfolioData?.savedPortfolio) return;
-    
+
     reanalyze({
       tickers: portfolioData.savedPortfolio.tickers,
       quantities: portfolioData.savedPortfolio.quantities,
@@ -201,6 +207,7 @@ function AnalysisResultContent() {
       handler: () => {
         setIsExportOpen(false);
         setIsSaveModalOpen(false);
+        setIsReanalyzeConfirmOpen(false);
       },
     },
   ]);
@@ -266,7 +273,7 @@ function AnalysisResultContent() {
           <div className="flex gap-2 items-center">
             {isSnapshot && (
               <button
-                onClick={handleReanalyze}
+                onClick={handleReanalyzeClick}
                 disabled={isReanalyzing}
                 className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -527,10 +534,22 @@ function AnalysisResultContent() {
       </div>
 
       {/* Save Modal */}
-      <SavePortfolioModal 
-        isOpen={isSaveModalOpen} 
-        onClose={() => setIsSaveModalOpen(false)} 
-        onSave={confirmSave} 
+      <SavePortfolioModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={confirmSave}
+      />
+
+      {/* Re-analyze Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isReanalyzeConfirmOpen}
+        onClose={() => setIsReanalyzeConfirmOpen(false)}
+        onConfirm={confirmReanalyze}
+        title="Re-analyze Portfolio?"
+        message="This will fetch the latest market data and update your analysis. Your current snapshot will be replaced with new calculations based on real-time prices."
+        confirmText="Re-analyze"
+        cancelText="Cancel"
+        variant="warning"
       />
     </main>
   );
