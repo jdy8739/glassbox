@@ -14,6 +14,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { TimestampBadge } from '@/components/TimestampBadge';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { BackButton } from '@/components/back-button';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -281,12 +282,7 @@ function AnalysisResultContent() {
       )}
 
       <HeaderPortal
-        nav={
-          <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
-            <span>←</span>
-            <span>Back</span>
-          </a>
-        }
+        nav={<BackButton href={backLink} />}
         actions={
           <div className="flex gap-2 items-center">
             {isSnapshot && (

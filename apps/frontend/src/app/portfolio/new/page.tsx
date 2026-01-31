@@ -10,6 +10,7 @@ import { StarterTemplates } from './components/StarterTemplates';
 import { QuickAddAssets } from './components/QuickAddAssets';
 import { HeaderPortal } from '@/lib/header-context';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { BackButton } from '@/components/back-button';
 
 const PortfolioDonutChart = dynamic(
   () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
@@ -151,15 +152,11 @@ function PortfolioBuilderContent() {
     }
   };
 
+
   return (
     <main className="min-h-screen px-6 pt-8 pb-32">
       <HeaderPortal
-        nav={
-          <a href="/" className="text-sm font-semibold text-black dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">
-            <span>←</span>
-            <span>Back</span>
-          </a>
-        }
+        nav={<BackButton href="/" />}
         actions={
           <button
             onClick={handleAnalyze}

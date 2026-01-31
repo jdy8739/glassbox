@@ -70,7 +70,7 @@ export function Header() {
           
           {/* Dynamic Back/Nav controls injected from pages */}
           {navContent && (
-            <div className="hidden md:block pl-6 border-l border-black/10 dark:border-white/10">
+            <div className="pl-3 md:pl-6 border-l border-black/10 dark:border-white/10 ml-3 md:ml-6 flex items-center">
               {navContent}
             </div>
           )}
