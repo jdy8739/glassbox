@@ -11,6 +11,7 @@ import { HedgingComparison } from './components/HedgingComparison';
 import { HeaderPortal } from '@/lib/header-context';
 import { SavePortfolioModal } from './components/SavePortfolioModal';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -176,6 +177,33 @@ function AnalysisResultContent() {
     return undefined;
   }, [isExportOpen]);
 
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    {
+      key: 's',
+      ctrl: true,
+      meta: true,
+      handler: () => {
+        if (!isProcessing && !isReanalyzing) {
+          handleSaveButton();
+        }
+      },
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      meta: true,
+      handler: () => setIsExportOpen(!isExportOpen),
+    },
+    {
+      key: 'Escape',
+      handler: () => {
+        setIsExportOpen(false);
+        setIsSaveModalOpen(false);
+      },
+    },
+  ]);
+
   if (isLoading) {
     return (
       <main className="min-h-screen px-6 py-8 flex items-center justify-center">
@@ -284,8 +312,9 @@ function AnalysisResultContent() {
             </div>
             <button
               onClick={handleSaveButton}
-              className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative"
               disabled={isReanalyzing || isProcessing}
+              title="Save portfolio (Ctrl+S)"
             >
               {isProcessing ? (
                  <>
@@ -296,6 +325,7 @@ function AnalysisResultContent() {
                  <>
                    <Save className="w-4 h-4" />
                    <span>{isSnapshot ? 'Update' : 'Save'}</span>
+                   <kbd className="hidden sm:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity">⌘S</kbd>
                  </>
               )}
             </button>

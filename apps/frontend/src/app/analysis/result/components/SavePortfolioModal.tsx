@@ -18,6 +18,18 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
     }
   }, [isOpen]);
 
+  // Keyboard shortcuts
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && portfolioName.trim()) {
+      e.preventDefault();
+      onSave(portfolioName);
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -30,6 +42,7 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
             type="text"
             value={portfolioName}
             onChange={(e) => setPortfolioName(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="e.g., My Tech Portfolio"
             className="glass-input w-full"
             autoFocus
