@@ -230,7 +230,9 @@ analysis.error.calculation-message,We encountered an error while calculating you
 analysis.error.back-to-builder,Back to Builder,빌더로 돌아가기
 common.button.retry,Retry,다시 시도
 common.loading,Loading...,로딩 중...
-portfolio.delete.confirm-message,Are you sure you want to delete this portfolio?,이 포트폴리오를 삭제하시겠습니까?
+portfolio.delete.confirm-title,Delete Portfolio,포트폴리오 삭제
+portfolio.delete.confirm-message,"Are you sure you want to delete this portfolio? This action cannot be undone.","이 포트폴리오를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+portfolio.delete.confirm-button,Delete,삭제
 portfolio.delete.failed,Failed to delete portfolio. Please try again.,포트폴리오 삭제에 실패했습니다. 다시 시도해주세요.
 common.button.confirm,Confirm,확인
 common.button.back,Back,뒤로
