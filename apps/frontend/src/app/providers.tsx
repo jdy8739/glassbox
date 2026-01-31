@@ -111,6 +111,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       }
     );
 
+    // Language detection (client-side only to prevent hydration mismatch)
+    const savedLang = localStorage.getItem('i18nextLng');
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    } else {
+      const detectedLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
+      i18n.changeLanguage(detectedLang);
+      localStorage.setItem('i18nextLng', detectedLang);
+    }
+
     // Mark as mounted (prevents hydration mismatch)
     setMounted(true);
 

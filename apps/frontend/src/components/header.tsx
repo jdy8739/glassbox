@@ -54,6 +54,7 @@ export function Header() {
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'en' ? 'ko' : 'en';
     i18n.changeLanguage(nextLang);
+    localStorage.setItem('i18nextLng', nextLang);
   };
 
   return (
