@@ -2,7 +2,7 @@ key,en,ko
 hero.title.part1,Master Your,마스터하세요
 hero.title.part2,Portfolio Risk,포트폴리오 리스크
 hero.badge,New: Advanced Beta Hedging,새로운 기능: 고급 베타 헤징
-hero.description,"Harness the power of modern portfolio theory with a beautiful glassmorphic interface. Calculate efficient frontiers, optimize allocations, and hedge market beta in seconds.","아름다운 글래스모피즘 인터페이스로 현대 포트폴리오 이론의 힘을 활용하세요. 효율적 투자선을 계산하고, 자산 배분을 최적화하며, 시장 베타를 몇 초 만에 헤징할 수 있습니다."
+hero.description,"Harness the power of modern portfolio theory with a beautiful glassmorphic interface. Calculate efficient frontiers, optimize allocations, and hedge market beta in seconds.","현대 포트폴리오 이론으로 포트폴리오 리스크를 관리하세요. 효율적 투자선을 계산하고, 자산 배분을 최적화하며, 시장 베타를 몇 초 만에 헤징할 수 있습니다."
 hero.cta.start,Start Analyzing,분석 시작하기
 hero.cta.library,View Library,라이브러리 보기
 hero.trust.instant,Instant Analysis,즉각적인 분석
@@ -15,8 +15,8 @@ features.card1.title,Efficient Frontier,효율적 투자선
 features.card1.desc,"Discover optimal portfolio allocations using advanced quadratic programming and Monte Carlo sampling.","고급 2차 계획법과 몬테카를로 시뮬레이션을 사용하여 최적의 포트폴리오 배분을 찾아보세요."
 features.card2.title,Beta Hedging,베타 헤징
 features.card2.desc,"Calculate portfolio beta and size hedging positions in SPY or futures for market-neutral exposure.","포트폴리오 베타를 계산하고 시장 중립적 노출을 위해 SPY 또는 선물의 헤징 포지션 규모를 산정합니다."
-features.card3.title,Premium Design,프리미엄 디자인
-features.card3.desc,"Experience sophisticated glassmorphic interface with stunning animations and intuitive controls.","멋진 애니메이션과 직관적인 컨트롤을 갖춘 세련된 글래스모피즘 인터페이스를 경험해보세요."
+features.card3.title,Multiple Hedging Methods,다양한 헤징 방법
+features.card3.desc,"Hedge your portfolio with SPY or ES futures. Calculate optimal position sizing for any target beta level and market condition.","SPY 또는 ES 선물로 포트폴리오를 헤징하세요. 모든 베타 수준과 시장 상황에 대한 최적 포지션 규모를 계산합니다."
 features.card4.title,Real-time Analysis,실시간 분석
 features.card4.desc,"Get instant results with lightning-fast calculations powered by cutting-edge algorithms.","최첨단 알고리즘을 통한 번개처럼 빠른 계산으로 즉각적인 결과를 얻으세요."
 features.card5.title,Portfolio Management,포트폴리오 관리
