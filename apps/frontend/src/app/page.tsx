@@ -50,7 +50,7 @@ function HomeContent() {
                 <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
                 <span>Start Analyzing</span>
               </a>
-              <a href="/portfolios" className="glass-button-outline text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2">
+              <a href="/portfolios" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm transition-all">
                 <TrendingUp className="w-5 h-5" />
                 <span>View Library</span>
               </a>
@@ -250,7 +250,7 @@ function HomeContent() {
                   <Zap className="w-5 h-5" />
                   <span>Launch App Now</span>
                 </a>
-                <a href="#features" className="glass-button-outline text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                <a href="#features" className="glass-button text-lg px-10 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm">
                   <BookOpen className="w-5 h-5" />
                   <span>Learn More</span>
                 </a>

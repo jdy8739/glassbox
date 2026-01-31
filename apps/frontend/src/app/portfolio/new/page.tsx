@@ -917,73 +917,73 @@ function PortfolioBuilderContent() {
 
           >
 
-            {searchResults.length > 0 ? (
+                                {searchResults.length > 0 ? (
 
-              <div className="max-h-80 overflow-y-auto rounded-2xl bg-white/25 dark:bg-white/25 backdrop-blur-xl border border-white/30 shadow-xl">
+                                  <div className="max-h-80 overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
 
-                <div className="p-2 space-y-1">
+                                    <div className="p-2 space-y-1">
 
-                  {searchResults.map((result, index) => (
+                                      {searchResults.map((result, index) => (
 
-                    <button
+                                        <button
 
-                      key={result.symbol}
+                                          key={result.symbol}
 
-                      ref={(el) => {
+                                          ref={(el) => {
 
-                        resultRefs.current[index] = el;
+                                            resultRefs.current[index] = el;
 
-                      }}
+                                          }}
 
-                      onClick={() => handleAddItem(result.symbol, result.name)}
+                                          onClick={() => handleAddItem(result.symbol, result.name)}
 
-                      className={`w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center justify-between group ${
+                                          className={`w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center justify-between group ${
 
-                        index === selectedIndex ? 'bg-white/20 dark:bg-white/20' : 'hover:bg-white/10 dark:hover:bg-white/10'
+                                            index === selectedIndex ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800'
 
-                      }`}
+                                          }`}
 
-                    >
+                                        >
 
-                      <div className="flex-1">
+                                          <div className="flex-1">
 
-                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-3">
 
-                          <span className="font-bold text-white text-lg">{result.symbol}</span>
+                                              <span className="font-bold text-slate-900 dark:text-white text-lg">{result.symbol}</span>
 
-                          <span className="text-xs px-2 py-1 rounded bg-cyan-400/30 text-cyan-200 border border-cyan-400/40 font-semibold">
+                                              <span className="text-xs px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-semibold">
 
-                            {result.exchange}
+                                                {result.exchange}
 
-                          </span>
+                                              </span>
 
-                        </div>
+                                            </div>
 
-                        <p className="text-sm text-white/90 mt-1 font-medium">{result.name}</p>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">{result.name}</p>
 
-                      </div>
+                                          </div>
 
-                      <span className="text-white/60 group-hover:text-white transition-colors">→</span>
+                                          <span className="text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">→</span>
 
-                    </button>
+                                        </button>
 
-                  ))}
+                                      ))}
 
-                </div>
+                                    </div>
 
-              </div>
+                                  </div>
 
-            ) : !isSearching && searchInput.length > 0 ? (
+                                ) : !isSearching && searchInput.length > 0 ? (
 
-              <div className="rounded-2xl bg-white/25 dark:bg-white/25 backdrop-blur-xl border border-white/30 shadow-xl p-6 text-center">
+                                  <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-6 text-center">
 
-                <p className="text-white/90 font-medium">No results found for "{searchInput}"</p>
+                                    <p className="text-slate-900 dark:text-white font-medium">No results found for "{searchInput}"</p>
 
-                <p className="text-xs text-white/70 mt-2">Try a different ticker or company name</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Try a different ticker or company name</p>
 
-              </div>
+                                  </div>
 
-            ) : null}
+                                ) : null}
 
           </div>,
 
