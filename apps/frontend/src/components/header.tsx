@@ -48,9 +48,10 @@ export function Header() {
 
   const getThemeLabel = () => {
     if (theme === 'system') {
-      return `System (${resolvedTheme === 'dark' ? 'Dark' : 'Light'})`;
+      const resolved = resolvedTheme === 'dark' ? t('theme.dark') : t('theme.light');
+      return `${t('theme.system')} (${resolved})`;
     }
-    return theme.charAt(0).toUpperCase() + theme.slice(1);
+    return theme === 'dark' ? t('theme.dark') : t('theme.light');
   };
 
   const toggleLanguage = () => {
@@ -116,8 +117,8 @@ export function Header() {
           <button
             onClick={toggleLanguage}
             className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
-            title={`Switch to ${i18n.language === 'en' ? 'Korean' : 'English'}`}
-            aria-label={`Switch to ${i18n.language === 'en' ? 'Korean' : 'English'}`}
+            title={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
+            aria-label={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
           >
             <Languages className="w-4 h-4" />
             <span className="hidden sm:inline">{t('common.language')}</span>
@@ -127,8 +128,8 @@ export function Header() {
           <button
             onClick={toggleTheme}
             className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all relative"
-            title={`Current: ${getThemeLabel()}. Click to cycle through themes.`}
-            aria-label={`Theme: ${getThemeLabel()}. Click to cycle through light, dark, and system themes.`}
+            title={t('theme.current-label', { theme: getThemeLabel() })}
+            aria-label={t('theme.current-label', { theme: getThemeLabel() })}
           >
             {theme === 'light' ? (
               <Moon className="w-4 h-4" />

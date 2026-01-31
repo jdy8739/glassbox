@@ -10,6 +10,7 @@ hero.trust.local,Local Computation,로컬 연산
 common.language,English,한국어
 nav.analyze,Analyze,분석
 nav.portfolios,Portfolios,포트폴리오
+nav.launch,Launch,시작
 features.title.intelligent,Intelligent,스마트한
 features.title.features,Features,기능
 features.description,Everything you need to become a smarter investor,더 현명한 투자자가 되기 위해 필요한 모든 것
@@ -222,3 +223,28 @@ analysis.graph.tooltip.risk,Risk (Vol),위험 (변동성)
 analysis.graph.tooltip.sharpe,Sharpe,샤프
 analysis.chart.risk-volatility-label,Risk (Volatility),위험 (변동성)
 analysis.chart.expected-return-label,Expected Return,예상 수익률
+portfolio.builder.search.no-results,No results found for "{query}","{query}"에 대한 결과가 없습니다
+portfolio.builder.search.try-different,Try a different ticker or company name,다른 티커나 회사명을 시도해보세요
+analysis.error.calculation-title,Calculation Error,계산 오류
+analysis.error.calculation-message,We encountered an error while calculating your portfolio analysis. Please try again.,포트폴리오 분석을 계산하는 중 오류가 발생했습니다. 다시 시도해주세요.
+analysis.error.back-to-builder,Back to Builder,빌더로 돌아가기
+common.button.retry,Retry,다시 시도
+common.loading,Loading...,로딩 중...
+portfolio.delete.confirm-message,Are you sure you want to delete this portfolio?,이 포트폴리오를 삭제하시겠습니까?
+portfolio.delete.failed,Failed to delete portfolio. Please try again.,포트폴리오 삭제에 실패했습니다. 다시 시도해주세요.
+common.button.confirm,Confirm,확인
+common.button.back,Back,뒤로
+theme.system,System,시스템
+theme.light,Light,라이트
+theme.dark,Dark,다크
+theme.current-label,Current: {theme}. Click to cycle through themes.,현재: {theme}. 클릭하여 테마를 변경하세요.
+language.switch-to-korean,Switch to Korean,한국어로 전환
+language.switch-to-english,Switch to English,영어로 전환
+timestamp.fresh-analysis,Fresh Analysis,최신 분석
+timestamp.updated,Updated,업데이트됨
+portfolio.chart.empty,Empty,비어있음
+portfolio.chart.qty,Qty:,수량:
+portfolio.chart.assets,Assets,자산
+landing.error.title,Page Load Failed,페이지 로드 실패
+landing.error.message,Something went wrong while loading the home page. Please try again.,홈페이지를 로드하는 중 오류가 발생했습니다. 다시 시도해주세요.
+landing.error.reload,Reload Page,페이지 새로고침

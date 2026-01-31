@@ -2,6 +2,7 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PortfolioItem {
   symbol: string;
@@ -14,13 +15,14 @@ interface PortfolioDonutChartProps {
 }
 
 export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps) {
+  const { t } = useTranslation();
   const data = useMemo(() => {
-    if (items.length === 0) return [{ name: 'Empty', value: 1 }];
+    if (items.length === 0) return [{ name: t('portfolio.chart.empty'), value: 1 }];
     return items.map((item) => ({
       name: item.symbol,
       value: item.quantity,
     }));
-  }, [items]);
+  }, [items, t]);
 
   const isEmpty = items.length === 0;
 
@@ -60,7 +62,7 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
                     <div className="flex items-center gap-2">
                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: data.payload.fill }}></span>
                        <p className="text-xs font-semibold text-black/60 dark:text-white/60">
-                         Qty: <span className="text-black dark:text-white">{data.value}</span>
+                         {t('portfolio.chart.qty')} <span className="text-black dark:text-white">{data.value}</span>
                        </p>
                     </div>
                   </div>
@@ -79,7 +81,7 @@ export function PortfolioDonutChart({ items, colors }: PortfolioDonutChartProps)
             {items.length}
           </p>
           <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-widest font-bold mt-1">
-            Assets
+            {t('portfolio.chart.assets')}
           </p>
         </div>
       </div>

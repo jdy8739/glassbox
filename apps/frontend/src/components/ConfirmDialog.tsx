@@ -1,12 +1,8 @@
-/**
- * ConfirmDialog Component
- * Glass UI styled confirmation dialog
- */
-
 'use client';
 
 import { AlertCircle, Check } from 'lucide-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -25,10 +21,13 @@ export const ConfirmDialog = ({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   variant = 'warning',
 }: ConfirmDialogProps) => {
+  const { t } = useTranslation();
+  const confirm = confirmText ?? t('common.button.confirm');
+  const cancel = cancelText ?? t('common.button.cancel');
   // Lock scroll when modal is open
   useScrollLock(isOpen);
 
@@ -79,7 +78,7 @@ export const ConfirmDialog = ({
             onClick={onClose}
             className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors font-medium"
           >
-            {cancelText}
+            {cancel}
           </button>
           <button
             onClick={() => {
@@ -88,7 +87,7 @@ export const ConfirmDialog = ({
             }}
             className={`px-4 py-2 rounded-lg text-white transition-colors font-medium shadow-lg ${style.buttonBg}`}
           >
-            {confirmText}
+            {confirm}
           </button>
         </div>
       </div>

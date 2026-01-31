@@ -78,7 +78,7 @@ function PortfolioLibraryContent() {
   }, []);
 
   const handleDeletePortfolio = async (portfolioId: string) => {
-    if (!confirm('Are you sure you want to delete this portfolio?')) return;
+    if (!confirm(t('portfolio.delete.confirm-message'))) return;
 
     setDeleting(portfolioId);
     try {
@@ -86,7 +86,7 @@ function PortfolioLibraryContent() {
       setPortfolios(portfolios.filter(p => p.id !== portfolioId));
     } catch (error) {
       console.error('Error deleting portfolio:', error);
-      alert('Failed to delete portfolio. Please try again.');
+      alert(t('portfolio.delete.failed'));
     } finally {
       setDeleting(null);
     }

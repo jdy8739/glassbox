@@ -609,6 +609,7 @@ function AnalysisResultContent() {
 }
 
 function CalculationErrorFallback() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen px-6 py-8 flex items-center justify-center">
       <div className="glass-panel p-8 max-w-md w-full text-center space-y-6 border-orange-500/20 bg-orange-500/5">
@@ -618,10 +619,10 @@ function CalculationErrorFallback() {
 
         <div>
           <h2 className="text-xl font-bold text-black dark:text-white mb-2">
-            Calculation Error
+            {t('analysis.error.calculation-title')}
           </h2>
           <p className="text-sm text-black/60 dark:text-white/60">
-            We encountered an error while calculating your portfolio analysis. Please try again.
+            {t('analysis.error.calculation-message')}
           </p>
         </div>
 
@@ -630,14 +631,14 @@ function CalculationErrorFallback() {
             onClick={() => window.location.href = '/portfolio/new'}
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
-            <span>Back to Builder</span>
+            <span>{t('analysis.error.back-to-builder')}</span>
           </button>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"
           >
             <RefreshCw className="w-4 h-4" />
-            Retry
+            {t('common.button.retry')}
           </button>
         </div>
       </div>
@@ -648,7 +649,7 @@ function CalculationErrorFallback() {
 export default function AnalysisResult() {
   return (
     <ErrorBoundary fallback={<CalculationErrorFallback />}>
-      <Suspense fallback={<div className="min-h-screen px-6 py-8 flex items-center justify-center"><div className="text-black dark:text-white">Loading...</div></div>}>
+      <Suspense fallback={<div className="min-h-screen px-6 py-8 flex items-center justify-center"><div className="text-black dark:text-white">{/* Loading handled by AnalysisResultContent */}</div></div>}>
         <AnalysisResultContent />
       </Suspense>
     </ErrorBoundary>

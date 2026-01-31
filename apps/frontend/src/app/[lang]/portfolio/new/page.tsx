@@ -980,9 +980,9 @@ function PortfolioBuilderContent() {
 
                                   <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-6 text-center">
 
-                                    <p className="text-slate-900 dark:text-white font-medium">No results found for "{searchInput}"</p>
+                                    <p className="text-slate-900 dark:text-white font-medium">{t('portfolio.builder.search.no-results', { query: searchInput })}</p>
 
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Try a different ticker or company name</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{t('portfolio.builder.search.try-different')}</p>
 
                                   </div>
 
