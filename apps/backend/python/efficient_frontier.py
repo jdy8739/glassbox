@@ -179,11 +179,25 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
 
     # Check for future dates
     now = datetime.now()
+    today = now.date()
+
     if end_date > now:
         raise ValueError(f"End date ({end_date.date()}) cannot be in the future")
 
     if start_date > now:
         raise ValueError(f"Start date ({start_date.date()}) cannot be in the future")
+
+    # Warn if end date is today (market may not be closed yet)
+    if end_date.date() == today:
+        # Note: US markets close at 4 PM EST (9 PM UTC)
+        # Data may be incomplete if analysis runs before market close
+        import warnings
+        warnings.warn(
+            f"End date is today ({today}). Market data may be incomplete if "
+            f"markets are still open or haven't fully updated. "
+            f"Consider using yesterday's date for complete data.",
+            UserWarning
+        )
 
     # Always include SGOV as risk-free asset
     if 'SGOV' not in tickers:
@@ -408,29 +422,27 @@ def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_pri
     Returns:
         dict with SPY and ES hedge sizing
     """
+    # Validate SPY price
+    if spy_price <= 0:
+        raise ValueError(
+            f"Invalid SPY price: {spy_price}. Cannot calculate hedge sizing with zero or negative price."
+        )
+
     # Calculate required hedge notional
     hedge_notional = (portfolio_beta - target_beta) * portfolio_value
 
-    # SPY shares to short (avoid division by zero)
-    if spy_price > 0:
-        spy_shares = int(hedge_notional / spy_price)
-        spy_notional = spy_shares * spy_price
-    else:
-        spy_shares = 0
-        spy_notional = 0.0
+    # SPY shares to short
+    spy_shares = int(hedge_notional / spy_price)
+    spy_notional = spy_shares * spy_price
 
     # ES futures (assuming $50 multiplier and current ES price ~= SPY * 10)
     es_multiplier = 50
     es_price = spy_price * 10  # Approximate ES price
     es_contract_value = es_price * es_multiplier
 
-    # Avoid division by zero
-    if es_contract_value > 0:
-        es_contracts = int(hedge_notional / es_contract_value)
-        es_notional = es_contracts * es_contract_value
-    else:
-        es_contracts = 0
-        es_notional = 0.0
+    # Calculate ES contracts (spy_price validated above, so es_contract_value > 0)
+    es_contracts = int(hedge_notional / es_contract_value)
+    es_notional = es_contracts * es_contract_value
 
     return {
         'spyShares': spy_shares,
@@ -497,7 +509,14 @@ def main():
         # Get latest SPY price for hedge calculation
         spy_ticker = yf.Ticker('SPY')
         spy_data = spy_ticker.history(period='1d', auto_adjust=True)
-        spy_price = float(spy_data['Close'].iloc[-1]) if not spy_data.empty else 0.0
+
+        if spy_data.empty:
+            raise ValueError(
+                "Failed to fetch current SPY price for hedge calculation. "
+                "This is required to calculate hedge sizing. Please try again later."
+            )
+
+        spy_price = float(spy_data['Close'].iloc[-1])
 
         # Calculate hedge sizing
         hedging = calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price)
