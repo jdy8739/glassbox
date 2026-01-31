@@ -97,6 +97,17 @@ export function usePortfolioBuilder() {
         window.alert('End date cannot be in the future');
         return;
       }
+
+      // Warn if end date is today (market may not be closed)
+      if (endDate.getTime() === today.getTime()) {
+        const proceed = window.confirm(
+          'Warning: End date is today. Market data may be incomplete if markets are still open.\n\n' +
+          'US markets close at 4:00 PM EST. Data may not be fully updated.\n\n' +
+          'For most accurate results, use yesterday\'s date.\n\n' +
+          'Do you want to proceed anyway?'
+        );
+        if (!proceed) return;
+      }
     }
 
     if (dateRange.startDate) {
