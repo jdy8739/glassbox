@@ -73,9 +73,58 @@ export function usePortfolioBuilder() {
   const handleAnalyze = () => {
     if (items.length === 0) return;
 
-    // Prepare request data
-    const tickers = items.map((item) => item.symbol);
-    const quantities = items.map((item) => item.quantity);
+    // Filter out zero quantities
+    const nonZeroItems = items.filter((item) => item.quantity > 0);
+
+    if (nonZeroItems.length === 0) {
+      window.alert('At least one asset must have a positive quantity');
+      return;
+    }
+
+    // Validate date range
+    if (dateRange.startDate && dateRange.endDate && dateRange.startDate >= dateRange.endDate) {
+      window.alert('Start date must be before end date');
+      return;
+    }
+
+    // Check for future dates
+    if (dateRange.endDate) {
+      const endDate = new Date(dateRange.endDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time for fair comparison
+
+      if (endDate > today) {
+        window.alert('End date cannot be in the future');
+        return;
+      }
+    }
+
+    if (dateRange.startDate) {
+      const startDate = new Date(dateRange.startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (startDate > today) {
+        window.alert('Start date cannot be in the future');
+        return;
+      }
+    }
+
+    // Check for minimum date range (45 days for ~30 trading days)
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate);
+      const end = new Date(dateRange.endDate);
+      const daysDiff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (daysDiff < 45) {
+        window.alert('Date range must be at least 45 days to ensure sufficient data (minimum 30 trading days required)');
+        return;
+      }
+    }
+
+    // Prepare request data (use only non-zero items)
+    const tickers = nonZeroItems.map((item) => item.symbol);
+    const quantities = nonZeroItems.map((item) => item.quantity);
 
     // Calculate portfolio value from quantities (assume average price)
     const portfolioValue = 100000; // Default $100k portfolio

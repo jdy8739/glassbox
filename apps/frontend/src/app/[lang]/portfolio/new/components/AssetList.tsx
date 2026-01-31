@@ -76,9 +76,13 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                    <input
                     type="number"
                     value={item.quantity}
-                    onChange={(e) => onUpdateQuantity(item.symbol, parseFloat(e.target.value) || 0)}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      onUpdateQuantity(item.symbol, Math.max(0, value || 0));
+                    }}
                     className="w-full text-center bg-transparent font-bold text-sm text-black dark:text-white focus:outline-none p-0"
                     min="0"
+                    step="1"
                   />
                   <span className="text-[9px] flex items-center text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold -mt-0.5">{t('portfolio.asset.units')}</span>
                 </div>
