@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { AlertCircle, Check } from 'lucide-react';
+import { getAllPortfolios } from '@/lib/api/portfolio';
 
 interface SavePortfolioModalProps {
   isOpen: boolean;
@@ -10,23 +12,48 @@ interface SavePortfolioModalProps {
 
 export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioModalProps) {
   const [portfolioName, setPortfolioName] = useState('');
+  const [existingNames, setExistingNames] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Reset name when modal opens
+  // Load existing portfolio names
   useEffect(() => {
     if (isOpen) {
       setPortfolioName('');
+      setIsLoading(true);
+      getAllPortfolios()
+        .then(portfolios => {
+          setExistingNames(portfolios.map(p => p.name.toLowerCase()));
+        })
+        .catch(err => {
+          console.error('Failed to load portfolios:', err);
+          setExistingNames([]);
+        })
+        .finally(() => setIsLoading(false));
     }
   }, [isOpen]);
 
+  // Validation
+  const trimmedName = portfolioName.trim();
+  const isDuplicate = existingNames.includes(trimmedName.toLowerCase());
+  const isTooShort = trimmedName.length > 0 && trimmedName.length < 3;
+  const isTooLong = trimmedName.length > 50;
+  const isValid = trimmedName.length >= 3 && !isDuplicate && !isTooLong;
+
   // Keyboard shortcuts
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && portfolioName.trim()) {
+    if (e.key === 'Enter' && isValid) {
       e.preventDefault();
-      onSave(portfolioName);
+      onSave(trimmedName);
     }
     if (e.key === 'Escape') {
       e.preventDefault();
       onClose();
+    }
+  };
+
+  const handleSubmit = () => {
+    if (isValid) {
+      onSave(trimmedName);
     }
   };
 
