@@ -72,7 +72,7 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                   <Minus className="w-3.5 h-3.5" />
                 </button>
                 
-                <div className="w-16 text-center">
+                <div className="w-16 text-center flex">
                    <input
                     type="number"
                     value={item.quantity}
@@ -80,7 +80,7 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                     className="w-full text-center bg-transparent font-bold text-sm text-black dark:text-white focus:outline-none p-0"
                     min="0"
                   />
-                  <span className="text-[9px] text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold block -mt-0.5">{t('portfolio.asset.units')}</span>
+                  <span className="text-[9px] flex items-center text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold -mt-0.5">{t('portfolio.asset.units')}</span>
                 </div>
 
                 <button 
