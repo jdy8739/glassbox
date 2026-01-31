@@ -73,6 +73,16 @@ export class PortfolioAnalysisResultDto {
   @ApiProperty({ description: 'Hedging recommendations', type: HedgingDto })
   hedging!: HedgingDto;
 
-  @ApiProperty({ description: 'Risk-free rate used', example: 0.045 })
+  @ApiProperty({
+    description: 'Risk-free rate used for calculation (annualized)',
+    example: 0.045,
+  })
   riskFreeRate!: number;
+
+  @ApiProperty({
+    description: 'Start date used for historical analysis',
+    example: '2023-01-01',
+    required: false,
+  })
+  analysisDate?: string;
 }

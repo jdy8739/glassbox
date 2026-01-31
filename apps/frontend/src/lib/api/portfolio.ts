@@ -62,6 +62,7 @@ export interface AnalyzePortfolioResponse {
   portfolioBeta: number;
   hedging: HedgingRecommendation;
   riskFreeRate: number;
+  analysisDate?: string;
 }
 
 /**

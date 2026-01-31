@@ -34,6 +34,11 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
           <p className="text-xs text-black/50 dark:text-white/50 flex items-center gap-1 mt-1">
             <Calendar className="w-3 h-3" />
             {formatShortDate(portfolio.updatedAt)}
+            {portfolio.analysisSnapshot?.analysisDate && (
+              <span className="ml-1 opacity-70">
+                (Start: {portfolio.analysisSnapshot.analysisDate})
+              </span>
+            )}
           </p>
         </div>
         <button

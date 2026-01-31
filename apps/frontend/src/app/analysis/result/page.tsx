@@ -514,6 +514,12 @@ function AnalysisResultContent() {
                         <span className="text-black/60 dark:text-white/60">Risk-Free Rate Used</span>
                         <span className="font-mono text-black dark:text-white">{(analysisData.riskFreeRate * 100).toFixed(2)}%</span>
                       </div>
+                      {analysisData.analysisDate && (
+                        <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
+                          <span className="text-black/60 dark:text-white/60">Analysis Start Date</span>
+                          <span className="font-mono text-black dark:text-white">{analysisData.analysisDate}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between border-b border-black/5 dark:border-white/5 pb-2">
                          <span className="text-black/60 dark:text-white/60">Sharpe Rating</span>
                          <span className={`font-bold ${analysisData.maxSharpe.stats.sharpe > 1 ? 'text-emerald-500' : 'text-yellow-500'}`}>

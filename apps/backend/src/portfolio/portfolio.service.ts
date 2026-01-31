@@ -47,6 +47,7 @@ export class PortfolioService {
       portfolioBeta: result.portfolioBeta,
       hedging: result.hedging,
       riskFreeRate: result.riskFreeRate,
+      analysisDate: startDate,
     };
   }
 

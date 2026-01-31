@@ -128,6 +128,7 @@ export interface AnalysisSnapshot {
     esContracts: number;
     esNotional: number;
   };
+  analysisDate?: string; // Optional start date for the analysis
 }
 
 /**
