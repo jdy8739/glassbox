@@ -15,6 +15,15 @@ export function usePortfolioBuilder() {
   const debouncedSearchInput = useDebounce(searchInput, 300);
   const [showDropdown, setShowDropdown] = useState(false);
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
+  const [showTodayWarning, setShowTodayWarning] = useState(false);
+  const [pendingAnalysis, setPendingAnalysis] = useState<{
+    tickers: string[];
+    quantities: number[];
+    portfolioValue: number;
+    targetBeta: number;
+    startDate?: string;
+    endDate?: string;
+  } | null>(null);
 
   // Query for searching tickers
   const searchQuery = useQuery({
@@ -100,13 +109,21 @@ export function usePortfolioBuilder() {
 
       // Warn if end date is today (market may not be closed)
       if (endDate.getTime() === today.getTime()) {
-        const proceed = window.confirm(
-          'Warning: End date is today. Market data may be incomplete if markets are still open.\n\n' +
-          'US markets close at 4:00 PM EST. Data may not be fully updated.\n\n' +
-          'For most accurate results, use yesterday\'s date.\n\n' +
-          'Do you want to proceed anyway?'
-        );
-        if (!proceed) return;
+        // Show confirmation dialog and store pending analysis
+        const tickers = nonZeroItems.map((item) => item.symbol);
+        const quantities = nonZeroItems.map((item) => item.quantity);
+        const portfolioValue = 100000; // Default $100k portfolio
+
+        setPendingAnalysis({
+          tickers,
+          quantities,
+          portfolioValue,
+          targetBeta: 0,
+          startDate: dateRange.startDate || undefined,
+          endDate: dateRange.endDate || undefined,
+        });
+        setShowTodayWarning(true);
+        return;
       }
     }
 
@@ -150,6 +167,13 @@ export function usePortfolioBuilder() {
     });
   };
 
+  const handleConfirmTodayWarning = () => {
+    if (pendingAnalysis) {
+      analyzeMutation.mutate(pendingAnalysis);
+      setPendingAnalysis(null);
+    }
+  };
+
   return {
     items,
     searchInput,
@@ -168,5 +192,8 @@ export function usePortfolioBuilder() {
     clearError: analyzeMutation.reset,
     dateRange,
     setDateRange,
+    showTodayWarning,
+    setShowTodayWarning,
+    handleConfirmTodayWarning,
   };
 }

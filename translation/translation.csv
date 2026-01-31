@@ -65,6 +65,9 @@ portfolio.builder.analysis.settings.hint,Leave blank for default (3 years ago),�
 portfolio.builder.analysis.empty,Add at least one asset to enable analysis.,분석을 활성화하려면 최소 하나의 자산을 추가하세요.
 portfolio.builder.analyze.button,Analyze Portfolio,포트폴리오 분석
 portfolio.builder.analyze.analyzing,Analyzing...,분석 중...
+portfolio.builder.today-warning.title,End Date is Today,종료일이 오늘입니다
+portfolio.builder.today-warning.message,"Market data may be incomplete if markets are still open. US markets close at 4:00 PM EST. Data may not be fully updated. For most accurate results, use yesterday's date. Do you want to proceed anyway?","시장이 아직 열려 있는 경우 시장 데이터가 불완전할 수 있습니다. 미국 시장은 오후 4시(EST)에 마감됩니다. 데이터가 완전히 업데이트되지 않았을 수 있습니다. 가장 정확한 결과를 얻으려면 어제 날짜를 사용하세요. 그래도 진행하시겠습니까?"
+portfolio.builder.today-warning.confirm,Proceed Anyway,그래도 진행
 portfolio.builder.summary.label,Portfolio Summary,포트폴리오 요약
 portfolio.builder.summary.assets,Assets,자산
 portfolio.analysis.optimized-allocation-desc,"Optimized allocation for {{numAssets}} assets based on historical data.","히스토리컬 데이터를 기반으로 {{numAssets}}개 자산에 대한 최적화된 배분."

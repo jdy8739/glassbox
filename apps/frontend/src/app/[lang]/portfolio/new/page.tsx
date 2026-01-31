@@ -12,6 +12,7 @@ import { QuickAddAssets } from './components/QuickAddAssets';
 import { HeaderPortal } from '@/lib/header-context';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { BackButton } from '@/components/back-button';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 const PortfolioDonutChart = dynamic(
   () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
@@ -92,6 +93,9 @@ function PortfolioBuilderContent() {
     clearError,
     dateRange,
     setDateRange,
+    showTodayWarning,
+    setShowTodayWarning,
+    handleConfirmTodayWarning,
   } = usePortfolioBuilder();
 
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -1002,9 +1006,20 @@ function PortfolioBuilderContent() {
 
         )}
 
+      {/* Today Warning Dialog */}
+      <ConfirmDialog
+        isOpen={showTodayWarning}
+        onClose={() => setShowTodayWarning(false)}
+        onConfirm={handleConfirmTodayWarning}
+        title={t('portfolio.builder.today-warning.title')}
+        message={t('portfolio.builder.today-warning.message')}
+        confirmText={t('portfolio.builder.today-warning.confirm')}
+        cancelText={t('common.button.cancel')}
+        variant="warning"
+      />
       </main>
 
-  
+
   );
 }
 
