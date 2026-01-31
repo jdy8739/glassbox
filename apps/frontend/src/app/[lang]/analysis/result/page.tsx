@@ -61,7 +61,10 @@ function AnalysisResultContent() {
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
 
-  const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
+  const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>(() => {
+    const tabParam = searchParams.get('tab');
+    return tabParam === 'hedging' ? 'hedging' : 'frontier';
+  });
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -89,6 +92,19 @@ function AnalysisResultContent() {
       router.push('/portfolio/new');
     }
   }, [isError, router]);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'frontier' || tabParam === 'hedging') {
+      setActiveTab((prev) => (prev === tabParam ? prev : tabParam));
+    }
+  }, [searchParams]);
+  const handleTabChange = (tab: 'frontier' | 'hedging') => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`/analysis/result?${params.toString()}`, { scroll: false });
+  };
 
   // Track unsaved changes
   useEffect(() => {
@@ -418,7 +434,7 @@ function AnalysisResultContent() {
           <div className="border-b border-black/10 dark:border-white/10">
             <div className="flex gap-8">
               <button
-                onClick={() => setActiveTab('frontier')}
+                onClick={() => handleTabChange('frontier')}
                 className={`pb-4 font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${
                   activeTab === 'frontier'
                     ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
@@ -429,7 +445,7 @@ function AnalysisResultContent() {
                 <span>{t('analysis.tab.frontier')}</span>
               </button>
               <button
-                onClick={() => setActiveTab('hedging')}
+                onClick={() => handleTabChange('hedging')}
                 className={`pb-4 font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${
                   activeTab === 'hedging'
                     ? 'border-purple-500 text-purple-600 dark:text-purple-400'
