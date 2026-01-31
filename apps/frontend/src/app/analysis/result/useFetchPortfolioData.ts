@@ -92,9 +92,7 @@ export function useFetchPortfolioData(portfolioId: string | null) {
     mutationFn: async (data: CreatePortfolioRequest) => {
       return savePortfolio(data);
     },
-    onSuccess: (newPortfolio) => {
-      // In a real app, we might redirect to the new portfolio ID URL
-      // For now, just invalidate list
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['portfolios'] });
     }
   });
@@ -116,9 +114,9 @@ export function useFetchPortfolioData(portfolioId: string | null) {
     isError: portfolioQuery.isError,
     reanalyze: reanalyzeMutation.mutate,
     isReanalyzing: reanalyzeMutation.isPending,
-    savePortfolio: savePortfolioMutation.mutate,
+    savePortfolio: savePortfolioMutation.mutateAsync,
     isSaving: savePortfolioMutation.isPending,
-    updatePortfolio: updatePortfolioMutation.mutate,
+    updatePortfolio: updatePortfolioMutation.mutateAsync,
     isUpdating: updatePortfolioMutation.isPending,
   };
 }

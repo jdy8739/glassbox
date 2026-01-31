@@ -57,6 +57,7 @@ function AnalysisResultContent() {
   const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>('frontier');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   
   const { 
@@ -87,33 +88,50 @@ function AnalysisResultContent() {
     });
   };
 
-  const handleSaveButton = () => {
+  const handleSaveButton = async () => {
     if (portfolioId && portfolioData?.savedPortfolio) {
       // Update existing portfolio
-      updatePortfolio({
-        id: portfolioId,
-        data: {
-          tickers: portfolioData.items.map(i => i.symbol),
-          quantities: portfolioData.items.map(i => i.quantity),
-          analysisSnapshot: portfolioData.analysis
-        }
-      });
+      try {
+        await updatePortfolio({
+          id: portfolioId,
+          data: {
+            tickers: portfolioData.items.map(i => i.symbol),
+            quantities: portfolioData.items.map(i => i.quantity),
+            analysisSnapshot: portfolioData.analysis
+          }
+        });
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } catch (error) {
+        console.error('Failed to update portfolio:', error);
+      }
     } else {
       // Open modal for new portfolio
       setIsSaveModalOpen(true);
     }
   };
 
-  const confirmSave = (name: string) => {
+  const confirmSave = async (name: string) => {
     if (!name.trim() || !portfolioData) return;
 
-    savePortfolio({
-      name: name,
-      tickers: portfolioData.items.map(i => i.symbol),
-      quantities: portfolioData.items.map(i => i.quantity),
-      analysisSnapshot: portfolioData.analysis
-    });
-    setIsSaveModalOpen(false);
+    try {
+      await savePortfolio({
+        name: name,
+        tickers: portfolioData.items.map(i => i.symbol),
+        quantities: portfolioData.items.map(i => i.quantity),
+        analysisSnapshot: portfolioData.analysis
+      });
+      setIsSaveModalOpen(false);
+      setSaveSuccess(true);
+
+      // Redirect to portfolios page after 1.5 seconds
+      setTimeout(() => {
+        router.push('/portfolios');
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to save portfolio:', error);
+      alert('Failed to save portfolio. Please try again.');
+    }
   };
 
   const handleExportCSV = () => {
@@ -175,6 +193,21 @@ function AnalysisResultContent() {
 
   return (
     <main className="min-h-screen px-6 py-8">
+      {/* Success Notification */}
+      {saveSuccess && (
+        <div className="fixed top-20 right-6 z-50 glass-panel px-6 py-4 border-cyan-400/30 bg-cyan-500/10 animate-fade-in shadow-xl">
+          <div className="flex items-center gap-3">
+            <Check className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+            <div>
+              <p className="font-bold text-black dark:text-white">Portfolio Saved!</p>
+              <p className="text-sm text-black/60 dark:text-white/60">
+                {portfolioId ? 'Portfolio updated successfully' : 'Redirecting to your library...'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <HeaderPortal
         nav={
           <a href={backLink} className="text-sm font-semibold text-black/80 dark:text-white/80 hover:text-black dark:text-white transition-colors duration-200 flex items-center gap-2">

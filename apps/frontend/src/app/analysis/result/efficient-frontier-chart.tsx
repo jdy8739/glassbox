@@ -139,8 +139,8 @@ function EfficientFrontierChartBase({ data }: EfficientFrontierChartProps) {
           </Scatter>
 
           {/* Highlights */}
-          <ReferenceDot x={gmvData.x} y={gmvData.y} r={6} fill="#FCD34D" stroke="none" isAnimationActive={false} />
-          <ReferenceDot x={maxSharpeData.x} y={maxSharpeData.y} r={6} fill="#F87171" stroke="none" isAnimationActive={false} />
+          <ReferenceDot x={gmvData.x} y={gmvData.y} r={6} fill="#FCD34D" stroke="none" />
+          <ReferenceDot x={maxSharpeData.x} y={maxSharpeData.y} r={6} fill="#F87171" stroke="none" />
         </ScatterChart>
       </ResponsiveContainer>
     </div>

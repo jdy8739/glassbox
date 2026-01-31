@@ -4,91 +4,8 @@ import { useState, useEffect } from 'react';
 import { Package, Rocket, Search, SlidersHorizontal, AlertCircle } from 'lucide-react';
 import { PortfolioCard } from './components/PortfolioCard';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { getAllPortfolios, deletePortfolio } from '@/lib/api/portfolio';
 import type { Portfolio } from '@glassbox/types';
-
-// Mock Data with rich stats
-const MOCK_PORTFOLIOS: Portfolio[] = [
-  {
-    id: '1',
-    userId: 'user1',
-    name: 'Tech Growth Aggressive',
-    tickers: ['AAPL', 'MSFT', 'NVDA', 'AMD'],
-    quantities: [50, 40, 30, 100],
-    createdAt: new Date('2023-11-15'),
-    updatedAt: new Date('2024-01-20'),
-    analysisSnapshot: {
-      efficientFrontier: [],
-      gmv: { weights: {}, stats: { return: 0.1, volatility: 0.12, sharpe: 0.8 } },
-      maxSharpe: { 
-        weights: {}, 
-        stats: { return: 0.245, volatility: 0.18, sharpe: 1.36 } 
-      },
-      portfolioBeta: 1.25,
-      riskFreeRate: 0.045,
-      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
-    }
-  },
-  {
-    id: '2',
-    userId: 'user1',
-    name: 'Balanced 60/40',
-    tickers: ['SPY', 'TLT'],
-    quantities: [60, 40],
-    createdAt: new Date('2023-10-01'),
-    updatedAt: new Date('2023-12-05'),
-    analysisSnapshot: {
-      efficientFrontier: [],
-      gmv: { weights: {}, stats: { return: 0.08, volatility: 0.09, sharpe: 0.88 } },
-      maxSharpe: { 
-        weights: {}, 
-        stats: { return: 0.095, volatility: 0.11, sharpe: 0.86 } 
-      },
-      portfolioBeta: 0.60,
-      riskFreeRate: 0.045,
-      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
-    }
-  },
-  {
-    id: '3',
-    userId: 'user1',
-    name: 'Crypto & Gold Hedge',
-    tickers: ['BTC', 'ETH', 'GLD'],
-    quantities: [2, 15, 50],
-    createdAt: new Date('2024-01-10'),
-    updatedAt: new Date('2024-01-24'),
-    analysisSnapshot: {
-      efficientFrontier: [],
-      gmv: { weights: {}, stats: { return: 0.15, volatility: 0.25, sharpe: 0.6 } },
-      maxSharpe: { 
-        weights: {}, 
-        stats: { return: 0.45, volatility: 0.35, sharpe: 1.28 } 
-      },
-      portfolioBeta: 0.8,
-      riskFreeRate: 0.045,
-      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
-    }
-  },
-  {
-    id: '4',
-    userId: 'user1',
-    name: 'Dividend Aristocrats',
-    tickers: ['O', 'KO', 'JNJ', 'PG', 'MMM'],
-    quantities: [100, 200, 50, 80, 40],
-    createdAt: new Date('2024-01-05'),
-    updatedAt: new Date('2024-01-05'),
-    analysisSnapshot: {
-      efficientFrontier: [],
-      gmv: { weights: {}, stats: { return: 0.07, volatility: 0.10, sharpe: 0.7 } },
-      maxSharpe: { 
-        weights: {}, 
-        stats: { return: 0.085, volatility: 0.12, sharpe: 0.71 } 
-      },
-      portfolioBeta: 0.55,
-      riskFreeRate: 0.045,
-      hedging: { spyShares: 0, spyNotional: 0, esContracts: 0, esNotional: 0 }
-    }
-  }
-];
 
 const CHART_COLORS = [
   '#06b6d4', // Cyan 500
@@ -143,24 +60,30 @@ function PortfolioLibraryContent() {
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API Fetch
-    setTimeout(() => {
-      setPortfolios(MOCK_PORTFOLIOS);
-      setLoading(false);
-    }, 800);
+    const fetchPortfolios = async () => {
+      try {
+        const data = await getAllPortfolios();
+        setPortfolios(data);
+      } catch (error) {
+        console.error('Error fetching portfolios:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolios();
   }, []);
 
   const handleDeletePortfolio = async (portfolioId: string) => {
-    // In a real app, use a custom modal
     if (!confirm('Are you sure you want to delete this portfolio?')) return;
 
     setDeleting(portfolioId);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await deletePortfolio(portfolioId);
       setPortfolios(portfolios.filter(p => p.id !== portfolioId));
     } catch (error) {
       console.error('Error deleting portfolio:', error);
+      alert('Failed to delete portfolio. Please try again.');
     } finally {
       setDeleting(null);
     }
