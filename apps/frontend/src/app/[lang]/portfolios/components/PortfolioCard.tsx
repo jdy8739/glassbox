@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { LocalizedLink } from '@/components/LocalizedLink';
 import { Trash2, TrendingUp, Activity, Calendar } from 'lucide-react';
 import type { Portfolio } from '@glassbox/types';
 import { formatShortDate } from '@/lib/utils/date';
@@ -107,12 +107,12 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
       )}
 
       <div className="mt-auto">
-        <Link
+        <LocalizedLink
           href={`/analysis/result?portfolioId=${portfolio.id}`}
           className="block w-full text-center py-2 rounded-lg bg-black text-white dark:bg-white dark:text-black font-semibold text-sm hover:opacity-90 transition-opacity"
         >
           Open Analysis
-        </Link>
+        </LocalizedLink>
       </div>
     </div>
   );

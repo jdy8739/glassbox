@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, Suspense, useRef } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import dynamic from 'next/dynamic';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
@@ -54,7 +55,7 @@ const MarketScenarioSimulator = dynamic(
 );
 
 function AnalysisResultContent() {
-  const router = useRouter();
+  const router = useLocalizedRouter();
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
 

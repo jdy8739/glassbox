@@ -1,15 +1,17 @@
 'use client';
 
-import Link from 'next/link';
+import { LocalizedLink } from '@/components/LocalizedLink';
 import { useEffect, useState } from 'react';
 import { Moon, Sun, Monitor, Zap, Languages } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
   const { t, i18n } = useTranslation();
+  const router = useLocalizedRouter();
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
@@ -53,8 +55,16 @@ export function Header() {
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'en' ? 'ko' : 'en';
-    i18n.changeLanguage(nextLang);
-    localStorage.setItem('i18nextLng', nextLang);
+
+    // Navigate to the same page but in the new language
+    // Get current path without language prefix
+    const currentPath = window.location.pathname;
+    const pathWithoutLang = currentPath.replace(/^\/(en|ko)/, '') || '/';
+    const newPath = `/${nextLang}${pathWithoutLang}${window.location.search}`;
+
+    // Middleware will set NEXT_LOCALE cookie on navigation
+    // i18n will be initialized with new language on page load
+    window.location.href = newPath;
   };
 
   return (
@@ -66,7 +76,7 @@ export function Header() {
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
         {/* Left Side: Logo, Back Nav, and Main Links */}
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
+          <LocalizedLink href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
             <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
               <GlassboxIcon />
             </div>
@@ -74,7 +84,7 @@ export function Header() {
               <span className="text-cyan-600 dark:text-cyan-400">Glass</span>
               <span className="text-black dark:text-white">box</span>
             </span>
-          </Link>
+          </LocalizedLink>
           
           {/* Dynamic Back/Nav controls injected from pages */}
           {navContent && (
@@ -85,18 +95,18 @@ export function Header() {
 
           {/* Navigation Links (Always Visible) */}
           <div className={`hidden lg:flex items-center gap-1 ${!navContent ? 'pl-6 border-l border-black/10 dark:border-white/10' : ''}`}>
-            <Link
+            <LocalizedLink
               href="/portfolio/new"
               className="px-4 h-9 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
             >
-              Analyze
-            </Link>
-            <Link
+              {t('nav.analyze')}
+            </LocalizedLink>
+            <LocalizedLink
               href="/portfolios"
               className="px-4 h-9 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
             >
-              Portfolios
-            </Link>
+              {t('nav.portfolios')}
+            </LocalizedLink>
           </div>
         </div>
 
@@ -137,10 +147,10 @@ export function Header() {
             actionContent
           ) : (
             /* Primary CTA Button */
-            <Link href="/portfolio/new" className="hidden sm:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all">
+            <LocalizedLink href="/portfolio/new" className="hidden sm:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all">
               <Zap className="w-4 h-4" />
-              <span>Launch</span>
-            </Link>
+              <span>{t('nav.launch')}</span>
+            </LocalizedLink>
           )}
         </div>
       </nav>

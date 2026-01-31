@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { analyzePortfolio } from '@/lib/api/portfolio';
 import { searchTickers } from '@/lib/api/tickers';
 import type { TickerSearchResult } from '@/lib/api/tickers';
@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export function usePortfolioBuilder() {
-  const router = useRouter();
+  const router = useLocalizedRouter();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearchInput = useDebounce(searchInput, 300);

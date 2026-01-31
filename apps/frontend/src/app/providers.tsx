@@ -114,15 +114,6 @@ export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; 
       }
     );
 
-    // Handle language persistence and override
-    const savedLang = localStorage.getItem('i18nextLng');
-    if (savedLang && savedLang !== lang) {
-      i18n.changeLanguage(savedLang);
-    } else if (!savedLang) {
-      // If no preference saved, save the one detected by server
-      localStorage.setItem('i18nextLng', lang);
-    }
-
     // Mark as mounted (prevents hydration mismatch)
     setMounted(true);
 
