@@ -6,6 +6,7 @@ Calculates portfolio optimization metrics using PyPortfolioOpt
 
 import sys
 import json
+import time
 import yfinance as yf
 import numpy as np
 import pandas as pd
@@ -13,6 +14,146 @@ from datetime import datetime, timedelta
 from pypfopt import EfficientFrontier, risk_models, expected_returns
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
 
+# Constants
+MIN_DATA_POINTS = 30
+TRADING_DAYS_PER_YEAR = 252
+DEFAULT_RISK_FREE_RATE = 0.05
+ES_MULTIPLIER = 50
+MAX_RETRIES = 3
+
+
+# ==================== Helper Functions ====================
+
+def parse_date(date_input):
+    """
+    Convert string date to datetime object
+
+    Args:
+        date_input: String (YYYY-MM-DD), datetime, or None
+
+    Returns:
+        datetime object or None
+    """
+    if date_input is None:
+        return None
+    if isinstance(date_input, str):
+        return datetime.strptime(date_input, '%Y-%m-%d')
+    return date_input
+
+
+def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price"):
+    """
+    Validate that we have sufficient data points
+
+    Args:
+        data: DataFrame or Series to validate
+        min_points: Minimum required data points
+        data_type: Description of data for error message
+
+    Raises:
+        ValueError if insufficient data
+    """
+    if data.empty or len(data) < min_points:
+        raise ValueError(
+            f"Insufficient {data_type} data. Need at least {min_points} points, got {len(data)}"
+        )
+
+
+def fetch_single_ticker(ticker_symbol, start_date, end_date):
+    """
+    Fetch historical price data for a single ticker with retry logic
+
+    Args:
+        ticker_symbol: Ticker symbol to fetch
+        start_date: Start date (datetime)
+        end_date: End date (datetime)
+
+    Returns:
+        pandas Series of adjusted close prices
+
+    Raises:
+        ValueError if fetch fails after retries
+    """
+    for attempt in range(MAX_RETRIES):
+        try:
+            ticker = yf.Ticker(ticker_symbol)
+            hist = ticker.history(start=start_date, end=end_date, auto_adjust=True)
+
+            if hist.empty:
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(1)
+                    continue
+                raise ValueError(f"No data for {ticker_symbol}")
+
+            return hist['Close']
+
+        except Exception as e:
+            if attempt == MAX_RETRIES - 1:
+                raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
+            time.sleep(1)
+
+    raise ValueError(f"Failed to fetch {ticker_symbol} after {MAX_RETRIES} attempts")
+
+
+def calculate_annualized_risk_free_rate(prices, ticker='SGOV'):
+    """
+    Calculate annualized risk-free rate from treasury ETF
+
+    Args:
+        prices: DataFrame with price data
+        ticker: Treasury ETF ticker (default: SGOV)
+
+    Returns:
+        Annualized risk-free rate (float)
+    """
+    if ticker in prices.columns:
+        returns = prices[ticker].pct_change().dropna()
+        return returns.mean() * TRADING_DAYS_PER_YEAR
+    return DEFAULT_RISK_FREE_RATE
+
+
+def calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate):
+    """
+    Calculate Sharpe ratio with zero-volatility handling
+
+    Args:
+        portfolio_return: Expected portfolio return
+        portfolio_std: Portfolio standard deviation
+        risk_free_rate: Risk-free rate
+
+    Returns:
+        Sharpe ratio (float)
+    """
+    if portfolio_std > 0:
+        return (portfolio_return - risk_free_rate) / portfolio_std
+    return 0.0
+
+
+def calculate_portfolio_metrics(weights, mu, cov_matrix, risk_free_rate):
+    """
+    Calculate portfolio return, volatility, and Sharpe ratio
+
+    Args:
+        weights: Portfolio weights (numpy array)
+        mu: Expected returns vector
+        cov_matrix: Covariance matrix
+        risk_free_rate: Risk-free rate
+
+    Returns:
+        dict with return, volatility, and sharpeRatio
+    """
+    portfolio_return = np.dot(weights, mu)
+    portfolio_std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+    sharpe = calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate)
+
+    return {
+        'return': float(portfolio_return),
+        'volatility': float(portfolio_std),
+        'sharpeRatio': float(sharpe)
+    }
+
+
+# ==================== Main Functions ====================
 
 def fetch_price_data(tickers, start_date=None, end_date=None):
     """
@@ -20,61 +161,30 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
 
     Args:
         tickers: List of ticker symbols
-        start_date: Start date for historical data (default: 3 years ago)
-        end_date: End date for historical data (default: today)
+        start_date: Start date (string YYYY-MM-DD or datetime, default: 3 years ago)
+        end_date: End date (string YYYY-MM-DD or datetime, default: today)
 
     Returns:
         DataFrame with adjusted close prices
     """
-    import time
-
-    if end_date is None:
-        end_date = datetime.now()
-    if start_date is None:
-        start_date = end_date - timedelta(days=3*365)  # 3 years
+    # Parse dates
+    end_date = parse_date(end_date) or datetime.now()
+    start_date = parse_date(start_date) or (end_date - timedelta(days=3*365))
 
     # Always include SGOV as risk-free asset
     if 'SGOV' not in tickers:
         tickers = tickers + ['SGOV']
 
-    # Fetch data for each ticker individually (more reliable)
+    # Fetch data for each ticker
     all_prices = {}
-
     for ticker_symbol in tickers:
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                ticker = yf.Ticker(ticker_symbol)
-                hist = ticker.history(
-                    start=start_date,
-                    end=end_date,
-                    auto_adjust=True  # Use adjusted prices
-                )
+        all_prices[ticker_symbol] = fetch_single_ticker(ticker_symbol, start_date, end_date)
 
-                if hist.empty:
-                    if attempt < max_retries - 1:
-                        time.sleep(1)  # Wait before retry
-                        continue
-                    raise ValueError(f"No data for {ticker_symbol}")
+    # Combine and align dates (intersection)
+    prices = pd.DataFrame(all_prices).dropna()
 
-                # Extract close prices (already adjusted with auto_adjust=True)
-                all_prices[ticker_symbol] = hist['Close']
-                break
-
-            except Exception as e:
-                if attempt == max_retries - 1:
-                    raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
-                time.sleep(1)  # Wait before retry
-                continue
-
-    # Combine all prices into a single DataFrame
-    prices = pd.DataFrame(all_prices)
-
-    # Align dates (intersection)
-    prices = prices.dropna()
-
-    if prices.empty or len(prices) < 30:
-        raise ValueError("Insufficient price data after cleaning. Need at least 30 days of data.")
+    # Validate sufficient data
+    validate_data_sufficiency(prices, MIN_DATA_POINTS, "price")
 
     return prices
 
@@ -94,9 +204,8 @@ def calculate_efficient_frontier(prices, num_portfolios=10000):
     mu = expected_returns.mean_historical_return(prices)
     S = risk_models.sample_cov(prices)
 
-    # Calculate risk-free rate from SGOV
-    sgov_returns = prices['SGOV'].pct_change().dropna()
-    risk_free_rate = sgov_returns.mean() * 252  # Annualized
+    # Calculate risk-free rate
+    risk_free_rate = calculate_annualized_risk_free_rate(prices)
 
     # === Global Minimum Variance (GMV) Portfolio ===
     ef_gmv = EfficientFrontier(mu, S)
@@ -138,20 +247,13 @@ def calculate_efficient_frontier(prices, num_portfolios=10000):
     n_assets = len(prices.columns)
 
     for _ in range(num_portfolios):
-        # Generate random weights
+        # Generate random weights that sum to 1
         weights = np.random.random(n_assets)
         weights /= np.sum(weights)
 
-        # Calculate portfolio metrics
-        portfolio_return = np.dot(weights, mu)
-        portfolio_std = np.sqrt(np.dot(weights.T, np.dot(S, weights)))
-        sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_std
-
-        random_portfolios.append({
-            'return': float(portfolio_return),
-            'volatility': float(portfolio_std),
-            'sharpeRatio': float(sharpe_ratio)
-        })
+        # Calculate metrics using helper function
+        metrics = calculate_portfolio_metrics(weights, mu, S, risk_free_rate)
+        random_portfolios.append(metrics)
 
     # Prepare result
     result = {
@@ -179,9 +281,60 @@ def calculate_efficient_frontier(prices, num_portfolios=10000):
     return result
 
 
+def fetch_benchmark_prices(prices, benchmark_ticker='SPY'):
+    """
+    Fetch or extract benchmark prices
+
+    Args:
+        prices: DataFrame with portfolio price data
+        benchmark_ticker: Benchmark ticker symbol
+
+    Returns:
+        pandas Series of benchmark prices
+    """
+    if benchmark_ticker in prices.columns:
+        return prices[benchmark_ticker]
+
+    # Fetch benchmark data
+    start_date = prices.index[0]
+    end_date = prices.index[-1]
+    benchmark = yf.Ticker(benchmark_ticker)
+    benchmark_data = benchmark.history(start=start_date, end=end_date, auto_adjust=True)
+
+    if benchmark_data.empty:
+        raise ValueError(f"Failed to fetch benchmark data for {benchmark_ticker}")
+
+    return benchmark_data['Close']
+
+
+def calculate_weighted_returns(prices, portfolio_weights):
+    """
+    Calculate weighted portfolio return series
+
+    Args:
+        prices: DataFrame with historical prices
+        portfolio_weights: Dict of ticker -> weight
+
+    Returns:
+        pandas Series of portfolio returns
+    """
+    # Get tickers with positive weights
+    portfolio_tickers = [t for t in portfolio_weights.keys() if portfolio_weights[t] > 0]
+
+    if not portfolio_tickers:
+        return pd.Series(dtype=float)
+
+    # Calculate returns for each asset
+    portfolio_returns = prices[portfolio_tickers].pct_change().dropna()
+
+    # Apply weights
+    weights_array = np.array([portfolio_weights[t] for t in portfolio_tickers])
+    return portfolio_returns.dot(weights_array)
+
+
 def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     """
-    Calculate portfolio beta against a benchmark (default: SPY)
+    Calculate portfolio beta against a benchmark using OLS regression
 
     Args:
         prices: DataFrame with historical prices
@@ -191,37 +344,41 @@ def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     Returns:
         float: Portfolio beta
     """
-    # Fetch benchmark data if not in prices
-    if benchmark_ticker not in prices.columns:
-        end_date = prices.index[-1]
-        start_date = prices.index[0]
-        benchmark_data = yf.download(benchmark_ticker, start=start_date, end=end_date, progress=False)
-        benchmark_prices = benchmark_data['Adj Close']
-    else:
-        benchmark_prices = prices[benchmark_ticker]
-
-    # Calculate returns
-    portfolio_tickers = [t for t in portfolio_weights.keys() if portfolio_weights[t] > 0]
-    portfolio_returns = prices[portfolio_tickers].pct_change().dropna()
+    # Get benchmark prices
+    benchmark_prices = fetch_benchmark_prices(prices, benchmark_ticker)
 
     # Calculate weighted portfolio returns
-    weights_array = np.array([portfolio_weights[t] for t in portfolio_tickers])
-    portfolio_return_series = portfolio_returns.dot(weights_array)
+    portfolio_return_series = calculate_weighted_returns(prices, portfolio_weights)
+
+    # Check if portfolio is empty
+    if portfolio_return_series.empty:
+        return 0.0
 
     # Calculate benchmark returns
     benchmark_returns = benchmark_prices.pct_change().dropna()
 
     # Align dates
     common_dates = portfolio_return_series.index.intersection(benchmark_returns.index)
+
+    # Validate sufficient overlapping data
+    validate_data_sufficiency(
+        pd.Series(common_dates),
+        MIN_DATA_POINTS,
+        "overlapping data for beta calculation"
+    )
+
     portfolio_return_series = portfolio_return_series[common_dates]
     benchmark_returns = benchmark_returns[common_dates]
 
-    # Calculate beta using covariance
+    # Calculate beta using covariance method: β = Cov(R_p, R_m) / Var(R_m)
     covariance = np.cov(portfolio_return_series, benchmark_returns)[0][1]
     benchmark_variance = np.var(benchmark_returns)
-    beta = covariance / benchmark_variance
 
-    return float(beta)
+    # Handle edge cases
+    if benchmark_variance == 0 or np.isnan(benchmark_variance):
+        return 0.0
+
+    return float(covariance / benchmark_variance)
 
 
 def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price):
@@ -240,16 +397,26 @@ def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_pri
     # Calculate required hedge notional
     hedge_notional = (portfolio_beta - target_beta) * portfolio_value
 
-    # SPY shares to short
-    spy_shares = int(hedge_notional / spy_price)
-    spy_notional = spy_shares * spy_price
+    # SPY shares to short (avoid division by zero)
+    if spy_price > 0:
+        spy_shares = int(hedge_notional / spy_price)
+        spy_notional = spy_shares * spy_price
+    else:
+        spy_shares = 0
+        spy_notional = 0.0
 
     # ES futures (assuming $50 multiplier and current ES price ~= SPY * 10)
     es_multiplier = 50
     es_price = spy_price * 10  # Approximate ES price
     es_contract_value = es_price * es_multiplier
-    es_contracts = int(hedge_notional / es_contract_value)
-    es_notional = es_contracts * es_contract_value
+
+    # Avoid division by zero
+    if es_contract_value > 0:
+        es_contracts = int(hedge_notional / es_contract_value)
+        es_notional = es_contracts * es_contract_value
+    else:
+        es_contracts = 0
+        es_notional = 0.0
 
     return {
         'spyShares': spy_shares,
@@ -279,12 +446,13 @@ def main():
         portfolio_value = input_data.get('portfolioValue', 100000)
         target_beta = input_data.get('targetBeta', 0)
         start_date = input_data.get('startDate')
+        end_date = input_data.get('endDate')
 
         if not tickers:
             raise ValueError("No tickers provided")
 
         # Fetch price data
-        prices = fetch_price_data(tickers, start_date=start_date)
+        prices = fetch_price_data(tickers, start_date=start_date, end_date=end_date)
 
         # Calculate efficient frontier
         frontier_result = calculate_efficient_frontier(prices)
@@ -294,8 +462,9 @@ def main():
         portfolio_beta = calculate_portfolio_beta(prices, max_sharpe_weights)
 
         # Get latest SPY price for hedge calculation
-        spy_data = yf.download('SPY', period='1d', progress=False)
-        spy_price = float(spy_data['Adj Close'].iloc[-1])
+        spy_ticker = yf.Ticker('SPY')
+        spy_data = spy_ticker.history(period='1d', auto_adjust=True)
+        spy_price = float(spy_data['Close'].iloc[-1]) if not spy_data.empty else 0.0
 
         # Calculate hedge sizing
         hedging = calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price)
