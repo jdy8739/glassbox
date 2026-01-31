@@ -171,6 +171,20 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     end_date = parse_date(end_date) or datetime.now()
     start_date = parse_date(start_date) or (end_date - timedelta(days=3*365))
 
+    # Validate date range
+    if start_date >= end_date:
+        raise ValueError(
+            f"Start date ({start_date.date()}) must be before end date ({end_date.date()})"
+        )
+
+    # Check for future dates
+    now = datetime.now()
+    if end_date > now:
+        raise ValueError(f"End date ({end_date.date()}) cannot be in the future")
+
+    if start_date > now:
+        raise ValueError(f"Start date ({start_date.date()}) cannot be in the future")
+
     # Always include SGOV as risk-free asset
     if 'SGOV' not in tickers:
         tickers = tickers + ['SGOV']
@@ -375,7 +389,7 @@ def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     benchmark_variance = np.var(benchmark_returns)
 
     # Handle edge cases
-    if benchmark_variance == 0 or np.isnan(benchmark_variance):
+    if np.isnan(covariance) or np.isnan(benchmark_variance) or benchmark_variance == 0:
         return 0.0
 
     return float(covariance / benchmark_variance)
@@ -448,8 +462,27 @@ def main():
         start_date = input_data.get('startDate')
         end_date = input_data.get('endDate')
 
+        # Validate input
         if not tickers:
             raise ValueError("No tickers provided")
+
+        if len(tickers) != len(quantities):
+            raise ValueError(
+                f"Tickers and quantities must have same length. "
+                f"Got {len(tickers)} tickers and {len(quantities)} quantities"
+            )
+
+        # Check for duplicate tickers
+        if len(tickers) != len(set(tickers)):
+            duplicates = [t for t in tickers if tickers.count(t) > 1]
+            raise ValueError(f"Duplicate tickers detected: {', '.join(set(duplicates))}")
+
+        # Validate quantities
+        if any(q < 0 for q in quantities):
+            raise ValueError("Quantities must be non-negative")
+
+        if all(q == 0 for q in quantities):
+            raise ValueError("At least one asset must have positive quantity")
 
         # Fetch price data
         prices = fetch_price_data(tickers, start_date=start_date, end_date=end_date)
