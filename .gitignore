@@ -10,6 +10,7 @@ build/
 .next/
 out/
 *.tsbuildinfo
+translation/*.json
 
 # Environment files
 .env

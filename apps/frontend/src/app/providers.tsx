@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HeaderProvider } from '@/lib/header-context';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/lib/i18n';
 
 type ThemePreference = 'light' | 'dark' | 'system';
 type ResolvedTheme = 'light' | 'dark';
@@ -126,6 +128,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   };
 
   return (
+    <I18nextProvider i18n={i18n}>
     <QueryClientProvider client={queryClient}>
       {mounted ? (
         <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
@@ -137,6 +140,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         <>{children}</>
       )}
     </QueryClientProvider>
+    </I18nextProvider>
   );
 }
 

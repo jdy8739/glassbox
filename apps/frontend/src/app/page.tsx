@@ -1,3 +1,5 @@
+'use client';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, TrendingUp, Zap, Lock, BarChart3, Shield, Gem, Package, Microscope, BookOpen } from 'lucide-react';
 import { HeroVisual } from '@/components/landing/hero-visual';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -6,6 +8,7 @@ import { LandingErrorFallback } from '@/components/landing/LandingErrorFallback'
 
 
 function HomeContent() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen overflow-hidden">
       {/* Animated Background Elements */}
@@ -27,20 +30,20 @@ function HomeContent() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-sm font-medium text-black/80 dark:text-white/80">New: Advanced Beta Hedging</span>
+              <span className="text-sm font-medium text-black/80 dark:text-white/80">{t('hero.badge')}</span>
             </div>
 
             {/* Hero Title */}
             <div className="space-y-6">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black dark:text-white leading-[1.1] tracking-tight">
-                Master Your
+                {t('hero.title.part1')}
                 <br />
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient-x">
-                  Portfolio Risk
+                  {t('hero.title.part2')}
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-black/60 dark:text-white/60 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Harness the power of modern portfolio theory with a beautiful glassmorphic interface. Calculate efficient frontiers, optimize allocations, and hedge market beta in seconds.
+                {t('hero.description')}
               </p>
             </div>
 
@@ -48,11 +51,11 @@ function HomeContent() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
               <a href="/portfolio/new" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2 group">
                 <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
-                <span>Start Analyzing</span>
+                <span>{t('hero.cta.start')}</span>
               </a>
               <a href="/portfolios" className="glass-button text-lg px-8 py-4 hover:scale-105 flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm transition-all">
                 <TrendingUp className="w-5 h-5" />
-                <span>View Library</span>
+                <span>{t('hero.cta.library')}</span>
               </a>
             </div>
 
@@ -60,11 +63,11 @@ function HomeContent() {
             <div className="pt-8 flex flex-wrap justify-center lg:justify-start gap-6 text-sm opacity-80">
               <div className="flex items-center gap-2">
                 <Zap className="w-4 h-4 text-cyan-500" />
-                <span className="text-black/70 dark:text-white/70 font-medium">Instant Analysis</span>
+                <span className="text-black/70 dark:text-white/70 font-medium">{t('hero.trust.instant')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Lock className="w-4 h-4 text-purple-500" />
-                <span className="text-black/70 dark:text-white/70 font-medium">Local Computation</span>
+                <span className="text-black/70 dark:text-white/70 font-medium">{t('hero.trust.local')}</span>
               </div>
             </div>
           </div>

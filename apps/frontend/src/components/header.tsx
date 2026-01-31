@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Moon, Sun, Monitor, Zap } from 'lucide-react';
+import { Moon, Sun, Monitor, Zap, Languages } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
+import { useTranslation } from 'react-i18next';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
+  const { t, i18n } = useTranslation();
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
@@ -47,6 +49,11 @@ export function Header() {
       return `System (${resolvedTheme === 'dark' ? 'Dark' : 'Light'})`;
     }
     return theme.charAt(0).toUpperCase() + theme.slice(1);
+  };
+
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'en' ? 'ko' : 'en';
+    i18n.changeLanguage(nextLang);
   };
 
   return (
@@ -94,6 +101,17 @@ export function Header() {
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-2">
+          {/* Language Toggle Button */}
+          <button
+            onClick={toggleLanguage}
+            className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
+            title={`Switch to ${i18n.language === 'en' ? 'Korean' : 'English'}`}
+            aria-label={`Switch to ${i18n.language === 'en' ? 'Korean' : 'English'}`}
+          >
+            <Languages className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('common.language')}</span>
+          </button>
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
