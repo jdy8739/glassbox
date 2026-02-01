@@ -5,7 +5,7 @@ import { analyzePortfolio } from '@/lib/api/portfolio';
 import { searchTickers } from '@/lib/api/tickers';
 import { saveAnalysisSession, clearAnalysisSession } from '@/lib/storage/analysis-session';
 import type { PortfolioItem } from '@glassbox/types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export function usePortfolioBuilder() {
@@ -18,13 +18,14 @@ export function usePortfolioBuilder() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
   const [showTodayWarning, setShowTodayWarning] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [pendingAnalysis, setPendingAnalysis] = useState<{
     tickers: string[];
     quantities: number[];
     portfolioValue: number;
     targetBeta: number;
-    startDate?: string;
-    endDate?: string;
+    startDate: string;
+    endDate: string;
   } | null>(null);
 
   // Query for searching tickers
@@ -81,113 +82,83 @@ export function usePortfolioBuilder() {
     );
   };
 
-  const handleAnalyze = () => {
-    if (items.length === 0) return;
-
+  const validateAnalysis = (): string | null => {
     // Filter out zero quantities
     const nonZeroItems = items.filter((item) => item.quantity > 0);
 
     if (nonZeroItems.length === 0) {
-      window.alert(t('portfolio.builder.validation.no-positive-quantity'));
-      return;
+      return t('portfolio.builder.validation.no-positive-quantity');
     }
 
-    // Validate date range
-    if (dateRange.startDate && dateRange.endDate && dateRange.startDate >= dateRange.endDate) {
-      window.alert(t('portfolio.builder.validation.start-before-end'));
-      return;
+    // Check if dates are missing
+    if (!dateRange.startDate || !dateRange.endDate) {
+      return t('portfolio.builder.analysis.dates-required');
+    }
+
+    // Validate date range order
+    if (dateRange.startDate >= dateRange.endDate) {
+      return t('portfolio.builder.validation.start-before-end');
     }
 
     // Check for future dates
-    if (dateRange.endDate) {
-      const endDate = new Date(dateRange.endDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time for fair comparison
+    const endDate = new Date(dateRange.endDate);
+    const startDate = new Date(dateRange.startDate);
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
 
-      if (endDate > today) {
-        window.alert(t('portfolio.builder.validation.end-not-future'));
-        return;
-      }
-
-      // Warn if end date is today (market may not be closed)
-      if (endDate.getTime() === today.getTime()) {
-        // Show confirmation dialog and store pending analysis
-        const tickers = nonZeroItems.map((item) => item.symbol);
-        const quantities = nonZeroItems.map((item) => item.quantity);
-        const portfolioValue = 100000; // Default $100k portfolio
-
-        // Get dates with defaults (always required)
-        const defaults = getDefaultDates();
-        const startDate = dateRange.startDate || defaults.startDate;
-        const endDateStr = dateRange.endDate || defaults.endDate;
-
-        setPendingAnalysis({
-          tickers,
-          quantities,
-          portfolioValue,
-          targetBeta: 0,
-          startDate,
-          endDate: endDateStr,
-        });
-        setShowTodayWarning(true);
-        return;
-      }
+    if (endDate > todayDate) {
+      return t('portfolio.builder.validation.end-not-future');
     }
 
-    if (dateRange.startDate) {
-      const startDate = new Date(dateRange.startDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (startDate > today) {
-        window.alert(t('portfolio.builder.validation.start-not-future'));
-        return;
-      }
+    if (startDate > todayDate) {
+      return t('portfolio.builder.validation.start-not-future');
     }
 
-    // Check for minimum date range (45 days for ~30 trading days)
-    if (dateRange.startDate && dateRange.endDate) {
-      const start = new Date(dateRange.startDate);
-      const end = new Date(dateRange.endDate);
-      const daysDiff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
-
-      if (daysDiff < 45) {
-        window.alert(t('portfolio.builder.validation.date-range-minimum'));
-        return;
-      }
+    // Check for minimum date range (45 days)
+    const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysDiff < 45) {
+      return t('portfolio.builder.validation.date-range-minimum');
     }
 
-    // Prepare request data (use only non-zero items)
-    const tickers = nonZeroItems.map((item) => item.symbol);
-    const quantities = nonZeroItems.map((item) => item.quantity);
-
-    // Calculate portfolio value from quantities (assume average price)
-    const portfolioValue = 100000; // Default $100k portfolio
-
-    // Get dates with defaults (always required)
-    const defaults = getDefaultDates();
-    const startDate = dateRange.startDate || defaults.startDate;
-    const endDate = dateRange.endDate || defaults.endDate;
-
-    analyzeMutation.mutate({
-      tickers,
-      quantities,
-      portfolioValue,
-      targetBeta: 0, // Market-neutral by default
-      startDate,
-      endDate,
-    });
+    return null; // No errors
   };
 
-  const getDefaultDates = () => {
-    const today = new Date();
-    const endDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const handleAnalyze = () => {
+    if (items.length === 0) return;
 
-    const threeYearsAgo = new Date();
-    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-    const startDate = threeYearsAgo.toISOString().split('T')[0];
+    // Validate inputs - will be displayed near button
+    const error = validateAnalysis();
+    if (error) return;
 
-    return { startDate, endDate };
+    const nonZeroItems = items.filter((item) => item.quantity > 0);
+
+    // Check if end date is today (show confirmation dialog)
+    const endDate = new Date(dateRange.endDate);
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    if (endDate.getTime() === todayDate.getTime()) {
+      setPendingAnalysis({
+        tickers: nonZeroItems.map((item) => item.symbol),
+        quantities: nonZeroItems.map((item) => item.quantity),
+        portfolioValue: 100000,
+        targetBeta: 0,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      });
+      setShowTodayWarning(true);
+      return;
+    }
+
+    // Submit analysis
+    analyzeMutation.mutate({
+      tickers: nonZeroItems.map((item) => item.symbol),
+      quantities: nonZeroItems.map((item) => item.quantity),
+      portfolioValue: 100000,
+      targetBeta: 0,
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+    });
   };
 
   const handleConfirmTodayWarning = () => {
@@ -197,6 +168,11 @@ export function usePortfolioBuilder() {
     }
   };
 
+  // Update validation error whenever inputs change
+  useEffect(() => {
+    setValidationError(validateAnalysis());
+  }, [items, dateRange.startDate, dateRange.endDate]);
+
   return {
     items,
     searchInput,
@@ -205,6 +181,7 @@ export function usePortfolioBuilder() {
     isSearching: searchQuery.isLoading,
     isAnalyzing: analyzeMutation.isPending,
     analysisError: analyzeMutation.error ? (analyzeMutation.error as Error).message : null,
+    validationError,
     showDropdown,
     setShowDropdown,
     addItem,
