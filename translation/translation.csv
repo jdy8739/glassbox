@@ -221,6 +221,7 @@ analysis.section.optimal-description,Suggested weights to maximize Sharpe ratio 
 analysis.section.risk-profile,Risk Profile,위험 프로필
 analysis.section.risk-free-rate-label,Risk-Free Rate Used,사용된 무위험 수익률
 analysis.section.analysis-start-date,Analysis Start Date,분석 시작 날짜
+analysis.section.analysis-end-date,Analysis End Date,분석 종료 날짜
 analysis.section.sharpe-rating,Sharpe Rating,샤프 등급
 analysis.hedging.how-it-works,How this works,작동 원리
 analysis.hedging.how-it-works.description,"Since your portfolio has a Beta of {{portfolioBeta}}, it is theoretically {{volatilityPercentage}}% {{volatilityDirection}} volatile than the market. To make your portfolio ""Market Neutral"" (Beta ≈ 0), you need to short sell an equivalent amount of market exposure. This protects you from systematic market crashes while allowing you to profit from the individual performance (Alpha) of your chosen stocks.","포트폴리오의 베타가 {{portfolioBeta}}이므로, 이론적으로 시장보다 {{volatilityPercentage}}% 더 {{volatilityDirection}} 변동성이 있습니다. 포트폴리오를 ""시장 중립적""(베타 ≈ 0)으로 만들려면, 시장 노출량과 동일한 금액을 공매도해야 합니다. 이는 체계적인 시장 붕괴로부터 보호하면서, 선택한 주식의 개별 성과(알파)로부터 이익을 얻을 수 있게 해줍니다."
