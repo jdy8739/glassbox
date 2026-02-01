@@ -347,7 +347,7 @@ function PortfolioBuilderContent() {
 
             <div className="glass-card-gradient cyan-blue overflow-visible relative z-30">
               <div className="space-y-4 overflow-visible">
-                <label className="block text-sm font-semibold text-black dark:text-white items-center gap-2">
+                <label className="flex items-center gap-2 text-sm font-semibold text-black dark:text-white">
                   <MapPin className="w-4 h-4" />
 
                   {t('portfolio.builder.search.label')}
