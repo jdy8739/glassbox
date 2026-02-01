@@ -61,10 +61,6 @@ function AnalysisResultContent() {
   const searchParams = useSearchParams();
   const portfolioId = searchParams.get('portfolioId');
 
-  const [activeTab, setActiveTab] = useState<'frontier' | 'hedging'>(() => {
-    const tabParam = searchParams.get('tab');
-    return tabParam === 'hedging' ? 'hedging' : 'frontier';
-  });
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -73,12 +69,15 @@ function AnalysisResultContent() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isSaveAsMode, setIsSaveAsMode] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
-  
-  const { 
-    portfolioData, 
-    isLoading, 
-    isError, 
-    reanalyze, 
+
+  // Derive activeTab directly from URL - single source of truth
+  const activeTab = (searchParams.get('tab') === 'hedging' ? 'hedging' : 'frontier') as 'frontier' | 'hedging';
+
+  const {
+    portfolioData,
+    isLoading,
+    isError,
+    reanalyze,
     isReanalyzing,
     savePortfolio,
     isSaving,
@@ -93,14 +92,7 @@ function AnalysisResultContent() {
     }
   }, [isError, router]);
 
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'frontier' || tabParam === 'hedging') {
-      setActiveTab((prev) => (prev === tabParam ? prev : tabParam));
-    }
-  }, [searchParams]);
   const handleTabChange = (tab: 'frontier' | 'hedging') => {
-    setActiveTab(tab);
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', tab);
     router.replace(`/analysis/result?${params.toString()}`, { scroll: false });
