@@ -167,9 +167,9 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     Returns:
         DataFrame with adjusted close prices
     """
-    # Parse dates
-    end_date = parse_date(end_date) or datetime.now()
-    start_date = parse_date(start_date) or (end_date - timedelta(days=3*365))
+    # Parse dates (always provided from frontend)
+    end_date = parse_date(end_date)
+    start_date = parse_date(start_date)
 
     # Validate date range
     if start_date >= end_date:
@@ -460,7 +460,9 @@ def main():
         "tickers": ["AAPL", "MSFT", "NVDA"],
         "quantities": [10, 20, 15],
         "portfolioValue": 100000,
-        "targetBeta": 0
+        "targetBeta": 0,
+        "startDate": "2023-01-01",
+        "endDate": "2024-12-31"
     }
     """
     try:
@@ -471,8 +473,8 @@ def main():
         quantities = input_data.get('quantities', [])
         portfolio_value = input_data.get('portfolioValue', 100000)
         target_beta = input_data.get('targetBeta', 0)
-        start_date = input_data.get('startDate')
-        end_date = input_data.get('endDate')
+        start_date = input_data['startDate']  # Required
+        end_date = input_data['endDate']  # Required
 
         # Validate input
         if not tickers:

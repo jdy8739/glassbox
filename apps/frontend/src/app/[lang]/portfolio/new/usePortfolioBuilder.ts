@@ -116,13 +116,18 @@ export function usePortfolioBuilder() {
         const quantities = nonZeroItems.map((item) => item.quantity);
         const portfolioValue = 100000; // Default $100k portfolio
 
+        // Get dates with defaults (always required)
+        const defaults = getDefaultDates();
+        const startDate = dateRange.startDate || defaults.startDate;
+        const endDateStr = dateRange.endDate || defaults.endDate;
+
         setPendingAnalysis({
           tickers,
           quantities,
           portfolioValue,
           targetBeta: 0,
-          startDate: dateRange.startDate || undefined,
-          endDate: dateRange.endDate || undefined,
+          startDate,
+          endDate: endDateStr,
         });
         setShowTodayWarning(true);
         return;
@@ -159,14 +164,30 @@ export function usePortfolioBuilder() {
     // Calculate portfolio value from quantities (assume average price)
     const portfolioValue = 100000; // Default $100k portfolio
 
+    // Get dates with defaults (always required)
+    const defaults = getDefaultDates();
+    const startDate = dateRange.startDate || defaults.startDate;
+    const endDate = dateRange.endDate || defaults.endDate;
+
     analyzeMutation.mutate({
       tickers,
       quantities,
       portfolioValue,
       targetBeta: 0, // Market-neutral by default
-      startDate: dateRange.startDate || undefined,
-      endDate: dateRange.endDate || undefined,
+      startDate,
+      endDate,
     });
+  };
+
+  const getDefaultDates = () => {
+    const today = new Date();
+    const endDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    const threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+    const startDate = threeYearsAgo.toISOString().split('T')[0];
+
+    return { startDate, endDate };
   };
 
   const handleConfirmTodayWarning = () => {

@@ -47,22 +47,20 @@ export class AnalyzePortfolioDto {
   @ApiProperty({
     description: 'Start date for historical data (YYYY-MM-DD)',
     example: '2023-01-01',
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'startDate must be in YYYY-MM-DD format',
   })
-  startDate?: string;
+  startDate!: string;
 
   @ApiProperty({
     description: 'End date for historical data (YYYY-MM-DD)',
     example: '2024-12-31',
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'endDate must be in YYYY-MM-DD format',
   })
-  endDate?: string;
+  endDate!: string;
 }
