@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import { analyzePortfolio, getPortfolio, savePortfolio, updatePortfolio } from '@/lib/api/portfolio';
-import { loadAnalysisSession } from '@/lib/storage/analysis-session';
 import type { AnalyzePortfolioRequest, CreatePortfolioRequest, UpdatePortfolioRequest } from '@/lib/api/portfolio';
 import type { PortfolioItem, AnalysisSnapshot, Portfolio } from '@glassbox/types';
 
@@ -10,95 +10,81 @@ export interface PortfolioData {
   savedPortfolio?: Portfolio | null;
 }
 
+// Helper: Create portfolio items from tickers and quantities
+const createItems = (tickers: string[], quantities: number[]): PortfolioItem[] => {
+  return tickers.map((ticker, index) => ({
+    symbol: ticker,
+    quantity: quantities[index] || 0,
+  }));
+};
+
+// Helper: Fetch saved portfolio
+const fetchSavedPortfolio = async (portfolioId: string): Promise<PortfolioData> => {
+  const portfolio = await getPortfolio(portfolioId);
+
+  if (!portfolio.analysisSnapshot) {
+    throw new Error('Portfolio has no analysis snapshot');
+  }
+
+  return {
+    analysis: portfolio.analysisSnapshot as AnalysisSnapshot,
+    items: createItems(portfolio.tickers, portfolio.quantities),
+    savedPortfolio: portfolio,
+  };
+};
+
+// Helper: Fetch fresh analysis from URL params
+const fetchFreshAnalysis = async (params: URLSearchParams): Promise<PortfolioData> => {
+  const tickers = params.get('tickers')?.split(',') || [];
+  const quantities = params.get('quantities')?.split(',').map(Number) || [];
+  const startDate = params.get('startDate') || undefined;
+  const endDate = params.get('endDate') || undefined;
+
+  if (!tickers.length) {
+    throw new Error('No portfolio data found');
+  }
+
+  const analysis = await analyzePortfolio({
+    tickers,
+    quantities,
+    startDate,
+    endDate,
+  });
+
+  return {
+    analysis: analysis as AnalysisSnapshot,
+    items: createItems(tickers, quantities),
+    savedPortfolio: null,
+  };
+};
+
 export function useFetchPortfolioData(portfolioId: string | null) {
   const queryClient = useQueryClient();
+  const params = useSearchParams();
 
-  // Query for fetching portfolio data
   const portfolioQuery = useQuery<PortfolioData>({
-    queryKey: ['portfolio', portfolioId || 'local'],
-    queryFn: async () => {
-      if (portfolioId) {
-        try {
-          const portfolio = await getPortfolio(portfolioId);
-          // Assuming the saved portfolio has quantities and tickers
-          const items = portfolio.tickers.map((ticker, index) => ({
-            symbol: ticker,
-            quantity: portfolio.quantities[index] || 0,
-          }));
-          
-          if (!portfolio.analysisSnapshot) {
-             throw new Error('Portfolio has no analysis snapshot');
-          }
-
-          return {
-            analysis: portfolio.analysisSnapshot as AnalysisSnapshot,
-            items,
-            savedPortfolio: portfolio
-          };
-        } catch (error) {
-          throw new Error('Failed to fetch portfolio');
-        }
-      } else {
-        // Load fresh analysis from sessionStorage
-        const sessionData = loadAnalysisSession();
-
-        if (!sessionData) {
-          throw new Error('No analysis data found');
-        }
-
-        return {
-          analysis: sessionData.analysis,
-          items: sessionData.items,
-          savedPortfolio: null
-        };
-      }
-    },
+    queryKey: ['portfolio', portfolioId || params.get('tickers')],
+    queryFn: () => portfolioId ? fetchSavedPortfolio(portfolioId) : fetchFreshAnalysis(params),
     retry: false,
-    staleTime: Infinity, // Keep data fresh for the session
+    staleTime: Infinity,
   });
 
-  // Mutation for re-analyzing
   const reanalyzeMutation = useMutation({
-    mutationFn: async (data: { tickers: string[], quantities: number[], startDate?: string, endDate?: string }) => {
-      const request: AnalyzePortfolioRequest = {
-        tickers: data.tickers,
-        quantities: data.quantities,
-        startDate: data.startDate,
-        endDate: data.endDate,
-      };
-      return analyzePortfolio(request);
-    },
-    onSuccess: (newAnalysis) => {
-      // Update the query cache with the new analysis
-      queryClient.setQueryData<PortfolioData>(['portfolio', portfolioId || 'local'], (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          analysis: newAnalysis as AnalysisSnapshot, // Cast if types align or map
-        };
-      });
-    },
+    mutationFn: (data: AnalyzePortfolioRequest) => analyzePortfolio(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['portfolio'] }),
   });
 
-  // Mutation for saving new portfolio
   const savePortfolioMutation = useMutation({
-    mutationFn: async (data: CreatePortfolioRequest) => {
-      return savePortfolio(data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
-    }
+    mutationFn: (data: CreatePortfolioRequest) => savePortfolio(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['portfolios'] }),
   });
 
-  // Mutation for updating existing portfolio
   const updatePortfolioMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string, data: UpdatePortfolioRequest }) => {
-      return updatePortfolio(id, data);
-    },
+    mutationFn: ({ id, data }: { id: string; data: UpdatePortfolioRequest }) => updatePortfolio(id, data),
     onSuccess: (updatedPortfolio) => {
       queryClient.invalidateQueries({ queryKey: ['portfolio', updatedPortfolio.id] });
       queryClient.invalidateQueries({ queryKey: ['portfolios'] });
-    }
+    },
   });
 
   return {
