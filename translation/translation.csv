@@ -288,3 +288,4 @@ auth.reset.check-email,Please check your email inbox and spam folder.,이메일 
 auth.reset.back-to-login,Back to Sign In,로그인으로 돌아가기
 nav.signin,Sign In,로그인
 nav.signup,Get Started,시작하기
+auth.logout,Sign Out,로그아웃

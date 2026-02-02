@@ -12,10 +12,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate signup
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    // Logic removed as requested
   };
 
   return (

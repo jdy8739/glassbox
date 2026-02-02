@@ -1,7 +1,7 @@
 'use client';
 
 import { LocalizedLink } from '@/components/LocalizedLink';
-import { Moon, Sun, Monitor, Zap, Languages } from 'lucide-react';
+import { Moon, Sun, Monitor, Zap, Languages, LogOut, User } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,18 @@ export function Header() {
   const { t, i18n } = useTranslation();
   const router = useLocalizedRouter();
   const pathname = usePathname();
-  const { theme, resolvedTheme, setTheme, mounted } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  
+  // Determine if we are on the main page or auth pages
+  const isMainPage = pathname === '/' || /^\/(en|ko)$/.test(pathname || '');
+  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/signup') || pathname?.includes('/password-reset');
+  
+  // Show logged-in state (Logout button) on all pages EXCEPT main and auth pages
+  const isLoggedIn = !isMainPage && !isAuthPage;
+
+  const handleLogout = () => {
+    router.push('/');
+  };
 
   const toggleTheme = () => {
     const themeMap: Record<string, 'light' | 'dark' | 'system'> = {
@@ -124,8 +135,23 @@ export function Header() {
             </div>
           </button>
 
-          {actionContent ? (
-            actionContent
+          {actionContent}
+
+          {isLoggedIn ? (
+            /* Logged In State */
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80">
+                <User className="w-4 h-4" />
+              </div>
+              <button
+                onClick={handleLogout}
+                className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"
+                title={t('auth.logout')}
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('auth.logout')}</span>
+              </button>
+            </div>
           ) : (
             /* Auth Buttons */
             <div className="flex items-center gap-2">

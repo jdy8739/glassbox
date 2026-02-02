@@ -12,10 +12,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate login
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    // Logic removed as requested
   };
 
   return (
