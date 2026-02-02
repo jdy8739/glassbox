@@ -1,31 +1,20 @@
 'use client';
 
 import { LocalizedLink } from '@/components/LocalizedLink';
-import { useEffect, useState } from 'react';
 import { Moon, Sun, Monitor, Zap, Languages } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { usePathname } from 'next/navigation';
+import { useTheme } from '@/hooks/useTheme';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
   const { t, i18n } = useTranslation();
   const router = useLocalizedRouter();
   const pathname = usePathname();
-  const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
-
-  useEffect(() => {
-    // Load theme from localStorage and context after mount
-    const savedTheme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
-    setThemeState(savedTheme);
-
-    const isDark = savedTheme === 'dark' ||
-      (savedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setResolvedTheme(isDark ? 'dark' : 'light');
-  }, []);
+  const { theme, resolvedTheme, setTheme, mounted } = useTheme();
 
   const toggleTheme = () => {
     const themeMap: Record<string, 'light' | 'dark' | 'system'> = {
@@ -34,18 +23,7 @@ export function Header() {
       system: 'light',
     };
     const newTheme = themeMap[theme] || 'light';
-    setThemeState(newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    // Apply theme immediately
-    const isDark = newTheme === 'dark' ||
-      (newTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setResolvedTheme(isDark ? 'dark' : 'light');
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setTheme(newTheme);
   };
 
   const getThemeLabel = () => {

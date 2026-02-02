@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 
 interface HeaderContextType {
   navContent: ReactNode;
@@ -15,8 +15,15 @@ export function HeaderProvider({ children }: { children: ReactNode }) {
   const [navContent, setNavContent] = useState<ReactNode>(null);
   const [actionContent, setActionContent] = useState<ReactNode>(null);
 
+  const value = useMemo(() => ({
+    navContent,
+    setNavContent,
+    actionContent,
+    setActionContent
+  }), [navContent, actionContent]);
+
   return (
-    <HeaderContext.Provider value={{ navContent, setNavContent, actionContent, setActionContent }}>
+    <HeaderContext.Provider value={value}>
       {children}
     </HeaderContext.Provider>
   );
