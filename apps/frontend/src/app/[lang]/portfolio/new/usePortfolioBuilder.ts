@@ -39,7 +39,7 @@ export function usePortfolioBuilder() {
     router.push(`/analysis/result?${params}`);
   };
 
-  const addItem = (symbol: string, name?: string) => {
+  const addItem = (symbol: string) => {
     const upperSymbol = symbol.toUpperCase();
     if (symbol && !items.find((item) => item.symbol === upperSymbol)) {
       setItems([...items, { symbol: upperSymbol, quantity: 1 }]);
@@ -113,8 +113,6 @@ export function usePortfolioBuilder() {
     // Validate inputs - will be displayed near button
     const error = validateAnalysis();
     if (error) return;
-
-    const nonZeroItems = items.filter((item) => item.quantity > 0);
 
     // Check if end date is today (show confirmation dialog)
     const endDate = new Date(dateRange.endDate);

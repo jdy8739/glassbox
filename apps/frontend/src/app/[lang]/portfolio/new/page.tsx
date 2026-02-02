@@ -91,8 +91,6 @@ function PortfolioBuilderContent() {
     setSearchInput,
     searchResults,
     isSearching,
-    isAnalyzing,
-    analysisError,
     validationError,
     showDropdown,
     setShowDropdown,
@@ -101,7 +99,6 @@ function PortfolioBuilderContent() {
     removeItem,
     updateQuantity,
     handleAnalyze,
-    clearError,
     dateRange,
     setDateRange,
     showTodayWarning,
@@ -191,7 +188,7 @@ function PortfolioBuilderContent() {
   }, [setShowDropdown]);
 
   const handleAddItem = (symbol: string, name?: string) => {
-    if (addItem(symbol, name)) {
+    if (addItem(symbol)) {
       // Smooth scroll happens via React state update, no need for manual scroll
     }
   };
@@ -265,22 +262,11 @@ function PortfolioBuilderContent() {
         actions={
           <button
             onClick={handleAnalyze}
-            disabled={items.length === 0 || isAnalyzing}
+            disabled={items.length === 0}
             className="hidden lg:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isAnalyzing ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-
-                <span>{t('portfolio.builder.analyze.analyzing')}</span>
-              </>
-            ) : (
-              <>
-                <TrendingUp className="w-5 h-5" />
-
-                <span>{t('nav.analyze')}</span>
-              </>
-            )}
+            <TrendingUp className="w-5 h-5" />
+            <span>{t('nav.analyze')}</span>
           </button>
         }
       />
@@ -317,31 +303,6 @@ function PortfolioBuilderContent() {
                 </p>
               </div>
             </div>
-
-            {/* Error Message */}
-
-            {analysisError && (
-              <div className="glass-card-gradient coral-pink animate-fade-in">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">⚠️</span>
-
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-black dark:text-white mb-1">
-                      {t('portfolio.builder.analysis.failed')}
-                    </h4>
-
-                    <p className="text-sm text-black/70 dark:text-white/70">{analysisError}</p>
-
-                    <button
-                      onClick={clearError}
-                      className="mt-3 text-xs px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
-                    >
-                      {t('portfolio.builder.analysis.dismiss')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Search Bar */}
 
@@ -512,22 +473,11 @@ function PortfolioBuilderContent() {
 
               <button
                 onClick={handleAnalyze}
-                disabled={items.length === 0 || isAnalyzing || !!validationError}
+                disabled={items.length === 0 || !!validationError}
                 className="w-full glass-button text-lg py-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
               >
-                {isAnalyzing ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-
-                    <span>{t('portfolio.builder.analyze.analyzing')}</span>
-                  </>
-                ) : (
-                  <>
-                    <Rocket className="w-5 h-5 group-hover:animate-bounce" />
-
-                    <span>{t('portfolio.builder.analyze.button')}</span>
-                  </>
-                )}
+                <Rocket className="w-5 h-5 group-hover:animate-bounce" />
+                <span>{t('portfolio.builder.analyze.button')}</span>
               </button>
 
               {validationError && (
@@ -574,15 +524,10 @@ function PortfolioBuilderContent() {
 
           <button
             onClick={handleAnalyze}
-            disabled={items.length === 0 || isAnalyzing}
+            disabled={items.length === 0}
             className="glass-button px-6 py-3 flex items-center gap-2 disabled:opacity-50"
           >
-            {isAnalyzing ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <Rocket className="w-4 h-4" />
-            )}
-
+            <Rocket className="w-4 h-4" />
             <span>{t('nav.analyze')}</span>
           </button>
         </div>
