@@ -262,3 +262,29 @@ portfolio.chart.assets,Assets,자산
 landing.error.title,Page Load Failed,페이지 로드 실패
 landing.error.message,Something went wrong while loading the home page. Please try again.,홈페이지를 로드하는 중 오류가 발생했습니다. 다시 시도해주세요.
 landing.error.reload,Reload Page,페이지 새로고침
+auth.login.title,Welcome Back,환영합니다
+auth.login.subtitle,Sign in to manage your portfolios,포트폴리오를 관리하려면 로그인하세요
+auth.login.email,Email,이메일
+auth.login.password,Password,비밀번호
+auth.login.forgot-password,Forgot password?,비밀번호를 잊으셨나요?
+auth.login.submit,Sign In,로그인
+auth.login.divider,Or continue with,또는 다음으로 계속
+auth.login.google,Continue with Google,Google로 계속하기
+auth.login.no-account,Don't have an account?,계정이 없으신가요?
+auth.login.signup-link,Sign up,회원가입
+auth.signup.title,Create Account,계정 만들기
+auth.signup.subtitle,Join Glassbox to optimize your portfolio,Glassbox에 가입하여 포트폴리오를 최적화하세요
+auth.signup.fullname,Full Name,이름
+auth.signup.submit,Create Account,계정 만들기
+auth.signup.divider,Or sign up with,또는 다음으로 가입
+auth.signup.google,Sign up with Google,Google로 가입하기
+auth.signup.has-account,Already have an account?,이미 계정이 있으신가요?
+auth.signup.signin-link,Sign in,로그인
+auth.reset.title,Reset Password,비밀번호 재설정
+auth.reset.subtitle,Enter your email to receive reset instructions,비밀번호 재설정 안내를 받으려면 이메일을 입력하세요
+auth.reset.submit,Send Reset Link,재설정 링크 보내기
+auth.reset.success-message,If an account exists for that email, we have sent password reset instructions.,해당 이메일로 계정이 존재하면 비밀번호 재설정 안내를 보냈습니다.
+auth.reset.check-email,Please check your email inbox and spam folder.,이메일 수신함과 스팸함을 확인해주세요.
+auth.reset.back-to-login,Back to Sign In,로그인으로 돌아가기
+nav.signin,Sign In,로그인
+nav.signup,Get Started,시작하기

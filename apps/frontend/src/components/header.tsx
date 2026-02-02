@@ -7,11 +7,13 @@ import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
   const { t, i18n } = useTranslation();
   const router = useLocalizedRouter();
+  const pathname = usePathname();
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
@@ -147,11 +149,25 @@ export function Header() {
           {actionContent ? (
             actionContent
           ) : (
-            /* Primary CTA Button */
-            <LocalizedLink href="/portfolio/new" className="hidden sm:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all">
-              <Zap className="w-4 h-4" />
-              <span>{t('nav.launch')}</span>
-            </LocalizedLink>
+            /* Auth Buttons */
+            <div className="flex items-center gap-2">
+              {!pathname?.includes('/login') && (
+                <LocalizedLink 
+                  href="/login" 
+                  className="hidden sm:flex h-9 px-4 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all"
+                >
+                  <span>{t('nav.signin')}</span>
+                </LocalizedLink>
+              )}
+              {!pathname?.includes('/signup') && (
+                <LocalizedLink 
+                  href="/signup" 
+                  className="hidden sm:flex h-9 px-4 items-center gap-2 rounded-lg text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:opacity-90 transition-all shadow-sm"
+                >
+                  <span>{t('nav.signup')}</span>
+                </LocalizedLink>
+              )}
+            </div>
           )}
         </div>
       </nav>
