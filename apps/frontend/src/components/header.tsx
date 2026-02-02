@@ -140,9 +140,9 @@ export function Header() {
           {isLoggedIn ? (
             /* Logged In State */
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80">
+              <LocalizedLink href="/profile" className="w-9 h-9 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
                 <User className="w-4 h-4" />
-              </div>
+              </LocalizedLink>
               <button
                 onClick={handleLogout}
                 className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"

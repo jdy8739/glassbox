@@ -289,3 +289,21 @@ auth.reset.back-to-login,Back to Sign In,로그인으로 돌아가기
 nav.signin,Sign In,로그인
 nav.signup,Get Started,시작하기
 auth.logout,Sign Out,로그아웃
+profile.title,Profile Settings,프로필 설정
+profile.subtitle,Manage your account settings and preferences,계정 설정 및 환경설정을 관리하세요
+profile.nav.account,Account,계정
+profile.nav.security,Security,보안
+profile.nav.billing,Billing,결제
+profile.nav.preferences,Preferences,환경설정
+profile.section.personal,Personal Information,개인 정보
+profile.field.fullname,Full Name,이름
+profile.field.email,Email Address,이메일 주소
+common.button.edit,Edit,수정
+profile.section.preferences,Preferences,환경설정
+profile.pref.notifications,Email Notifications,이메일 알림
+profile.pref.notifications_desc,Receive updates about your portfolio performance,포트폴리오 성과에 대한 업데이트를 받습니다
+profile.pref.marketing,Marketing Emails,마케팅 이메일
+profile.pref.marketing_desc,Receive news about new features and improvements,새로운 기능과 개선 사항에 대한 소식을 받습니다
+profile.section.danger,Danger Zone,위험 구역
+profile.danger.desc,Permanently delete your account and all of your content.,계정과 모든 콘텐츠를 영구적으로 삭제합니다.
+profile.danger.delete,Delete Account,계정 삭제
