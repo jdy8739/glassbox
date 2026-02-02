@@ -39,14 +39,15 @@ export function Tooltip({ children, content, width = 250 }: TooltipProps) {
   };
 
   useEffect(() => {
-    if (isVisible) {
-      window.addEventListener('scroll', updatePosition);
-      window.addEventListener('resize', updatePosition);
-      return () => {
-        window.removeEventListener('scroll', updatePosition);
-        window.removeEventListener('resize', updatePosition);
-      };
+    if (!isVisible) {
+      return;
     }
+    window.addEventListener('scroll', updatePosition);
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [isVisible, updatePosition]);
 
   const tooltipContent = mounted && isVisible ? (
