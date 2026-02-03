@@ -1,5 +1,5 @@
 {
-  "name": "@glassbox/frontend",
+  "name": "@glassbox/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {

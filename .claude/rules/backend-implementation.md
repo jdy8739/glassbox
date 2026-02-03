@@ -57,7 +57,7 @@ Simple backend implementation focusing on essentials only.
 
 **Step 5: Save Credentials**
 ```bash
-# apps/frontend/.env.local
+# apps/web/.env.local
 GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret-here
 ```
@@ -68,7 +68,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret-here
 
 **Install:**
 ```bash
-cd apps/frontend
+cd apps/web
 pnpm add next-auth
 ```
 
@@ -102,7 +102,7 @@ export { handler as GET, handler as POST };
 
 **Environment:**
 ```bash
-# apps/frontend/.env.local
+# apps/web/.env.local
 NEXTAUTH_SECRET=your-secret-key
 NEXTAUTH_URL=http://localhost:3000
 GOOGLE_CLIENT_ID=...
@@ -1000,7 +1000,7 @@ cd python
 pip install -r requirements.txt
 
 # Frontend setup
-cd apps/frontend
+cd apps/web
 pnpm install
 pnpm run dev
 ```

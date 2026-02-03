@@ -9,7 +9,7 @@ A monorepo containing a portfolio optimization and beta hedging tool with Glass 
 ```
 glassbox/
 ├── apps/
-│   ├── frontend/          # Next.js 14+ web application
+│   ├── web/               # Next.js 14+ web application
 │   ├── backend/           # Nest.js 10+ REST API
 │   └── cli/               # CLI tool for MVP testing
 ├── packages/
@@ -56,12 +56,12 @@ This will start:
 
 ## 📦 Packages
 
-### Frontend (`apps/frontend`)
+### Frontend (`apps/web`)
 
 Next.js 14+ web application with Glass UI design.
 
 ```bash
-cd apps/frontend
+cd apps/web
 pnpm dev      # Start development server
 pnpm build    # Build for production
 ```
@@ -79,7 +79,7 @@ pnpm build    # Build for production
 - Tailwind CSS
 - Glass UI design
 
-See [apps/frontend/README.md](./apps/frontend/README.md) for details.
+See [apps/web/README.md](./apps/web/README.md) for details.
 
 ### Backend (`apps/backend`)
 
@@ -256,7 +256,7 @@ pnpm test:watch
 ### Frontend (Next.js)
 
 ```bash
-cd apps/frontend
+cd apps/web
 pnpm build
 pnpm start
 ```

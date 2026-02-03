@@ -613,7 +613,7 @@ Need text input?
 
 ## Design Tokens Package
 
-All design tokens are centralized in `packages/design-tokens/` and exported to Tailwind via `apps/frontend/tailwind.config.ts`.
+All design tokens are centralized in `packages/design-tokens/` and exported to Tailwind via `apps/web/tailwind.config.ts`.
 
 ### Package Structure
 
@@ -661,7 +661,7 @@ All tokens are automatically available as Tailwind utilities:
 ```
 
 **Apply component classes:**
-Component classes are defined in `apps/frontend/src/app/globals.css`:
+Component classes are defined in `apps/web/src/app/globals.css`:
 ```html
 <button class="glass-button">Primary Action</button>
 <div class="glass-panel">Glass Panel</div>

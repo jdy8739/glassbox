@@ -71,7 +71,7 @@
 
 **Proposed Structure:**
 ```
-apps/frontend/
+apps/web/
 ├── app/                    # Next.js App Router
 ├── src/
 │   ├── app/               # Application layer (providers, initialization)

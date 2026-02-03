@@ -10,9 +10,11 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "fe": "pnpm --filter @glassbox/frontend run dev",
+    "web": "pnpm --filter @glassbox/web run dev",
     "be": "pnpm --filter @glassbox/backend run dev",
     "build": "turbo run build",
+    "build:web": "pnpm --filter @glassbox/web run build",
+    "build:backend": "pnpm --filter @glassbox/backend run build",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",

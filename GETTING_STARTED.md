@@ -441,7 +441,7 @@ pnpm run fe
 - **Solution:** Another app is using port 3000 or 4000
 - **Option 1:** Stop the other application
 - **Option 2:** Change port in code:
-  - Frontend: Edit `apps/frontend/package.json` → change port in dev script
+  - Frontend: Edit `apps/web/package.json` → change port in dev script
   - Backend: Edit `apps/backend/src/main.ts` → change port number
 
 ### Python script fails with "ModuleNotFoundError: No module named 'numpy'"
@@ -515,7 +515,7 @@ pnpm prisma studio
 
 ## Need Help?
 
-- Check individual README files in `apps/frontend`, `apps/backend`, and `apps/cli`
+- Check individual README files in `apps/web`, `apps/backend`, and `apps/cli`
 - Review documentation in `.claude/` directory
 - Check that all prerequisites are installed correctly
 - Make sure PostgreSQL is running before starting the backend
