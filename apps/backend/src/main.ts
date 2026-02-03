@@ -11,8 +11,11 @@ async function bootstrap() {
 
   app.useLogger(app.get(PinoLoggerService));
 
-  // Enable CORS
-  app.enableCors();
+  // Enable CORS for Next.js frontend
+  app.enableCors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  });
 
   // Global validation pipe
   app.useGlobalPipes(

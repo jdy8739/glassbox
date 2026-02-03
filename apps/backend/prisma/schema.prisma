@@ -10,12 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model - Google OAuth authentication
+// User model - Supports both OAuth and email/password authentication
 model User {
   id         String      @id @default(uuid())
   email      String      @unique
+  password   String?     // Hashed password (null for OAuth users)
   name       String?
-  picture    String? // Google profile picture URL
+  picture    String?     // Google profile picture URL
   googleId   String?     @unique
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
