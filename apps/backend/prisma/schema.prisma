@@ -34,6 +34,13 @@ model Portfolio {
   tickers          String[] // ['AAPL', 'MSFT', 'NVDA']
   quantities       Float[] // [10, 20, 15] - must match tickers array length
   analysisSnapshot Json? // Full analysis results (nullable until first analysis)
+  
+  // Summary stats for list view optimization
+  sharpeRatio    Float?
+  volatility     Float?
+  expectedReturn Float?
+  analysisDate   String?
+
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

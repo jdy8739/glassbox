@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PythonExecutorService } from './python-executor.service';
 import { AnalyzePortfolioDto } from './dto/analyze-portfolio.dto';
@@ -20,43 +21,64 @@ export class PortfolioService {
       throw new Error('Tickers and quantities arrays must have the same length');
     }
 
+    // Extract summary stats if analysis is present
+    let stats: {
+      sharpeRatio?: number | null;
+      volatility?: number | null;
+      expectedReturn?: number | null;
+      analysisDate?: string | null;
+    } = {};
+    if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
+      stats = {
+        sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
+        volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
+        expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
+        analysisDate: dto.analysisSnapshot.analysisDate,
+      };
+    }
+
     return this.prisma.portfolio.create({
       data: {
         userId,
         name: dto.name,
         tickers: dto.tickers,
         quantities: dto.quantities,
-        analysisSnapshot: dto.analysisSnapshot || undefined,
+        // Cast to InputJsonValue to avoid type error with 'any'
+        analysisSnapshot: dto.analysisSnapshot ? (dto.analysisSnapshot as unknown as Prisma.InputJsonValue) : undefined,
+        sharpeRatio: stats.sharpeRatio ?? undefined,
+        volatility: stats.volatility ?? undefined,
+        expectedReturn: stats.expectedReturn ?? undefined,
+        analysisDate: stats.analysisDate ?? undefined,
       },
     });
   }
 
   async findAll(userId: string) {
+    // Fetch portfolios without the large analysisSnapshot JSON
     const portfolios = await this.prisma.portfolio.findMany({
       where: { userId },
       orderBy: { updatedAt: 'desc' },
     });
 
-    // Optimize response size by stripping heavy arrays from snapshot
-    return portfolios.map((portfolio) => {
-      const snapshot = portfolio.analysisSnapshot as any;
-
-      if (!snapshot) {
-        return portfolio;
+    // Reconstruct the expected structure for frontend
+    return portfolios.map((p) => {
+      // If we have stats, reconstruct a "lite" snapshot
+      let liteSnapshot: Prisma.JsonValue = null;
+      if (p.sharpeRatio !== null && p.volatility !== null && p.expectedReturn !== null) {
+        liteSnapshot = {
+          maxSharpe: {
+            stats: {
+              sharpe: p.sharpeRatio,
+              volatility: p.volatility,
+              return: p.expectedReturn,
+            },
+          },
+          analysisDate: p.analysisDate || undefined,
+        };
       }
 
-      // Create a lightweight snapshot for the list view
-      // We only keep stats needed for the card display
-      const liteSnapshot = {
-        maxSharpe: snapshot.maxSharpe ? {
-            stats: snapshot.maxSharpe.stats
-        } : undefined,
-        analysisDate: snapshot.analysisDate,
-        analysisEndDate: snapshot.analysisEndDate,
-      };
-
       return {
-        ...portfolio,
+        ...p,
         analysisSnapshot: liteSnapshot,
       };
     });
@@ -86,10 +108,37 @@ export class PortfolioService {
       throw new Error('Tickers and quantities arrays must have the same length');
     }
 
+    // Extract stats if updating snapshot
+    let stats: {
+      sharpeRatio?: number | null;
+      volatility?: number | null;
+      expectedReturn?: number | null;
+      analysisDate?: string | null;
+    } = {};
+    if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
+      stats = {
+        sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
+        volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
+        expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
+        analysisDate: dto.analysisSnapshot.analysisDate,
+      };
+    }
+
     return this.prisma.portfolio.update({
       where: { id },
       data: {
-        ...dto,
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.tickers !== undefined && { tickers: dto.tickers }),
+        ...(dto.quantities !== undefined && { quantities: dto.quantities }),
+        ...(dto.analysisSnapshot !== undefined && { 
+          analysisSnapshot: dto.analysisSnapshot as unknown as Prisma.InputJsonValue 
+        }),
+        ...(Object.keys(stats).length > 0 && {
+          sharpeRatio: stats.sharpeRatio,
+          volatility: stats.volatility,
+          expectedReturn: stats.expectedReturn,
+          analysisDate: stats.analysisDate,
+        }),
       },
     });
   }
