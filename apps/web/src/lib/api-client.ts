@@ -38,6 +38,7 @@ export async function apiClient<T = unknown>(
   const response = await fetch(url.toString(), {
     ...rest,
     headers: mergedHeaders,
+    credentials: 'include',
   });
 
   // Handle errors

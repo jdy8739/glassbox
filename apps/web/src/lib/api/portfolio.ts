@@ -3,10 +3,8 @@
  * Handles communication with the backend for portfolio optimization
  */
 
-import axios from 'axios';
+import axiosClient from '@/lib/axios-client';
 import type { Portfolio, AnalysisSnapshot } from '@glassbox/types';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export interface AnalyzePortfolioRequest {
   tickers: string[];
@@ -73,84 +71,42 @@ export interface AnalyzePortfolioResponse {
 export async function analyzePortfolio(
   request: AnalyzePortfolioRequest,
 ): Promise<AnalyzePortfolioResponse> {
-  try {
-    const { data } = await axios.post<AnalyzePortfolioResponse>(
-      `${API_BASE_URL}/portfolio/analyze`,
-      request
-    );
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || 'Failed to analyze portfolio');
-    }
-    throw error;
-  }
+  return axiosClient.post('/portfolio/analyze', request) as Promise<AnalyzePortfolioResponse>;
 }
 
 /**
  * Get all portfolios
  */
 export const getAllPortfolios = async (): Promise<Portfolio[]> => {
-  // Using localStorage for demo
-  const { getAllPortfolios: getAll } = await import('@/lib/storage/portfolio-storage');
-  return getAll();
+  return axiosClient.get('/portfolio') as Promise<Portfolio[]>;
 };
 
 /**
  * Create a new portfolio
  */
 export const savePortfolio = async (request: CreatePortfolioRequest): Promise<Portfolio> => {
-  // Using localStorage for demo
-  const { createPortfolio } = await import('@/lib/storage/portfolio-storage');
-  return createPortfolio(request);
-
-  // Real API implementation (commented out for demo):
-  // const { data } = await axios.post<Portfolio>(`${API_BASE_URL}/portfolios`, request);
-  // return data;
+  return axiosClient.post('/portfolio', request) as Promise<Portfolio>;
 };
 
 /**
  * Update an existing portfolio
  */
 export const updatePortfolio = async (id: string, request: UpdatePortfolioRequest): Promise<Portfolio> => {
-  // Using localStorage for demo
-  const { updatePortfolio: update } = await import('@/lib/storage/portfolio-storage');
-  return update(id, request);
-
-  // Real API implementation (commented out for demo):
-  // const { data } = await axios.put<Portfolio>(`${API_BASE_URL}/portfolios/${id}`, request);
-  // return data;
+  return axiosClient.put(`/portfolio/${id}`, request) as Promise<Portfolio>;
 };
 
 /**
  * Get a portfolio by ID
  */
 export const getPortfolio = async (id: string): Promise<Portfolio> => {
-  // Using localStorage for demo
-  const { getPortfolioById } = await import('@/lib/storage/portfolio-storage');
-  const portfolio = getPortfolioById(id);
-
-  if (!portfolio) {
-    throw new Error('Portfolio not found');
-  }
-
-  return portfolio;
-
-  // Real API implementation (commented out for demo):
-  // const { data } = await axios.get<Portfolio>(`${API_BASE_URL}/portfolios/${id}`);
-  // return data;
+  return axiosClient.get(`/portfolio/${id}`) as Promise<Portfolio>;
 };
 
 /**
  * Delete a portfolio by ID
  */
 export const deletePortfolio = async (id: string): Promise<void> => {
-  // Using localStorage for demo
-  const { deletePortfolio: remove } = await import('@/lib/storage/portfolio-storage');
-  remove(id);
-
-  // Real API implementation (commented out for demo):
-  // await axios.delete(`${API_BASE_URL}/portfolios/${id}`);
+  return axiosClient.delete(`/portfolio/${id}`) as Promise<void>;
 };
 
 /**
@@ -160,8 +116,7 @@ export async function checkPortfolioHealth(): Promise<{
   status: string;
   pythonAvailable: boolean;
 }> {
-  const { data } = await axios.get<{ status: string; pythonAvailable: boolean }>(
-    `${API_BASE_URL}/portfolio/health`
+  return axiosClient.get<{ status: string; pythonAvailable: boolean }>(
+    '/portfolio/health'
   );
-  return data;
 }

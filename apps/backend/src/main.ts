@@ -48,6 +48,7 @@ async function bootstrap() {
 }
 
 bootstrap().catch((err) => {
+  console.error(err);
   new PinoLoggerService().error('Failed to start application:', err);
   process.exit(1);
 });

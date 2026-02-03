@@ -10,6 +10,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         // Extract from cookie first
         (request: Request) => {
+          if (!request?.cookies?.accessToken) {
+             console.log('JwtStrategy: No accessToken cookie found. Cookie keys:', Object.keys(request?.cookies || {}));
+          }
           return request?.cookies?.accessToken;
         },
         // Fallback to Authorization header (for backward compatibility)
