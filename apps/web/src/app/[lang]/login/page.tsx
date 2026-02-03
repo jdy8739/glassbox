@@ -1,18 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { Mail, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { LocalizedLink } from '@/components/LocalizedLink';
 import { GlassboxIcon } from '@/components/glassbox-icon';
 import { useTranslation } from 'react-i18next';
+import { signIn } from 'next-auth/react';
+import axiosClient, { type LoginData, type AuthResponse } from '@/lib/axios-client';
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Logic removed as requested
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginData>();
+
+  // Login mutation with axios
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginData): Promise<AuthResponse> => {
+      return axiosClient.post('/auth/login', data);
+    },
+    onSuccess: () => {
+      // Token is now stored in httpOnly cookie automatically
+      // Redirect to portfolios page
+      router.push('/portfolios');
+    },
+  });
+
+  const onSubmit = (data: LoginData) => {
+    loginMutation.mutate(data);
   };
 
   return (
@@ -40,8 +62,23 @@ export default function LoginPage() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Error Message */}
+            {loginMutation.isError && (
+              <div className="glass-panel bg-red-500/10 border-red-500/30 p-4 rounded-xl">
+                <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <p className="text-sm">
+                    {loginMutation.error instanceof Error
+                      ? loginMutation.error.message
+                      : 'Failed to login. Please try again.'}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-4">
+              {/* Email Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
                   {t('auth.login.email')}
@@ -51,14 +88,26 @@ export default function LoginPage() {
                     <Mail className="w-5 h-5" />
                   </div>
                   <input
+                    {...register('email', {
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address',
+                      },
+                    })}
                     type="email"
                     placeholder="you@example.com"
-                    className="glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01]"
-                    required
+                    className={`glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01] ${
+                      errors.email ? 'border-red-500' : ''
+                    }`}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-red-500 ml-1">{errors.email.message}</p>
+                )}
               </div>
 
+              {/* Password Field */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between ml-1">
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -73,22 +122,29 @@ export default function LoginPage() {
                     <Lock className="w-5 h-5" />
                   </div>
                   <input
+                    {...register('password', {
+                      required: 'Password is required',
+                    })}
                     type="password"
                     placeholder="••••••••"
-                    className="glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01]"
-                    required
+                    className={`glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01] ${
+                      errors.password ? 'border-red-500' : ''
+                    }`}
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500 ml-1">{errors.password.message}</p>
+                )}
               </div>
             </div>
 
             <button
               type="submit"
-              disabled={isLoading}
-              className="glass-button w-full group relative overflow-hidden"
+              disabled={loginMutation.isPending}
+              className="glass-button w-full group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="relative z-10 flex items-center justify-center gap-2">
-                {isLoading ? (
+                {loginMutation.isPending ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
@@ -110,7 +166,11 @@ export default function LoginPage() {
 
           {/* Social Login */}
           <div className="mt-6">
-            <button className="glass-button-outline w-full py-2.5 hover:bg-white/40 dark:hover:bg-slate-800/60 group transition-all duration-300">
+            <button
+              type="button"
+              onClick={() => signIn('google', { callbackUrl: '/portfolios' })}
+              className="glass-button-outline w-full py-2.5 hover:bg-white/40 dark:hover:bg-slate-800/60 group transition-all duration-300"
+            >
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

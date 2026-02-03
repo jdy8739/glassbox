@@ -1,17 +1,39 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { SyncUserDto } from './dto/sync-user.dto';
 import { Public } from '../auth/public.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('sync')
   @Public()
-  async syncUser(@Body() dto: SyncUserDto) {
-    return this.usersService.syncUser(dto);
+  async syncUser(@Body() dto: SyncUserDto, @Res({ passthrough: true }) res: Response) {
+    const user = await this.usersService.syncUser(dto);
+
+    // Generate JWT token for OAuth user
+    const accessToken = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
+
+    // Set httpOnly cookie (same spec as manual auth)
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Return user without token
+    return user;
   }
 
   @Get('me')

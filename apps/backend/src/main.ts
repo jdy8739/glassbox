@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { PinoLoggerService } from './logger/pino-logger.service';
 
@@ -10,6 +11,9 @@ async function bootstrap() {
   });
 
   app.useLogger(app.get(PinoLoggerService));
+
+  // Enable cookie parsing
+  app.use(cookieParser());
 
   // Enable CORS for Next.js frontend
   app.enableCors({
