@@ -2,6 +2,9 @@
  * Shared TypeScript types for Glassbox
  */
 
+// Export user types
+export * from './user';
+
 /**
  * Asset or ticker in a portfolio
  */

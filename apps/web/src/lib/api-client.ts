@@ -41,10 +41,26 @@ export async function apiClient<T = unknown>(
     credentials: 'include',
   });
 
+  // Handle 204 No Content
+  if (response.status === 204) {
+    return null as any;
+  }
+
   // Handle errors
   if (!response.ok) {
-    const error = new Error(`API Error: ${response.status} ${response.statusText}`);
+    let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+
+    // Try to parse error response
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch {
+      // If can't parse, use default message
+    }
+
+    const error = new Error(errorMessage);
     (error as any).status = response.status;
+    (error as any).statusText = response.statusText;
     throw error;
   }
 
@@ -90,8 +106,47 @@ export function put<T>(
 }
 
 /**
+ * PATCH request helper
+ */
+export function patch<T>(
+  endpoint: string,
+  data?: Record<string, unknown>,
+  options?: FetchOptions
+): Promise<T> {
+  return apiClient<T>(endpoint, {
+    ...options,
+    method: 'PATCH',
+    body: data ? JSON.stringify(data) : undefined,
+  });
+}
+
+/**
  * DELETE request helper
  */
 export function del<T>(endpoint: string, options?: FetchOptions): Promise<T> {
   return apiClient<T>(endpoint, { ...options, method: 'DELETE' });
 }
+
+/**
+ * User API methods
+ */
+export const userApi = {
+  getProfile: () => get<{
+    id: string;
+    email: string;
+    name: string;
+    createdAt: string;
+  }>('/users/me'),
+
+  updateProfile: (name: string) =>
+    patch<{
+      id: string;
+      email: string;
+      name: string;
+    }>('/users/me', { name }),
+
+  deleteAccount: async () => {
+    await del('/users/me');
+    return null;
+  },
+};

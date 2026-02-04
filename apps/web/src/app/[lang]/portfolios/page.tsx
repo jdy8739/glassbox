@@ -92,8 +92,11 @@ function PortfolioLibraryContent() {
     try {
       await deletePortfolio(portfolioToDelete);
       setPortfolios(portfolios.filter(p => p.id !== portfolioToDelete));
+      // Close dialog on success
+      setDeleteDialogOpen(false);
     } catch (error) {
       console.error('Error deleting portfolio:', error);
+      // TODO: Replace alert with proper toast notification
       alert(t('portfolio.delete.failed'));
     } finally {
       setDeleting(null);
@@ -200,13 +203,19 @@ function PortfolioLibraryContent() {
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
+        onClose={() => {
+          // Prevent closing dialog while deletion is in progress
+          if (deleting === null) {
+            setDeleteDialogOpen(false);
+          }
+        }}
         onConfirm={handleConfirmDelete}
         title={t('portfolio.delete.confirm-title')}
         message={t('portfolio.delete.confirm-message')}
         confirmText={t('portfolio.delete.confirm-button')}
         cancelText={t('common.button.cancel')}
         variant="danger"
+        isLoading={deleting !== null}
       />
     </main>
   );

@@ -13,6 +13,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   variant?: 'warning' | 'danger' | 'info';
+  isLoading?: boolean;
 }
 
 export const ConfirmDialog = ({
@@ -24,6 +25,7 @@ export const ConfirmDialog = ({
   confirmText,
   cancelText,
   variant = 'warning',
+  isLoading = false,
 }: ConfirmDialogProps) => {
   const { t } = useTranslation();
   const confirm = confirmText ?? t('common.button.confirm');
@@ -76,17 +78,21 @@ export const ConfirmDialog = ({
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors font-medium"
+            disabled={isLoading}
+            className="px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {cancel}
           </button>
           <button
             onClick={() => {
               onConfirm();
-              onClose();
             }}
-            className={`px-4 py-2 rounded-lg text-white transition-colors font-medium shadow-lg ${style.buttonBg}`}
+            disabled={isLoading}
+            className={`px-4 py-2 rounded-lg text-white transition-colors font-medium shadow-lg ${style.buttonBg} disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2`}
           >
+            {isLoading && (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            )}
             {confirm}
           </button>
         </div>

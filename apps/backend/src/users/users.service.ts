@@ -52,4 +52,20 @@ export class UsersService {
       data,
     });
   }
+
+  async updateUserName(userId: string, name: string) {
+    this.logger.log(`Updating user ${userId} name to: ${name}`);
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { name },
+    });
+  }
+
+  async deleteUser(userId: string) {
+    this.logger.log(`Deleting user: ${userId}`);
+    // Prisma will cascade delete portfolios due to onDelete: Cascade in schema
+    return this.prisma.user.delete({
+      where: { id: userId },
+    });
+  }
 }
