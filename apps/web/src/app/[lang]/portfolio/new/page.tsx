@@ -351,6 +351,45 @@ function PortfolioBuilderContent() {
 
             <QuickAddAssets onAdd={handleAddItem} />
 
+            {/* Mobile Analysis Settings */}
+            <div className="lg:hidden glass-card-gradient cyan-blue">
+              <div className="space-y-4">
+                <label className="flex items-center gap-2 text-sm font-semibold text-black dark:text-white">
+                  <Lightbulb className="w-4 h-4 text-cyan-500" />
+                  {t('portfolio.builder.analysis.settings.label')}
+                  <Tooltip content={t('portfolio.builder.analysis.settings.tooltip')} width={250}>
+                    <Info className="w-4 h-4 text-black/40 dark:text-white/40 cursor-help" />
+                  </Tooltip>
+                </label>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs text-black/60 dark:text-white/60 mb-2">
+                      {t('portfolio.builder.analysis.settings.start-date')}
+                    </p>
+                    <input
+                      type="date"
+                      value={dateRange.startDate}
+                      onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
+                      className="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-black/60 dark:text-white/60 mb-2">
+                      {t('portfolio.builder.analysis.settings.end-date')}
+                    </p>
+                    <input
+                      type="date"
+                      value={dateRange.endDate}
+                      onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
+                      className="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Main Content Area */}
 
             <div className="space-y-6">
