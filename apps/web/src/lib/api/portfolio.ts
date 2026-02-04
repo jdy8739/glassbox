@@ -116,7 +116,5 @@ export async function checkPortfolioHealth(): Promise<{
   status: string;
   pythonAvailable: boolean;
 }> {
-  return axiosClient.get<{ status: string; pythonAvailable: boolean }>(
-    '/portfolio/health'
-  );
+  return axiosClient.get('/portfolio/health');
 }

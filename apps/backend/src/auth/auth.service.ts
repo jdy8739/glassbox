@@ -41,7 +41,6 @@ export class AuthService {
         id: true,
         email: true,
         name: true,
-        picture: true,
         createdAt: true,
       },
     });
@@ -91,7 +90,6 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        picture: user.picture,
         createdAt: user.createdAt,
       },
       ...tokens,
@@ -105,7 +103,6 @@ export class AuthService {
         id: true,
         email: true,
         name: true,
-        picture: true,
         createdAt: true,
       },
     });

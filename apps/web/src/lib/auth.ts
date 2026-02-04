@@ -12,6 +12,10 @@ declare module 'next-auth' {
 }
 
 export const config = {
+  session: {
+    strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60, // 7 days (matches backend JWT expiry)
+  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -19,25 +23,24 @@ export const config = {
     }),
     Credentials({
       name: 'Credentials',
-      credentials: {},
-      async authorize(credentials, req) {
+      credentials: {
+        id: { label: 'ID', type: 'text' },
+        email: { label: 'Email', type: 'text' },
+        name: { label: 'Name', type: 'text' },
+      },
+      async authorize(credentials) {
         try {
-          // req is available when using signIn from client
-          const cookie = req?.headers?.get('cookie');
-          
-          if (!cookie) return null;
+          // This provider is used to sync NextAuth session with backend session
+          // User data is passed directly from the login response
+          if (!credentials?.id || !credentials?.email) {
+            return null;
+          }
 
-          // Verify session with backend using the cookie
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-            headers: {
-              Cookie: cookie,
-            },
-          });
-
-          if (!res.ok) return null;
-
-          const user = await res.json();
-          return user;
+          return {
+            id: credentials.id as string,
+            email: credentials.email as string,
+            name: credentials.name as string || '',
+          };
         } catch (e) {
           console.error('Credentials authorize error', e);
           return null;
@@ -69,7 +72,6 @@ export const config = {
           body: JSON.stringify({
             email: user.email,
             name: user.name,
-            picture: user.image,
             googleId: account?.providerAccountId,
           }),
         });

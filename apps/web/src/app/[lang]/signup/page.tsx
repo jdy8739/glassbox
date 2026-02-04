@@ -26,11 +26,21 @@ export default function SignupPage() {
     mutationFn: async (data: SignupData): Promise<AuthResponse> => {
       return axiosClient.post('/auth/signup', data);
     },
-    onSuccess: async () => {
-      // Sync NextAuth session
-      await signIn('credentials', { redirect: false });
-      // Redirect to portfolios page
-      router.push('/portfolios');
+    onSuccess: async (response: AuthResponse) => {
+      // Sync NextAuth session with backend session by passing user data
+      const result = await signIn('credentials', {
+        id: response.user.id,
+        email: response.user.email,
+        name: response.user.name,
+        redirect: false,
+      });
+
+      if (result?.ok) {
+        // Force a full page reload to ensure session is properly loaded
+        window.location.href = '/portfolios';
+      } else {
+        console.error('Failed to sync NextAuth session');
+      }
     },
   });
 

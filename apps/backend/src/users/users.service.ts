@@ -32,7 +32,6 @@ export class UsersService {
         where: { email: dto.email },
         data: {
           name: dto.name,
-          picture: dto.image,
           googleId: dto.googleId,
         },
       });
@@ -43,13 +42,12 @@ export class UsersService {
       data: {
         email: dto.email,
         name: dto.name,
-        picture: dto.image,
         googleId: dto.googleId,
       },
     });
   }
 
-  async createUser(data: { email: string; name?: string; picture?: string; googleId?: string }) {
+  async createUser(data: { email: string; name?: string; googleId?: string }) {
     return this.prisma.user.create({
       data,
     });

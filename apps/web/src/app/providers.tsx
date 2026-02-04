@@ -7,6 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import { createI18nInstance } from '@/lib/i18n';
 import { useTheme as useThemeState, type ThemePreference, type ResolvedTheme } from '@/hooks/useTheme';
 import { SessionProvider } from '@/components/SessionProvider';
+import type { Session } from 'next-auth';
 
 interface ThemeContextType {
   theme: ThemePreference;
@@ -16,12 +17,12 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; lang?: string }) {
+export function ThemeProvider({ children, lang = 'en', session }: { children: ReactNode; lang?: string; session?: Session | null }) {
   const { theme, resolvedTheme, setTheme, mounted } = useThemeState();
-  
+
   // Create i18n instance once with the server-provided language
   const [i18n] = useState(() => createI18nInstance(lang));
-  
+
   // Ensure QueryClient is created once per component lifecycle
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
@@ -44,7 +45,7 @@ export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; 
   }), [theme, resolvedTheme, setTheme]);
 
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         {mounted ? (

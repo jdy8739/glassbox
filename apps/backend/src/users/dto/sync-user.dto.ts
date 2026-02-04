@@ -10,9 +10,5 @@ export class SyncUserDto {
 
   @IsOptional()
   @IsString()
-  image?: string;
-
-  @IsOptional()
-  @IsString()
   googleId?: string;
 }
