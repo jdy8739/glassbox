@@ -26,8 +26,9 @@ export default function SignupPage() {
     mutationFn: async (data: SignupData): Promise<AuthResponse> => {
       return axiosClient.post('/auth/signup', data);
     },
-    onSuccess: () => {
-      // Token is now stored in httpOnly cookie automatically
+    onSuccess: async () => {
+      // Sync NextAuth session
+      await signIn('credentials', { redirect: false });
       // Redirect to portfolios page
       router.push('/portfolios');
     },

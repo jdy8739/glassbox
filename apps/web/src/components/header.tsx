@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
+import { useSession, signOut } from 'next-auth/react';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
@@ -15,16 +16,13 @@ export function Header() {
   const router = useLocalizedRouter();
   const pathname = usePathname();
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { status } = useSession();
   
-  // Determine if we are on the main page or auth pages
-  const isMainPage = pathname === '/' || /^\/(en|ko)$/.test(pathname || '');
-  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/signup') || pathname?.includes('/password-reset');
-  
-  // Show logged-in state (Logout button) on all pages EXCEPT main and auth pages
-  const isLoggedIn = !isMainPage && !isAuthPage;
+  const isLoading = status === 'loading';
+  const isLoggedIn = status === 'authenticated';
 
   const handleLogout = () => {
-    router.push('/');
+    signOut({ callbackUrl: '/' });
   };
 
   const toggleTheme = () => {
@@ -137,7 +135,9 @@ export function Header() {
 
           {actionContent}
 
-          {isLoggedIn ? (
+          {isLoading ? (
+             <div className="w-20 h-9 bg-black/5 dark:bg-white/10 rounded-lg animate-pulse" />
+          ) : isLoggedIn ? (
             /* Logged In State */
             <div className="flex items-center gap-2">
               <LocalizedLink href="/profile" className="w-9 h-9 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/20 transition-all">

@@ -6,6 +6,7 @@ import { HeaderProvider } from '@/lib/header-context';
 import { I18nextProvider } from 'react-i18next';
 import { createI18nInstance } from '@/lib/i18n';
 import { useTheme as useThemeState, type ThemePreference, type ResolvedTheme } from '@/hooks/useTheme';
+import { SessionProvider } from '@/components/SessionProvider';
 
 interface ThemeContextType {
   theme: ThemePreference;
@@ -43,19 +44,21 @@ export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; 
   }), [theme, resolvedTheme, setTheme]);
 
   return (
-    <I18nextProvider i18n={i18n}>
-    <QueryClientProvider client={queryClient}>
-      {mounted ? (
-        <ThemeContext.Provider value={value}>
-          <HeaderProvider>
-            {children}
-          </HeaderProvider>
-        </ThemeContext.Provider>
-      ) : (
-        <>{children}</>
-      )}
-    </QueryClientProvider>
-    </I18nextProvider>
+    <SessionProvider>
+      <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        {mounted ? (
+          <ThemeContext.Provider value={value}>
+            <HeaderProvider>
+              {children}
+            </HeaderProvider>
+          </ThemeContext.Provider>
+        ) : (
+          <>{children}</>
+        )}
+      </QueryClientProvider>
+      </I18nextProvider>
+    </SessionProvider>
   );
 }
 
