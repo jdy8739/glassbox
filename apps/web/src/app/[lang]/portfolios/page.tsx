@@ -1,12 +1,14 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Package, Rocket, Search, SlidersHorizontal, AlertCircle } from 'lucide-react';
 import { PortfolioCard } from './components/PortfolioCard';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { getAllPortfolios, deletePortfolio } from '@/lib/api/portfolio';
+import { useSession } from 'next-auth/react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Portfolio } from '@glassbox/types';
 
 const CHART_COLORS = [
@@ -58,53 +60,69 @@ function LibraryErrorFallback() {
 
 function PortfolioLibraryContent() {
   const { t } = useTranslation();
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+  const { data: session, status } = useSession();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [portfolioToDelete, setPortfolioToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const data = await getAllPortfolios();
-        setPortfolios(data);
-      } catch (error) {
-        console.error('Error fetching portfolios:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const isAuthenticated = status === 'authenticated';
+  const isAuthLoading = status === 'loading';
 
-    fetchPortfolios();
-  }, []);
+  // Fetch portfolios with useQuery - only runs when authenticated
+  const { data: portfolios = [], isLoading } = useQuery<Portfolio[]>({
+    queryKey: ['portfolios'],
+    queryFn: getAllPortfolios,
+    enabled: isAuthenticated, // Only fetch when authenticated
+  });
+
+  // Delete mutation with optimistic updates
+  const deleteMutation = useMutation({
+    mutationFn: deletePortfolio,
+    onMutate: async (portfolioId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['portfolios'] });
+
+      // Snapshot previous value
+      const previous = queryClient.getQueryData(['portfolios']);
+
+      // Optimistically update
+      queryClient.setQueryData(['portfolios'], (old: Portfolio[] = []) =>
+        old.filter(p => p.id !== portfolioId)
+      );
+
+      return { previous };
+    },
+    onError: (err, portfolioId, context) => {
+      // Rollback on error
+      if (context?.previous) {
+        queryClient.setQueryData(['portfolios'], context.previous);
+      }
+      // TODO: Replace alert with proper toast notification
+      alert(t('portfolio.delete.failed'));
+    },
+    onSuccess: () => {
+      // Close dialog on success
+      setDeleteDialogOpen(false);
+      setPortfolioToDelete(null);
+    },
+    onSettled: () => {
+      // Refetch to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+    },
+  });
 
   const handleDeleteClick = (portfolioId: string) => {
     setPortfolioToDelete(portfolioId);
     setDeleteDialogOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = () => {
     if (!portfolioToDelete) return;
-
-    setDeleting(portfolioToDelete);
-    try {
-      await deletePortfolio(portfolioToDelete);
-      setPortfolios(portfolios.filter(p => p.id !== portfolioToDelete));
-      // Close dialog on success
-      setDeleteDialogOpen(false);
-    } catch (error) {
-      console.error('Error deleting portfolio:', error);
-      // TODO: Replace alert with proper toast notification
-      alert(t('portfolio.delete.failed'));
-    } finally {
-      setDeleting(null);
-      setPortfolioToDelete(null);
-    }
+    deleteMutation.mutate(portfolioToDelete);
   };
 
-  const filteredPortfolios = portfolios.filter(p => 
+  const filteredPortfolios = portfolios.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.tickers.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
   );
@@ -145,7 +163,7 @@ function PortfolioLibraryContent() {
         </div>
 
         {/* Content */}
-        {loading ? (
+        {isAuthLoading || isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                <div key={i} className="glass-panel h-[280px] animate-pulse bg-black/5 dark:bg-white/5" />
@@ -192,7 +210,7 @@ function PortfolioLibraryContent() {
                 key={portfolio.id}
                 portfolio={portfolio}
                 onDelete={handleDeleteClick}
-                isDeleting={deleting === portfolio.id}
+                isDeleting={deleteMutation.isPending && portfolioToDelete === portfolio.id}
                 colors={CHART_COLORS}
               />
             ))}
@@ -205,8 +223,9 @@ function PortfolioLibraryContent() {
         isOpen={deleteDialogOpen}
         onClose={() => {
           // Prevent closing dialog while deletion is in progress
-          if (deleting === null) {
+          if (!deleteMutation.isPending) {
             setDeleteDialogOpen(false);
+            setPortfolioToDelete(null);
           }
         }}
         onConfirm={handleConfirmDelete}
@@ -215,7 +234,7 @@ function PortfolioLibraryContent() {
         confirmText={t('portfolio.delete.confirm-button')}
         cancelText={t('common.button.cancel')}
         variant="danger"
-        isLoading={deleting !== null}
+        isLoading={deleteMutation.isPending}
       />
     </main>
   );
