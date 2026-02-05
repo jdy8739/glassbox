@@ -18,20 +18,20 @@ export interface UpdateProfileRequest {
 /**
  * Get current user profile
  */
-export const getProfile = async (): Promise<UserProfile> => {
-  return axiosClient.get('/users/me') as Promise<UserProfile>;
+export const getProfile = async () => {
+  return axiosClient.get<UserProfile>('/users/me');
 };
 
 /**
  * Update user profile
  */
-export const updateProfile = async (name: string): Promise<UserProfile> => {
-  return axiosClient.patch('/users/me', { name }) as Promise<UserProfile>;
+export const updateProfile = async (name: string) => {
+  return axiosClient.patch<UserProfile>('/users/me', { name });
 };
 
 /**
  * Delete user account
  */
-export const deleteAccount = async (): Promise<void> => {
-  return axiosClient.delete('/users/me') as Promise<void>;
+export const deleteAccount = async () => {
+  return axiosClient.delete<void>('/users/me');
 };

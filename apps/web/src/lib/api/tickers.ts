@@ -2,7 +2,7 @@
  * Ticker API - Functions for searching and fetching ticker data
  */
 
-import { get } from '../api-client';
+import axiosClient from '../axios-client';
 
 export interface TickerSearchResult {
   symbol: string;
@@ -11,28 +11,41 @@ export interface TickerSearchResult {
   type: string;
 }
 
+export interface TickerQuote {
+  symbol: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  volume: number;
+  marketCap?: number;
+  high?: number;
+  low?: number;
+  open?: number;
+  previousClose?: number;
+}
+
 /**
  * Search for ticker symbols
  * @param query - Search query (ticker symbol or company name)
  * @returns List of matching tickers
  */
-export async function searchTickers(query: string): Promise<TickerSearchResult[]> {
+export const searchTickers = async (query: string) => {
   if (!query || query.trim().length === 0) {
     return [];
   }
 
-  return get<TickerSearchResult[]>('/ticker/search', {
+  return axiosClient.get<TickerSearchResult[]>('/ticker/search', {
     params: { q: query.trim() },
   });
-}
+};
 
 /**
  * Get quote for a specific ticker
  * @param symbol - Ticker symbol
  * @returns Quote data
  */
-export async function getQuote(symbol: string): Promise<any> {
-  return get<any>('/ticker/quote', {
+export const getQuote = async (symbol: string) => {
+  return axiosClient.get<TickerQuote>('/ticker/quote', {
     params: { symbol },
   });
-}
+};

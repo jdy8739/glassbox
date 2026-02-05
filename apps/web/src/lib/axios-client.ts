@@ -3,37 +3,80 @@
  * Works seamlessly with TanStack Query
  * Uses httpOnly cookies for secure authentication
  */
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+/**
+ * Custom Axios instance that unwraps response.data automatically
+ * All HTTP methods return Promise<T> instead of Promise<AxiosResponse<T>>
+ */
+interface ApiClient {
+  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  request<T = any>(config: AxiosRequestConfig): Promise<T>;
+}
+
+interface ErrorResponse {
+  message?: string;
+}
+
+// ============================================================================
+// Configuration
+// ============================================================================
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-// Create axios instance
-const axiosClient = axios.create({
+const axiosConfig = {
   baseURL: API_BASE_URL,
+  timeout: 10000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 seconds
-  withCredentials: true, // Send cookies with requests
-});
+} as const;
 
-// Response interceptor - Handle errors
-axiosClient.interceptors.response.use(
-  (response) => response.data, // Return data directly
-  (error: AxiosError<{ message?: string }>) => {
-    if (error.response) {
-      // Server responded with error status
-      const message = error.response.data?.message || error.response.statusText || 'Request failed';
-      throw new Error(message);
-    } else if (error.request) {
-      // Request made but no response
-      throw new Error('No response from server. Please check your connection.');
-    } else {
-      // Something else happened
-      throw new Error(error.message || 'Request failed');
-    }
+// ============================================================================
+// Error Handler
+// ============================================================================
+
+const handleError = (error: AxiosError<ErrorResponse>): never => {
+  if (error.response) {
+    const message = error.response.data?.message
+      || error.response.statusText
+      || 'Request failed';
+    throw new Error(message);
   }
+
+  if (error.request) {
+    throw new Error('No response from server. Please check your connection.');
+  }
+
+  throw new Error(error.message || 'Request failed');
+};
+
+// ============================================================================
+// Client Instance
+// ============================================================================
+
+const instance = axios.create(axiosConfig);
+
+// Unwrap response data automatically
+instance.interceptors.response.use(
+  (response: AxiosResponse) => response.data,
+  handleError
 );
+
+// ============================================================================
+// Export
+// ============================================================================
+
+const axiosClient = instance as unknown as ApiClient;
 
 export default axiosClient;
 

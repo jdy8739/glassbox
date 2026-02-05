@@ -68,53 +68,53 @@ export interface AnalyzePortfolioResponse {
 /**
  * Analyze portfolio and calculate efficient frontier
  */
-export async function analyzePortfolio(
+export const analyzePortfolio = async (
   request: AnalyzePortfolioRequest,
-): Promise<AnalyzePortfolioResponse> {
-  return axiosClient.post('/portfolio/analyze', request) as Promise<AnalyzePortfolioResponse>;
-}
+) => {
+  return axiosClient.post<AnalysisSnapshot>('/portfolio/analyze', request);
+};
 
 /**
  * Get all portfolios
  */
-export const getAllPortfolios = async (): Promise<Portfolio[]> => {
-  return axiosClient.get('/portfolio') as Promise<Portfolio[]>;
+export const getAllPortfolios = async () => {
+  return axiosClient.get<Portfolio[]>('/portfolio');
 };
 
 /**
  * Create a new portfolio
  */
-export const savePortfolio = async (request: CreatePortfolioRequest): Promise<Portfolio> => {
-  return axiosClient.post('/portfolio', request) as Promise<Portfolio>;
+export const savePortfolio = async (request: CreatePortfolioRequest) => {
+  return axiosClient.post<void>('/portfolio', request);
 };
 
 /**
  * Update an existing portfolio
  */
-export const updatePortfolio = async (id: string, request: UpdatePortfolioRequest): Promise<Portfolio> => {
-  return axiosClient.put(`/portfolio/${id}`, request) as Promise<Portfolio>;
+export const updatePortfolio = async (id: string, request: UpdatePortfolioRequest) => {
+  return axiosClient.put<void>(`/portfolio/${id}`, request);
 };
 
 /**
  * Get a portfolio by ID
  */
-export const getPortfolio = async (id: string): Promise<Portfolio> => {
-  return axiosClient.get(`/portfolio/${id}`) as Promise<Portfolio>;
+export const getPortfolio = async (id: string) => {
+  return axiosClient.get<Portfolio>(`/portfolio/${id}`);
 };
 
 /**
  * Delete a portfolio by ID
  */
-export const deletePortfolio = async (id: string): Promise<void> => {
-  return axiosClient.delete(`/portfolio/${id}`) as Promise<void>;
+export const deletePortfolio = async (id: string) => {
+  return axiosClient.delete<void>(`/portfolio/${id}`);
 };
 
 /**
  * Check if backend and Python environment are healthy
  */
-export async function checkPortfolioHealth(): Promise<{
-  status: string;
-  pythonAvailable: boolean;
-}> {
-  return axiosClient.get('/portfolio/health');
-}
+export const checkPortfolioHealth = async () => {
+  return axiosClient.get<{
+    status: string;
+    pythonAvailable: boolean;
+  }>('/portfolio/health');
+};
