@@ -235,7 +235,7 @@ analysis.graph.tooltip.risk,Risk (Vol),위험 (변동성)
 analysis.graph.tooltip.sharpe,Sharpe,샤프
 analysis.chart.risk-volatility-label,Risk (Volatility),위험 (변동성)
 analysis.chart.expected-return-label,Expected Return,예상 수익률
-portfolio.builder.search.no-results,No results found for "{query}","{query}"에 대한 결과가 없습니다
+portfolio.builder.search.no-results,No results found for "{{query}}","{{query}}"에 대한 결과가 없습니다
 portfolio.builder.search.try-different,Try a different ticker or company name,다른 티커나 회사명을 시도해보세요
 analysis.error.calculation-title,Calculation Error,계산 오류
 analysis.error.calculation-message,We encountered an error while calculating your portfolio analysis. Please try again.,포트폴리오 분석을 계산하는 중 오류가 발생했습니다. 다시 시도해주세요.
@@ -251,7 +251,7 @@ common.button.back,Back,뒤로
 theme.system,System,시스템
 theme.light,Light,라이트
 theme.dark,Dark,다크
-theme.current-label,Current: {theme}. Click to cycle through themes.,현재: {theme}. 클릭하여 테마를 변경하세요.
+theme.current-label,Current: {{theme}}. Click to cycle through themes.,현재: {{theme}}. 클릭하여 테마를 변경하세요.
 language.switch-to-korean,Switch to Korean,한국어로 전환
 language.switch-to-english,Switch to English,영어로 전환
 timestamp.fresh-analysis,Fresh Analysis,최신 분석
@@ -303,7 +303,7 @@ profile.section.danger,Danger Zone,위험 구역
 profile.danger.desc,Permanently delete your account and all of your content.,계정과 모든 콘텐츠를 영구적으로 삭제합니다.
 profile.danger.delete,Delete Account,계정 삭제
 profile.danger.deleting,Deleting...,삭제 중...
-profile.member-since,Member since {year},{year}년부터 회원
+profile.member-since,Member since {{year}},{{year}}년부터 회원
 profile.success.updated,Profile updated successfully,프로필이 성공적으로 업데이트되었습니다
 profile.error.title,Failed to Load Profile,프로필 로드 실패
 profile.error.description,We couldn't load your profile. Please try again.,프로필을 로드할 수 없습니다. 다시 시도해주세요.
