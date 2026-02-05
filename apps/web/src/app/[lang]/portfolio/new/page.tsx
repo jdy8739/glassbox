@@ -14,6 +14,7 @@ import {
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
+import { useSession } from 'next-auth/react';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
 import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
@@ -23,6 +24,8 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { BackButton } from '@/components/back-button';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Tooltip } from '@/components/Tooltip';
+import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
+import { validatePortfolioAnalysis, isEndDateToday } from '@/lib/portfolio-validation';
 
 const PortfolioDonutChart = dynamic(
   () => import('./components/PortfolioDonutChart').then((mod) => mod.PortfolioDonutChart),
@@ -85,28 +88,81 @@ function BuilderErrorFallback() {
 
 function PortfolioBuilderContent() {
   const { t } = useTranslation();
+  const router = useLocalizedRouter();
+  const { status } = useSession();
+
+  // Portfolio builder hook (CRUD only)
   const {
     items,
+    dateRange,
+    setDateRange,
     searchInput,
     setSearchInput,
     searchResults,
     isSearching,
-    validationError,
     showDropdown,
     setShowDropdown,
     addItem,
     loadTemplate,
     removeItem,
     updateQuantity,
-    handleAnalyze,
-    dateRange,
-    setDateRange,
-    showTodayWarning,
-    setShowTodayWarning,
-    handleConfirmTodayWarning,
+    saveDraft,
   } = usePortfolioBuilder();
 
+  // UI state (dialogs)
+  const [showTodayWarning, setShowTodayWarning] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+
+  // Dropdown UI state
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+
+  // Authentication status
+  const isAuthenticated = status === 'authenticated';
+
+  // Validation (computed from current state)
+  const validationError = validatePortfolioAnalysis(items, dateRange, t);
+
+  // Navigation helper
+  const navigateToResults = () => {
+    const nonZeroItems = items.filter(item => item.quantity > 0);
+    const params = new URLSearchParams({
+      tickers: nonZeroItems.map(item => item.symbol).join(','),
+      quantities: nonZeroItems.map(item => item.quantity).join(','),
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+    });
+    router.push(`/analysis/result?${params}`);
+  };
+
+  // Analyze handler (orchestrates validation, auth, and navigation)
+  const handleAnalyze = () => {
+    if (items.length === 0) return;
+
+    // Validate inputs
+    if (validationError) return;
+
+    // Check authentication - save and show dialog if not authenticated
+    if (!isAuthenticated) {
+      saveDraft();
+      setShowAuthDialog(true);
+      return;
+    }
+
+    // Check if end date is today (show confirmation dialog)
+    if (isEndDateToday(dateRange)) {
+      setShowTodayWarning(true);
+      return;
+    }
+
+    // Navigate to results page
+    navigateToResults();
+  };
+
+  // Confirm today warning handler
+  const handleConfirmTodayWarning = () => {
+    setShowTodayWarning(false);
+    navigateToResults();
+  };
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -657,6 +713,48 @@ function PortfolioBuilderContent() {
         cancelText={t('common.button.cancel')}
         variant="warning"
       />
+
+      {/* Auth Required Dialog */}
+      {showAuthDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+          <div className="dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-cyan-500/20 bg-cyan-500/5">
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-full bg-cyan-100 dark:bg-cyan-900/30">
+                <Rocket className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  {t('auth.required.title')}
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {t('auth.required.message')}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <a
+                href="/login"
+                className="w-full px-4 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition-colors font-medium shadow-lg text-center"
+              >
+                {t('nav.signin')}
+              </a>
+              <a
+                href="/signup"
+                className="w-full px-4 py-3 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-900 dark:text-white transition-colors font-medium text-center"
+              >
+                {t('nav.signup')}
+              </a>
+              <button
+                onClick={() => setShowAuthDialog(false)}
+                className="w-full px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 transition-colors font-medium"
+              >
+                {t('common.button.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

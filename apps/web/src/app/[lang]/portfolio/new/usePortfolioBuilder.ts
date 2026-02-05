@@ -1,21 +1,35 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
-import { useTranslation } from 'react-i18next';
 import { searchTickers } from '@/lib/api/tickers';
 import type { PortfolioItem } from '@glassbox/types';
 import { useState, useEffect } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
+import { usePortfolioStorage } from '@/hooks/usePortfolioStorage';
 
+/**
+ * Core portfolio builder hook
+ * Handles CRUD operations for portfolio items and search functionality
+ */
 export function usePortfolioBuilder() {
-  const { t } = useTranslation();
-  const router = useLocalizedRouter();
+  // Portfolio state
   const [items, setItems] = useState<PortfolioItem[]>([]);
+  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
+
+  // Search state
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearchInput = useDebounce(searchInput, 300);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
-  const [showTodayWarning, setShowTodayWarning] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Storage hook
+  const { restoreDraft, saveDraft } = usePortfolioStorage();
+
+  // Restore portfolio from sessionStorage on mount
+  useEffect(() => {
+    const draft = restoreDraft();
+    if (draft) {
+      setItems(draft.items);
+      setDateRange(draft.dateRange);
+    }
+  }, [restoreDraft]);
 
   // Query for searching tickers
   const searchQuery = useQuery({
@@ -28,26 +42,14 @@ export function usePortfolioBuilder() {
     staleTime: 60 * 1000, // 1 minute cache for searches
   });
 
-  const navigateToResults = () => {
-    const nonZeroItems = items.filter(item => item.quantity > 0);
-    const params = new URLSearchParams({
-      tickers: nonZeroItems.map(item => item.symbol).join(','),
-      quantities: nonZeroItems.map(item => item.quantity).join(','),
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
-    });
-    router.push(`/analysis/result?${params}`);
-  };
-
+  // CRUD Operations
   const addItem = (symbol: string) => {
     const upperSymbol = symbol.toUpperCase();
     if (symbol && !items.find((item) => item.symbol === upperSymbol)) {
       setItems([...items, { symbol: upperSymbol, quantity: 1 }]);
       setSearchInput('');
       setShowDropdown(false);
-      
-      // Smooth scroll happens in UI
-      return true; 
+      return true;
     }
     return false;
   };
@@ -66,96 +68,27 @@ export function usePortfolioBuilder() {
     );
   };
 
-  const validateAnalysis = (): string | null => {
-    // Filter out zero quantities
-    const nonZeroItems = items.filter((item) => item.quantity > 0);
-
-    if (nonZeroItems.length === 0) {
-      return t('portfolio.builder.validation.no-positive-quantity');
-    }
-
-    // Check if dates are missing
-    if (!dateRange.startDate || !dateRange.endDate) {
-      return t('portfolio.builder.analysis.dates-required');
-    }
-
-    // Validate date range order
-    if (dateRange.startDate >= dateRange.endDate) {
-      return t('portfolio.builder.validation.start-before-end');
-    }
-
-    // Check for future dates
-    const endDate = new Date(dateRange.endDate);
-    const startDate = new Date(dateRange.startDate);
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0);
-
-    if (endDate > todayDate) {
-      return t('portfolio.builder.validation.end-not-future');
-    }
-
-    if (startDate > todayDate) {
-      return t('portfolio.builder.validation.start-not-future');
-    }
-
-    // Check for minimum date range (45 days)
-    const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-    if (daysDiff < 45) {
-      return t('portfolio.builder.validation.date-range-minimum');
-    }
-
-    return null; // No errors
-  };
-
-  const handleAnalyze = () => {
-    if (items.length === 0) return;
-
-    // Validate inputs - will be displayed near button
-    const error = validateAnalysis();
-    if (error) return;
-
-    // Check if end date is today (show confirmation dialog)
-    const endDate = new Date(dateRange.endDate);
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0);
-
-    if (endDate.getTime() === todayDate.getTime()) {
-      setShowTodayWarning(true);
-      return;
-    }
-
-    // Navigate to results page
-    navigateToResults();
-  };
-
-  const handleConfirmTodayWarning = () => {
-    setShowTodayWarning(false);
-    navigateToResults();
-  };
-
-  // Update validation error whenever inputs change
-  useEffect(() => {
-    setValidationError(validateAnalysis());
-  }, [items, dateRange.startDate, dateRange.endDate]);
-
   return {
+    // Portfolio state
     items,
+    dateRange,
+    setDateRange,
+
+    // Search state
     searchInput,
     setSearchInput,
     searchResults: searchQuery.data || [],
     isSearching: searchQuery.isLoading,
-    validationError,
     showDropdown,
     setShowDropdown,
+
+    // CRUD operations
     addItem,
     loadTemplate,
     removeItem,
     updateQuantity,
-    handleAnalyze,
-    dateRange,
-    setDateRange,
-    showTodayWarning,
-    setShowTodayWarning,
-    handleConfirmTodayWarning,
+
+    // Storage
+    saveDraft: () => saveDraft(items, dateRange),
   };
 }
