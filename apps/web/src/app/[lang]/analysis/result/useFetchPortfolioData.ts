@@ -76,14 +76,25 @@ export function useFetchPortfolioData(portfolioId: string | null) {
 
   const savePortfolioMutation = useMutation({
     mutationFn: (data: CreatePortfolioRequest) => savePortfolio(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['portfolios'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['portfolios'],
+        refetchType: 'none'
+      });
+    },
   });
 
   const updatePortfolioMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePortfolioRequest }) => updatePortfolio(id, data),
-    onSuccess: (updatedPortfolio) => {
-      queryClient.invalidateQueries({ queryKey: ['portfolio', updatedPortfolio.id] });
-      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+    onSuccess: (_result, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['portfolio', variables.id],
+        refetchType: 'none'
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['portfolios'],
+        refetchType: 'none'
+      });
     },
   });
 

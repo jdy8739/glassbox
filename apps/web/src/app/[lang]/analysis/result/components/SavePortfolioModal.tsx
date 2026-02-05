@@ -3,53 +3,41 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { AlertCircle, Check } from 'lucide-react';
-import { getAllPortfolios } from '@/lib/api/portfolio';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface SavePortfolioModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (name: string) => void;
+  onSave: (name: string) => Promise<void>;
+  error?: string | null;
 }
 
-export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioModalProps) {
+export function SavePortfolioModal({ isOpen, onClose, onSave, error }: SavePortfolioModalProps) {
   const { t } = useTranslation();
   const [portfolioName, setPortfolioName] = useState('');
-  const [existingNames, setExistingNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load existing portfolio names
+  // Reset name when modal opens
   useEffect(() => {
     if (isOpen) {
       setPortfolioName('');
-      setIsLoading(true);
-      getAllPortfolios()
-        .then(portfolios => {
-          setExistingNames(portfolios.map(p => p.name.toLowerCase()));
-        })
-        .catch(err => {
-          console.error('Failed to load portfolios:', err);
-          setExistingNames([]);
-        })
-        .finally(() => setIsLoading(false));
     }
   }, [isOpen]);
 
   // Lock scroll when modal is open
   useScrollLock(isOpen);
 
-  // Validation
+  // Validation (duplicate check is now server-side)
   const trimmedName = portfolioName.trim();
-  const isDuplicate = existingNames.includes(trimmedName.toLowerCase());
   const isTooShort = trimmedName.length > 0 && trimmedName.length < 3;
   const isTooLong = trimmedName.length > 50;
-  const isValid = trimmedName.length >= 3 && !isDuplicate && !isTooLong;
+  const isValid = trimmedName.length >= 3 && !isTooLong;
 
   // Keyboard shortcuts
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && isValid) {
+    if (e.key === 'Enter' && isValid && !isLoading) {
       e.preventDefault();
-      onSave(trimmedName);
+      handleSubmit();
     }
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -57,9 +45,14 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isValid) {
-      onSave(trimmedName);
+      setIsLoading(true);
+      try {
+        await onSave(trimmedName);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -120,14 +113,14 @@ export function SavePortfolioModal({ isOpen, onClose, onSave }: SavePortfolioMod
             </div>
           )}
 
-          {isDuplicate && !isTooShort && (
-            <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400">
+          {error && (
+            <div className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400">
               <AlertCircle className="w-3 h-3" />
-              <span>{t('portfolio.save-modal.error-duplicate')}</span>
+              <span>{error}</span>
             </div>
           )}
 
-          {isValid && (
+          {isValid && !error && (
             <div className="flex items-center gap-2 text-xs text-cyan-600 dark:text-cyan-400">
               <Check className="w-3 h-3" />
               <span>{t('portfolio.save-modal.success')}</span>

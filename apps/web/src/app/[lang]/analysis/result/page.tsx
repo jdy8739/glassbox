@@ -66,6 +66,7 @@ function AnalysisResultContent() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveModalError, setSaveModalError] = useState<string | null>(null);
   const [isReanalyzeConfirmOpen, setIsReanalyzeConfirmOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isSaveAsMode, setIsSaveAsMode] = useState(false);
@@ -149,12 +150,15 @@ function AnalysisResultContent() {
       }
     } else {
       // Open modal for new portfolio
+      setSaveModalError(null); // Clear previous errors
       setIsSaveModalOpen(true);
     }
   };
 
   const confirmSave = async (name: string) => {
     if (!name.trim() || !portfolioData) return;
+
+    setSaveModalError(null); // Clear previous errors
 
     try {
       await savePortfolio({
@@ -170,11 +174,16 @@ function AnalysisResultContent() {
       setTimeout(() => {
         router.push('/portfolios');
       }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save portfolio:', error);
-      setError(t('analysis.error.save-failed'));
-      setTimeout(() => setError(null), 3000);
-      setIsSaveModalOpen(false);
+      // Map backend errors to translated messages
+      let errorMessage = t('analysis.error.save-failed');
+      if (error?.message?.includes('already exists')) {
+        errorMessage = t('portfolio.save-modal.error-duplicate');
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      setSaveModalError(errorMessage);
     }
   };
 
@@ -590,8 +599,12 @@ function AnalysisResultContent() {
       {/* Save Modal */}
       <SavePortfolioModal
         isOpen={isSaveModalOpen}
-        onClose={() => setIsSaveModalOpen(false)}
+        onClose={() => {
+          setSaveModalError(null);
+          setIsSaveModalOpen(false);
+        }}
         onSave={confirmSave}
+        error={saveModalError}
       />
 
       {/* Re-analyze Confirmation Dialog */}
