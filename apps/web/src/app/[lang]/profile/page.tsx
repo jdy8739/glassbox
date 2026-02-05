@@ -6,7 +6,7 @@ import { User as UserIcon, Trash2, Edit2, Save, X, AlertCircle, CheckCircle } fr
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { userApi } from '@/lib/api-client';
+import * as userApi from '@/lib/api/user';
 import { useRouter } from 'next/navigation';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { signOut } from 'next-auth/react';

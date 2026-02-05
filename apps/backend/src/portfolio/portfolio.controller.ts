@@ -72,10 +72,11 @@ export class PortfolioController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a portfolio' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Portfolio deleted successfully' })
-  async remove(@Request() req: any, @Param('id') id: string) {
-    return this.portfolioService.remove(req.user.userId, id);
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Portfolio deleted successfully' })
+  async remove(@Request() req: any, @Param('id') id: string): Promise<void> {
+    await this.portfolioService.remove(req.user.userId, id);
   }
 
   @Post('analyze')

@@ -176,11 +176,11 @@ export class PortfolioService {
     });
   }
 
-  async remove(userId: string, id: string) {
+  async remove(userId: string, id: string): Promise<void> {
     // Check existence and ownership first
     await this.findOne(userId, id);
 
-    return this.prisma.portfolio.delete({
+    await this.prisma.portfolio.delete({
       where: { id },
     });
   }

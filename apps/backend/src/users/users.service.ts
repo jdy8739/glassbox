@@ -47,12 +47,6 @@ export class UsersService {
     });
   }
 
-  async createUser(data: { email: string; name?: string; googleId?: string }) {
-    return this.prisma.user.create({
-      data,
-    });
-  }
-
   async updateUserName(userId: string, name: string) {
     this.logger.log(`Updating user ${userId} name to: ${name}`);
     return this.prisma.user.update({
