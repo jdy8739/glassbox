@@ -20,16 +20,20 @@ export function usePortfolioBuilder() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   // Storage hook
-  const { restoreDraft, saveDraft } = usePortfolioStorage();
+  const { restoreDraft, saveDraft, hasRestoredDraft, setHasRestoredDraft } = usePortfolioStorage();
 
   // Restore portfolio from sessionStorage on mount
+  // Guard against double-restore (React Strict Mode, hot reload)
   useEffect(() => {
+    if (hasRestoredDraft) return; // Already restored, skip
+
     const draft = restoreDraft();
     if (draft) {
       setItems(draft.items);
       setDateRange(draft.dateRange);
+      setHasRestoredDraft(true);
     }
-  }, [restoreDraft]);
+  }, [restoreDraft, hasRestoredDraft, setHasRestoredDraft]);
 
   // Query for searching tickers
   const searchQuery = useQuery({
