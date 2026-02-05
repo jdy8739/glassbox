@@ -25,7 +25,7 @@ export class PortfolioService {
     }
   }
 
-  async create(userId: string, dto: CreatePortfolioDto) {
+  async create(userId: string, dto: CreatePortfolioDto): Promise<void> {
     this.validateArrayLengths(dto.tickers, dto.quantities);
 
     // Check for duplicate portfolio name
@@ -56,7 +56,7 @@ export class PortfolioService {
       };
     }
 
-    return this.prisma.portfolio.create({
+    await this.prisma.portfolio.create({
       data: {
         userId,
         name: dto.name,

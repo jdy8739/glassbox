@@ -18,11 +18,12 @@ export class PortfolioController {
   ) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new portfolio' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Portfolio created successfully' })
-  async create(@Request() req: any, @Body() dto: CreatePortfolioDto) {
+  async create(@Request() req: any, @Body() dto: CreatePortfolioDto): Promise<void> {
     this.logger.log(`Creating portfolio for user ${req.user.userId}`);
-    return this.portfolioService.create(req.user.userId, dto);
+    await this.portfolioService.create(req.user.userId, dto);
   }
 
   @Get()
