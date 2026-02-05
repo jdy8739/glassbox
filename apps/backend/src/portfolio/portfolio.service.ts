@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PythonExecutorService } from './python-executor.service';
@@ -16,17 +16,7 @@ export class PortfolioService {
     private readonly pythonExecutor: PythonExecutorService,
   ) {}
 
-  /**
-   * Validates that tickers and quantities arrays have matching lengths
-   */
-  private validateArrayLengths(tickers: string[], quantities: number[]): void {
-    if (tickers.length !== quantities.length) {
-      throw new BadRequestException('Tickers and quantities arrays must have the same length');
-    }
-  }
-
   async create(userId: string, dto: CreatePortfolioDto): Promise<void> {
-    this.validateArrayLengths(dto.tickers, dto.quantities);
 
     // Check for duplicate portfolio name
     const existingPortfolio = await this.prisma.portfolio.findFirst({
@@ -137,10 +127,6 @@ export class PortfolioService {
     // Check existence and ownership first
     await this.findOne(userId, id);
 
-    if (dto.tickers && dto.quantities) {
-      this.validateArrayLengths(dto.tickers, dto.quantities);
-    }
-
     // Extract stats if updating snapshot
     let stats: {
       sharpeRatio?: number | null;
@@ -192,9 +178,6 @@ export class PortfolioService {
    */
   async analyzePortfolio(dto: AnalyzePortfolioDto): Promise<PortfolioAnalysisResultDto> {
     this.logger.log(`Analyzing portfolio with ${dto.tickers.length} assets`);
-
-    // Validate that tickers and quantities have same length
-    this.validateArrayLengths(dto.tickers, dto.quantities);
 
     // Set defaults
     const portfolioValue = dto.portfolioValue || 100000;

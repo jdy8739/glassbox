@@ -4,6 +4,20 @@ import { analyzePortfolio, getPortfolio, savePortfolio, updatePortfolio } from '
 import type { AnalyzePortfolioRequest, CreatePortfolioRequest, UpdatePortfolioRequest } from '@/lib/api/portfolio';
 import type { PortfolioItem, AnalysisSnapshot, Portfolio } from '@glassbox/types';
 
+/**
+ * Type guard to validate AnalysisSnapshot structure
+ */
+const isValidAnalysisSnapshot = (data: any): data is AnalysisSnapshot => {
+  return (
+    data &&
+    typeof data === 'object' &&
+    data.maxSharpe &&
+    typeof data.maxSharpe === 'object' &&
+    data.maxSharpe.stats &&
+    typeof data.maxSharpe.stats === 'object'
+  );
+};
+
 export interface PortfolioData {
   analysis: AnalysisSnapshot;
   items: PortfolioItem[];
@@ -26,8 +40,12 @@ const fetchSavedPortfolio = async (portfolioId: string): Promise<PortfolioData> 
     throw new Error('Portfolio has no analysis snapshot');
   }
 
+  if (!isValidAnalysisSnapshot(portfolio.analysisSnapshot)) {
+    throw new Error('Invalid analysis snapshot structure');
+  }
+
   return {
-    analysis: portfolio.analysisSnapshot as AnalysisSnapshot,
+    analysis: portfolio.analysisSnapshot,
     items: createItems(portfolio.tickers, portfolio.quantities),
     savedPortfolio: portfolio,
   };
@@ -51,8 +69,12 @@ const fetchFreshAnalysis = async (params: URLSearchParams): Promise<PortfolioDat
     endDate,
   });
 
+  if (!isValidAnalysisSnapshot(analysis)) {
+    throw new Error('Invalid analysis response from server');
+  }
+
   return {
-    analysis: analysis as AnalysisSnapshot,
+    analysis,
     items: createItems(tickers, quantities),
     savedPortfolio: null,
   };

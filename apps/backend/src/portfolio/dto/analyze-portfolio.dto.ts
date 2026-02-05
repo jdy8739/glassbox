@@ -1,6 +1,7 @@
 import { IsArray, IsNumber, IsOptional, ArrayMinSize, Min, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { ArrayLengthMatch } from '../../common/validators/array-length-match.validator';
 
 export class AnalyzePortfolioDto {
   @ApiProperty({
@@ -22,6 +23,7 @@ export class AnalyzePortfolioDto {
   @ArrayMinSize(1)
   @IsNumber({}, { each: true })
   @Min(0, { each: true })
+  @ArrayLengthMatch('tickers', { message: 'Tickers and quantities arrays must have the same length' })
   @Type(() => Number)
   quantities!: number[];
 

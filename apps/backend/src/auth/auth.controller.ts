@@ -22,11 +22,9 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Return user data without token
+    // Return only user data (token is in httpOnly cookie)
     return {
       user: result.user,
-      tokenType: result.tokenType,
-      expiresIn: result.expiresIn,
     };
   }
 
@@ -44,11 +42,9 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Return user data without token
+    // Return only user data (token is in httpOnly cookie)
     return {
       user: result.user,
-      tokenType: result.tokenType,
-      expiresIn: result.expiresIn,
     };
   }
 

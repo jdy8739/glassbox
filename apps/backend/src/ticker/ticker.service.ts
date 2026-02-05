@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import yahooFinance from 'yahoo-finance2';
@@ -34,10 +34,7 @@ export class TickerService {
 
   async searchTickers(query: string): Promise<TickerSearchResult[]> {
     if (!query || query.trim().length === 0) {
-      throw new HttpException(
-        'Query parameter is required',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('Query parameter is required');
     }
 
     const sanitizedQuery = query.trim();
@@ -74,10 +71,7 @@ export class TickerService {
       return filtered;
     } catch (error) {
       this.logger.error('Error fetching tickers from Yahoo Finance:', error);
-      throw new HttpException(
-        'Failed to search tickers',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Failed to search tickers');
     }
   }
 
@@ -101,10 +95,7 @@ export class TickerService {
       return quote;
     } catch (error) {
       this.logger.error('Error fetching quote from Yahoo Finance:', error);
-      throw new HttpException(
-        'Failed to get quote',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Failed to get quote');
     }
   }
 
@@ -135,10 +126,7 @@ export class TickerService {
       return history;
     } catch (error) {
       this.logger.error('Error fetching historical prices from Yahoo Finance:', error);
-      throw new HttpException(
-        'Failed to get historical prices',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Failed to get historical prices');
     }
   }
 }
