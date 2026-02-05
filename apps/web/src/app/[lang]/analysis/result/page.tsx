@@ -5,6 +5,7 @@ import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
 import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check, AlertCircle } from 'lucide-react';
@@ -627,12 +628,12 @@ function CalculationErrorFallback() {
         </div>
 
         <div className="flex gap-3 justify-center">
-          <button
-            onClick={() => window.location.href = '/portfolio/new'}
+          <Link
+            href="/portfolio/new"
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
             <span>{t('analysis.error.back-to-builder')}</span>
-          </button>
+          </Link>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"

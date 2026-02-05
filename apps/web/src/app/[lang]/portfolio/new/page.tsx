@@ -14,7 +14,9 @@ import {
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
 import { AssetList } from './components/AssetList';
 import { StarterTemplates } from './components/StarterTemplates';
@@ -67,12 +69,12 @@ function BuilderErrorFallback() {
         </div>
 
         <div className="flex gap-3 justify-center">
-          <button
-            onClick={() => (window.location.href = '/')}
+          <Link
+            href="/"
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
             <span>{t('common.button.back-home')}</span>
-          </button>
+          </Link>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"
@@ -89,6 +91,7 @@ function BuilderErrorFallback() {
 function PortfolioBuilderContent() {
   const { t } = useTranslation();
   const router = useLocalizedRouter();
+  const pathname = usePathname();
   const { status } = useSession();
 
   // Portfolio builder hook (CRUD only)
@@ -733,18 +736,18 @@ function PortfolioBuilderContent() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <a
-                href="/login"
+              <Link
+                href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
                 className="w-full px-4 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition-colors font-medium shadow-lg text-center"
               >
                 {t('nav.signin')}
-              </a>
-              <a
-                href="/signup"
+              </Link>
+              <Link
+                href={`/signup?callbackUrl=${encodeURIComponent(pathname)}`}
                 className="w-full px-4 py-3 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-900 dark:text-white transition-colors font-medium text-center"
               >
                 {t('nav.signup')}
-              </a>
+              </Link>
               <button
                 onClick={() => setShowAuthDialog(false)}
                 className="w-full px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 transition-colors font-medium"

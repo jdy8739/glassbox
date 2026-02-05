@@ -2,6 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import Link from 'next/link';
 import { Package, Rocket, Search, SlidersHorizontal, AlertCircle } from 'lucide-react';
 import { PortfolioCard } from './components/PortfolioCard';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -39,12 +40,12 @@ function LibraryErrorFallback() {
         </div>
 
         <div className="flex gap-3 justify-center">
-          <button
-            onClick={() => window.location.href = '/'}
+          <Link
+            href="/"
             className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white transition-colors flex items-center gap-2 text-sm font-medium"
           >
             <span>{t('common.button.back-home')}</span>
-          </button>
+          </Link>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg shadow-orange-500/20"

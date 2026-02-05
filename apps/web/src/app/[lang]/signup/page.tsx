@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { Mail, Lock, ArrowRight, Loader2, User, AlertCircle } from 'lucide-react';
@@ -13,6 +13,8 @@ import axiosClient, { type SignupData, type AuthResponse } from '@/lib/axios-cli
 export default function SignupPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/portfolios';
 
   // React Hook Form
   const {
@@ -36,8 +38,9 @@ export default function SignupPage() {
       });
 
       if (result?.ok) {
-        // Force a full page reload to ensure session is properly loaded
-        window.location.href = '/portfolios';
+        // Client-side navigation to callbackUrl (e.g., /portfolio/new) or default to /portfolios
+        // Session is already synced by signIn(), no need for full reload
+        router.push(callbackUrl);
       } else {
         console.error('Failed to sync NextAuth session');
       }

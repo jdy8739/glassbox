@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 import { User as UserIcon, Trash2, Edit2, Save, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -160,12 +161,9 @@ export default function ProfilePage() {
           <p className="text-black/60 dark:text-white/60 mb-4">
             {t('profile.error.description')}
           </p>
-          <button
-            onClick={() => router.push('/')}
-            className="glass-button"
-          >
+          <Link href="/" className="glass-button inline-flex items-center justify-center">
             {t('common.button.back-home')}
-          </button>
+          </Link>
         </div>
       </main>
     );
