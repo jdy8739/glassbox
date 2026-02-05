@@ -272,9 +272,9 @@ function HomeContent() {
             <p className="text-black dark:text-white/50 text-sm">{t('footer.description')}</p>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.docs')}</a>
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.github')}</a>
-            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:text-white transition">{t('footer.contact')}</a>
+            <a href="#" className="text-black dark:text-white/60 hover:text-black dark:hover:text-white transition">{t('footer.docs')}</a>
+            <a href="https://github.com/jdy8739/glassbox" target="_blank" rel="noopener noreferrer" className="text-black dark:text-white/60 hover:text-black dark:hover:text-white transition">{t('footer.github')}</a>
+            <a href="mailto:jdy8739@naver.com" className="text-black dark:text-white/60 hover:text-black dark:hover:text-white transition">{t('footer.contact')}</a>
           </div>
         </div>
       </div>
