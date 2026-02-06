@@ -312,17 +312,17 @@ function AnalysisResultContent() {
               <button
                 onClick={handleReanalyzeClick}
                 disabled={isReanalyzing}
-                className="h-9 px-2 sm:px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isReanalyzing ? (
                   <>
                     <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="hidden sm:inline">{t('analysis.button.re-analyzing')}</span>
+                    <span className="hidden lg:inline">{t('analysis.button.re-analyzing')}</span>
                   </>
                 ) : (
                   <>
                     <RefreshCw className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('analysis.button.re-analyze')}</span>
+                    <span className="hidden lg:inline">{t('analysis.button.re-analyze')}</span>
                   </>
                 )}
               </button>
@@ -331,10 +331,10 @@ function AnalysisResultContent() {
             <div className="relative" ref={exportMenuRef}>
               <button
                 onClick={() => setIsExportOpen(!isExportOpen)}
-                className="h-9 px-2 sm:px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('analysis.button.export')}</span>
+                <span className="hidden lg:inline">{t('analysis.button.export')}</span>
               </button>
               {isExportOpen && (
                 <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
@@ -357,7 +357,7 @@ function AnalysisResultContent() {
             </div>
             <button
               onClick={handleSaveButton}
-              className={`h-9 px-2 sm:px-3 flex items-center gap-2 rounded-lg text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative ${
+              className={`h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative ${
                 isSnapshot && !hasUnsavedChanges
                   ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
                   : 'text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
@@ -372,18 +372,18 @@ function AnalysisResultContent() {
               {isProcessing ? (
                  <>
                    <div className="w-3 h-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
-                   <span className="hidden sm:inline">{t('analysis.button.saving')}</span>
+                   <span className="hidden lg:inline">{t('analysis.button.saving')}</span>
                  </>
               ) : isSnapshot && !hasUnsavedChanges ? (
                  <>
                    <Check className="w-4 h-4" />
-                   <span className="hidden sm:inline">{t('analysis.button.saved')}</span>
+                   <span className="hidden lg:inline">{t('analysis.button.saved')}</span>
                  </>
               ) : (
                  <>
                    <Save className="w-4 h-4" />
-                   <span className="hidden sm:inline">{t(isSnapshot ? 'analysis.button.update' : 'analysis.button.save')}</span>
-                   <kbd className="hidden sm:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">⌘S</kbd>
+                   <span className="hidden lg:inline">{t(isSnapshot ? 'analysis.button.update' : 'analysis.button.save')}</span>
+                   <kbd className="hidden lg:inline-block ml-1 px-1 py-0.5 text-[10px] rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">⌘S</kbd>
                  </>
               )}
             </button>

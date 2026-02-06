@@ -78,7 +78,7 @@ export function Header() {
           
           {/* Dynamic Back/Nav controls injected from pages */}
           {navContent && (
-            <div className="pl-3 md:pl-6 border-l border-black/10 dark:border-white/10 ml-3 md:ml-6 flex items-center">
+            <div className="pl-3 md:pl-6 border-l border-black/10 dark:border-white/10 ml-3 md:ml-6 mr-4 sm:mr-0 flex items-center">
               {navContent}
             </div>
           )}
@@ -101,22 +101,22 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto sm:overflow-x-visible flex-nowrap scrollbar-hide pr-2 sm:pr-0">
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}
-            className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
+            className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
             title={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
             aria-label={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
           >
             <Languages className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('common.language')}</span>
+            <span className="hidden lg:inline">{t('common.language')}</span>
           </button>
 
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all relative"
+            className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all relative"
             title={t('theme.current-label', { theme: getThemeLabel() })}
             aria-label={t('theme.current-label', { theme: getThemeLabel() })}
           >
@@ -140,16 +140,16 @@ export function Header() {
           ) : isLoggedIn ? (
             /* Logged In State */
             <div className="flex items-center gap-2">
-              <LocalizedLink href="/profile" className="w-9 h-9 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
+              <LocalizedLink href="/profile" className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
                 <User className="w-4 h-4" />
               </LocalizedLink>
               <button
                 onClick={handleLogout}
-                className="h-9 px-3 flex items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"
+                className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"
                 title={t('auth.logout')}
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('auth.logout')}</span>
+                <span className="hidden lg:inline">{t('auth.logout')}</span>
               </button>
             </div>
           ) : (
