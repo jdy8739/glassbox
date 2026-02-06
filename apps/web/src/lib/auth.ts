@@ -42,14 +42,23 @@ export const config = {
             name: credentials.name as string || '',
           };
         } catch (e) {
-          console.error('Credentials authorize error', e);
+          // Silently fail - error already logged by backend
           return null;
         }
       },
     }),
   ],
-  // FIX: Explicitly add secret to prevent "MissingSecret" error
-  secret: process.env.NEXTAUTH_SECRET || (process.env.NODE_ENV === 'development' ? 'secret-for-dev-only' : undefined),
+  // Require NEXTAUTH_SECRET in all environments
+  secret: (() => {
+    const secret = process.env.NEXTAUTH_SECRET;
+    if (!secret) {
+      throw new Error(
+        'NEXTAUTH_SECRET environment variable must be set. ' +
+        'Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+      );
+    }
+    return secret;
+  })(),
   debug: process.env.NODE_ENV === 'development',
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -61,7 +70,7 @@ export const config = {
       // Sync user with backend
       try {
         if (!process.env.NEXT_PUBLIC_API_URL) {
-          console.error('NEXT_PUBLIC_API_URL is not defined');
+          // NEXT_PUBLIC_API_URL is required for backend sync
           return false;
         }
 
@@ -77,37 +86,27 @@ export const config = {
         });
 
         if (!response.ok) {
-          console.error('Failed to sync user with backend:', await response.text());
+          // Backend will log the detailed error
           return false;
         }
 
         return true;
       } catch (error) {
-        console.error('Error syncing user:', error);
+        // Backend will log the detailed error
         return false;
       }
     },
     async jwt({ token, user, account }) {
-      try {
-        if (user) {
-          token.id = user.id;
-        }
-        return token;
-      } catch (error) {
-        console.error('Error in JWT callback:', error);
-        return token;
+      if (user) {
+        token.id = user.id;
       }
+      return token;
     },
     async session({ session, token }) {
-      try {
-        if (session.user && token.id) {
-          session.user.id = token.id as string;
-        }
-        return session;
-      } catch (error) {
-        console.error('Error in Session callback:', error);
-        return session;
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
       }
+      return session;
     },
   },
   pages: {

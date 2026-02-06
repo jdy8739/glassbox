@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { PinoLoggerService } from './logger/pino-logger.service';
 
@@ -10,16 +11,37 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  app.useLogger(app.get(PinoLoggerService));
+  const logger = app.get(PinoLoggerService);
+  app.useLogger(logger);
+
+  // Security headers with Helmet
+  app.use(helmet({
+    contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+    hsts: {
+      maxAge: 31536000, // 1 year in seconds
+      includeSubDomains: true,
+      preload: true,
+    },
+    crossOriginEmbedderPolicy: false, // Allow embedding (if needed for Swagger)
+  }));
+
+  logger.log('Security headers enabled with Helmet');
 
   // Enable cookie parsing
   app.use(cookieParser());
 
   // Enable CORS for Next.js frontend
+  const frontendUrl = process.env.FRONTEND_URL;
+  if (!frontendUrl) {
+    logger.warn('FRONTEND_URL not set, defaulting to http://localhost:3000');
+  }
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: frontendUrl || 'http://localhost:3000',
     credentials: true,
   });
+
+  logger.log(`CORS enabled for origin: ${frontendUrl || 'http://localhost:3000'}`);
 
   // Global validation pipe
   app.useGlobalPipes(
@@ -48,7 +70,14 @@ async function bootstrap() {
 }
 
 bootstrap().catch((err) => {
+  const logger = new PinoLoggerService();
+  logger.error({
+    msg: 'Failed to start application',
+    error: err.message,
+    stack: err.stack,
+  });
+  // Also log to console for immediate visibility
+  console.error('\n❌ Application failed to start:');
   console.error(err);
-  new PinoLoggerService().error('Failed to start application:', err);
   process.exit(1);
 });

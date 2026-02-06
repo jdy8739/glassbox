@@ -21,30 +21,66 @@ export class UsersService {
   }
 
   async syncUser(dto: SyncUserDto) {
-    this.logger.log(`Syncing user: ${dto.email}`);
+    const timestamp = new Date().toISOString();
 
-    // Check if user exists
-    const existingUser = await this.findByEmail(dto.email);
+    // Audit log: OAuth sync attempt
+    this.logger.log({
+      event: 'OAUTH_SYNC_ATTEMPT',
+      email: dto.email,
+      timestamp,
+    });
 
-    if (existingUser) {
-      // Update user info if changed
-      return this.prisma.user.update({
-        where: { email: dto.email },
+    try {
+      // Check if user exists
+      const existingUser = await this.findByEmail(dto.email);
+
+      if (existingUser) {
+        // Audit log: OAuth user updated
+        this.logger.log({
+          event: 'OAUTH_USER_UPDATED',
+          userId: existingUser.id,
+          email: dto.email,
+          timestamp,
+        });
+
+        // Update user info if changed
+        return this.prisma.user.update({
+          where: { email: dto.email },
+          data: {
+            name: dto.name,
+            googleId: dto.googleId,
+          },
+        });
+      }
+
+      // Create new user
+      const newUser = await this.prisma.user.create({
         data: {
+          email: dto.email,
           name: dto.name,
           googleId: dto.googleId,
         },
       });
-    }
 
-    // Create new user
-    return this.prisma.user.create({
-      data: {
+      // Audit log: OAuth user created
+      this.logger.log({
+        event: 'OAUTH_USER_CREATED',
+        userId: newUser.id,
         email: dto.email,
-        name: dto.name,
-        googleId: dto.googleId,
-      },
-    });
+        timestamp,
+      });
+
+      return newUser;
+    } catch (error) {
+      // Audit log: OAuth sync error
+      this.logger.error({
+        event: 'OAUTH_SYNC_ERROR',
+        email: dto.email,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp,
+      });
+      throw error;
+    }
   }
 
   async updateUserName(userId: string, name: string) {
@@ -56,10 +92,29 @@ export class UsersService {
   }
 
   async deleteUser(userId: string) {
-    this.logger.log(`Deleting user: ${userId}`);
-    // Prisma will cascade delete portfolios due to onDelete: Cascade in schema
-    return this.prisma.user.delete({
-      where: { id: userId },
+    const timestamp = new Date().toISOString();
+
+    // Audit log: account deletion
+    this.logger.warn({
+      event: 'ACCOUNT_DELETED',
+      userId,
+      timestamp,
     });
+
+    try {
+      // Prisma will cascade delete portfolios due to onDelete: Cascade in schema
+      return await this.prisma.user.delete({
+        where: { id: userId },
+      });
+    } catch (error) {
+      // Audit log: deletion error
+      this.logger.error({
+        event: 'ACCOUNT_DELETION_ERROR',
+        userId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp,
+      });
+      throw error;
+    }
   }
 }
