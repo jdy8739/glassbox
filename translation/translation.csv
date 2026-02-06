@@ -319,3 +319,13 @@ profile.delete.confirm-button,Delete My Account,내 계정 삭제
 profile.success.deleted,Account deleted successfully. Redirecting...,계정이 성공적으로 삭제되었습니다. 리디렉션 중...
 profile.error.delete-failed,Failed to delete account. Please try again.,계정 삭제에 실패했습니다. 다시 시도해주세요.
 common.button.saving,Saving...,저장 중...
+howitworks.section-header,3 Simple Steps,3가지 간단한 단계
+howitworks.step-badge.one,Step 1,1단계
+howitworks.step-badge.two,Step 2,2단계
+howitworks.step-badge.three,Step 3,3단계
+howitworks.timeline-complete,Ready?,준비됐나요?
+howitworks.timeline-complete-sub,Get started in seconds,몇 초 만에 시작하세요
+cta.feature-count,Core Features,핵심 기능
+cta.portfolio-count,Portfolios,포트폴리오
+cta.transparency-percent,Transparent,투명함
+footer.status.operational,All systems operational,모든 시스템 정상 운영 중
