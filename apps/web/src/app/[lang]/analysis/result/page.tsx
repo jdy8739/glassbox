@@ -127,6 +127,7 @@ function AnalysisResultContent() {
       startDate: portfolioData.analysis.analysisDate,
       endDate: portfolioData.analysis.analysisEndDate,
     });
+    setIsReanalyzeConfirmOpen(false);
   };
 
   const handleSaveButton = async () => {
