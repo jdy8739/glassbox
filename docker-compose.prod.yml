@@ -1,0 +1,169 @@
+# Glassbox Docker Compose - Production Configuration
+# This file pulls pre-built images from GitHub Container Registry (ghcr.io)
+#
+# Usage:
+#   docker-compose -f docker-compose.prod.yml up -d          # Start all services
+#   docker-compose -f docker-compose.prod.yml logs -f        # View logs
+#   docker-compose -f docker-compose.prod.yml down           # Stop all services
+#   docker-compose -f docker-compose.prod.yml pull           # Pull latest images
+#
+# Prerequisites:
+#   1. Log in to ghcr.io: echo $GHCR_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+#   2. Create .env file with required environment variables
+#   3. Configure nginx.conf with your domain
+#   4. Set up SSL certificates in ./certs directory
+
+services:
+  # ==========================================================================
+  # Nginx Reverse Proxy
+  # ==========================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: glassbox-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - glassbox-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================================================
+  # Next.js Frontend (From GitHub Container Registry)
+  # ==========================================================================
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/your-org/glassbox/frontend}:${VERSION:-latest}
+    container_name: glassbox-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - glassbox-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # ==========================================================================
+  # Nest.js Backend (From GitHub Container Registry)
+  # ==========================================================================
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/your-org/glassbox/backend}:${VERSION:-latest}
+    container_name: glassbox-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_URL=postgresql://glassbox:${DB_PASSWORD}@postgres:5432/glassbox
+      - JWT_SECRET=${JWT_SECRET}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - glassbox-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  # ==========================================================================
+  # PostgreSQL Database
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: glassbox-postgres
+    environment:
+      - POSTGRES_USER=glassbox
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=glassbox
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    restart: unless-stopped
+    networks:
+      - glassbox-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glassbox -d glassbox"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  glassbox-network:
+    driver: bridge
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  postgres_data:
+    driver: local
