@@ -29,33 +29,46 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Enable command echoing for debugging
+RUN set -x
+
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
+RUN echo "📦 Installing pnpm..." && \
+    corepack enable && corepack prepare pnpm@9.2.0 --activate && \
+    echo "✓ pnpm installed"
 
 # Copy dependencies from deps stage
+RUN echo "📋 Copying dependencies from deps stage..."
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+RUN echo "✓ Dependencies copied"
 
 # Copy source code
+RUN echo "📄 Copying source code..."
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/web ./apps/web
 COPY packages ./packages
+RUN echo "✓ Source code copied" && ls -la /app/packages
 
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL=http://localhost:4000
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
+RUN echo "🌍 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}"
 
 # Build shared packages first
+RUN echo "🔨 Building packages/types..."
 WORKDIR /app/packages/types
-RUN pnpm build
+RUN ls -la && pnpm build && echo "✓ packages/types built"
 
+RUN echo "🔨 Building packages/design-tokens..."
 WORKDIR /app/packages/design-tokens
-RUN pnpm build
+RUN ls -la && pnpm build && echo "✓ packages/design-tokens built"
 
 # Build Next.js application
+RUN echo "🏗️ Building Next.js application..."
 WORKDIR /app/apps/web
-RUN pnpm build
+RUN ls -la && pnpm build && echo "✓ Next.js application built"
 
 # =============================================================================
 # Stage 3: Production Runner

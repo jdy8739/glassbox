@@ -28,28 +28,40 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Enable command echoing for debugging
+RUN set -x
+
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
+RUN echo "📦 Installing pnpm..." && \
+    corepack enable && corepack prepare pnpm@9.2.0 --activate && \
+    echo "✓ pnpm installed"
 
 # Copy dependencies from deps stage
+RUN echo "📋 Copying dependencies from deps stage..."
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/backend/node_modules ./apps/backend/node_modules
+RUN echo "✓ Dependencies copied"
 
 # Copy source code
+RUN echo "📄 Copying source code..."
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/backend ./apps/backend
 COPY packages ./packages
+RUN echo "✓ Source code copied" && ls -la /app/packages
 
 # Build shared packages first
+RUN echo "🔨 Building packages/types..."
 WORKDIR /app/packages/types
-RUN pnpm build
+RUN ls -la && pnpm build && echo "✓ packages/types built"
 
 # Generate Prisma client
+RUN echo "⚙️ Generating Prisma client..."
 WORKDIR /app/apps/backend
-RUN npx prisma generate
+RUN ls -la && npx prisma generate && echo "✓ Prisma client generated"
 
 # Build Nest.js application
-RUN pnpm build
+RUN echo "🏗️ Building Nest.js application..."
+RUN pnpm build && echo "✓ Nest.js application built"
 
 # =============================================================================
 # Stage 3: Production Runner
