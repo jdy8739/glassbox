@@ -339,7 +339,68 @@ You should see messages about creating tables.
 
 ---
 
-## Step 8: Run the Application
+## Step 8: (Optional) Using Docker for Easy Setup
+
+**Alternative to manual setup:** If you prefer not to install Node.js, Python, and PostgreSQL separately, you can use Docker Compose to run everything in containers.
+
+### Install Docker:
+
+**For macOS:**
+1. Download Docker Desktop from [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+2. Open the `.dmg` file and drag Docker to Applications
+3. Launch Docker from Applications
+4. You should see the Docker icon in the menu bar
+
+**For Windows:**
+1. Download Docker Desktop from [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+2. Run the installer
+3. Docker will start automatically
+
+### Run with Docker Compose:
+
+From the root `glassbox` directory:
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Build services with clear logs
+./scripts/docker-build.sh
+
+# Start all services (frontend, backend, PostgreSQL)
+docker-compose up -d
+
+# View live logs (optional)
+docker-compose logs -f
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend: http://localhost:4000
+# API Docs: http://localhost:4000/api
+```
+
+### Build with Clear Logs:
+
+```bash
+# Build all services
+./scripts/docker-build.sh
+
+# Build only frontend
+./scripts/docker-build.sh frontend
+
+# Build only backend
+./scripts/docker-build.sh backend
+```
+
+### Stop Docker Services:
+
+```bash
+docker-compose down
+```
+
+---
+
+## Step 9: Run the Application (Manual Setup)
 
 Now everything is ready! Let's start the app.
 
@@ -388,7 +449,7 @@ pnpm run fe
 
 ---
 
-## Step 9: Using the Application
+## Step 10: Using the Application
 
 ### Build Your First Portfolio:
 
@@ -461,6 +522,8 @@ pnpm run fe
 
 ---
 
+---
+
 ## Stopping the Application
 
 ### If running with `pnpm dev`:
@@ -485,13 +548,13 @@ Press **Ctrl + C** in each terminal window running frontend/backend.
 ## Quick Command Reference
 
 ```bash
-# Start development (everything)
+# Start development
 pnpm dev
 
-# Start only frontend (port 3000)
+# Start frontend only
 pnpm run fe
 
-# Start only backend (port 4000)
+# Start backend only
 pnpm run be
 
 # Install dependencies
@@ -500,13 +563,17 @@ pnpm install
 # Build everything
 pnpm build
 
-# Run linter
-pnpm lint
+# Docker - Build services
+./scripts/docker-build.sh              # All services
+./scripts/docker-build.sh frontend     # Frontend only
+./scripts/docker-build.sh backend      # Backend only
 
-# Type check
-pnpm type-check
+# Docker - Manage services
+docker-compose up -d       # Start services
+docker-compose down        # Stop services
+docker-compose logs -f     # View logs
 
-# View database
+# Database
 cd apps/backend
 pnpm prisma studio
 ```
