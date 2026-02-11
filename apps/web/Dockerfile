@@ -17,9 +17,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 # Copy package.json files for all workspaces
 COPY apps/web/package.json ./apps/web/
 COPY packages/types/package.json ./packages/types/
-COPY packages/utils/package.json ./packages/utils/
 COPY packages/design-tokens/package.json ./packages/design-tokens/
-COPY packages/config/package.json ./packages/config/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -50,9 +48,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build shared packages first
 WORKDIR /app/packages/types
-RUN pnpm build
-
-WORKDIR /app/packages/utils
 RUN pnpm build
 
 WORKDIR /app/packages/design-tokens

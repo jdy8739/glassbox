@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@glassbox/types": "workspace:*",
-    "@glassbox/utils": "workspace:*",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",

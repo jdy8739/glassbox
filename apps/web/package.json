@@ -13,7 +13,6 @@
   "dependencies": {
     "@glassbox/design-tokens": "workspace:*",
     "@glassbox/types": "workspace:*",
-    "@glassbox/utils": "workspace:*",
     "@tanstack/react-query": "^5.90.16",
     "axios": "^1.13.4",
     "date-fns": "^4.1.0",
