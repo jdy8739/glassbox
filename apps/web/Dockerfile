@@ -68,7 +68,10 @@ RUN ls -la && pnpm build && echo "✓ packages/design-tokens built"
 # Build Next.js application
 RUN echo "🏗️ Building Next.js application..."
 WORKDIR /app/apps/web
-RUN ls -la && pnpm build && echo "✓ Next.js application built"
+RUN echo "📁 Contents of /app/apps/web:" && ls -la && \
+    echo "📁 Contents of /app/packages:" && ls -la /app/packages && \
+    echo "🔍 Running pnpm build..." && \
+    pnpm build 2>&1 || (echo "❌ Build failed! Exit code: $?" && exit 1)
 
 # =============================================================================
 # Stage 3: Production Runner
