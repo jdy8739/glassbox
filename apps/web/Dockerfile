@@ -37,7 +37,6 @@ RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=deps /app/packages ./packages
 
 # Copy source code
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
@@ -49,7 +48,17 @@ ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build Next.js application (will build dependencies automatically)
+# Build shared packages first
+WORKDIR /app/packages/types
+RUN pnpm build
+
+WORKDIR /app/packages/utils
+RUN pnpm build
+
+WORKDIR /app/packages/design-tokens
+RUN pnpm build
+
+# Build Next.js application
 WORKDIR /app/apps/web
 RUN pnpm build
 
