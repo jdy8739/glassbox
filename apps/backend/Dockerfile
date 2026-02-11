@@ -44,10 +44,11 @@ COPY apps/backend ./apps/backend
 COPY packages ./packages
 
 # Generate Prisma client
-RUN cd apps/backend && npx prisma generate
+WORKDIR /app/apps/backend
+RUN npx prisma generate
 
-# Build all packages using pnpm filter (builds dependencies in correct order)
-RUN pnpm --filter @glassbox/backend build
+# Build Nest.js application
+RUN pnpm build
 
 # =============================================================================
 # Stage 3: Production Runner

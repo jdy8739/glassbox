@@ -47,12 +47,11 @@ COPY packages ./packages
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
-# Enable standalone output for Docker deployment
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build all packages using turbo (builds dependencies in correct order)
-RUN pnpm --filter @glassbox/web build
+# Build Next.js application (will build dependencies automatically)
+WORKDIR /app/apps/web
+RUN pnpm build
 
 # =============================================================================
 # Stage 3: Production Runner
