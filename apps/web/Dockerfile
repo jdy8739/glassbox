@@ -65,7 +65,9 @@ RUN pnpm build 2>&1 || true
 
 # Build Next.js application
 WORKDIR /app/apps/web
-RUN pnpm build
+RUN echo "Starting Next.js build..." && \
+    pnpm build 2>&1 && \
+    echo "Build complete!"
 
 # =============================================================================
 # Stage 3: Production Runner

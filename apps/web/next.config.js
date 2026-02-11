@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@glassbox/types', '@glassbox/utils', '@glassbox/design-tokens'],
+  transpilePackages: ['@glassbox/types', '@glassbox/design-tokens'],
 
   // Enable standalone output for Docker deployment
   // This creates a minimal production build that includes only necessary dependencies
