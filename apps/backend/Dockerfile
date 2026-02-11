@@ -43,15 +43,11 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/backend ./apps/backend
 COPY packages ./packages
 
-# Build shared packages first (if they have build scripts)
-RUN cd packages/types && pnpm build || true
-RUN cd packages/utils && pnpm build || true
-
 # Generate Prisma client
 RUN cd apps/backend && npx prisma generate
 
-# Build Nest.js application
-RUN cd apps/backend && pnpm build
+# Build all packages using pnpm filter (builds dependencies in correct order)
+RUN pnpm --filter @glassbox/backend build
 
 # =============================================================================
 # Stage 3: Production Runner

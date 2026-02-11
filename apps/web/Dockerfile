@@ -44,11 +44,6 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/web ./apps/web
 COPY packages ./packages
 
-# Build shared packages first (if they have build scripts)
-RUN cd packages/types && pnpm build || true
-RUN cd packages/utils && pnpm build || true
-RUN cd packages/design-tokens && pnpm build || true
-
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -56,8 +51,8 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 # Enable standalone output for Docker deployment
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build Next.js application
-RUN cd apps/web && pnpm build
+# Build all packages using turbo (builds dependencies in correct order)
+RUN pnpm --filter @glassbox/web build
 
 # =============================================================================
 # Stage 3: Production Runner
