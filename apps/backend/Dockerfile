@@ -18,7 +18,6 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/backend/package.json ./apps/backend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
-COPY packages/config/package.json ./packages/config/ 2>/dev/null || true
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -44,8 +43,8 @@ COPY apps/backend ./apps/backend
 COPY packages ./packages
 
 # Build shared packages first (if they have build scripts)
-RUN cd packages/types && pnpm build 2>/dev/null || true
-RUN cd packages/utils && pnpm build 2>/dev/null || true
+RUN cd packages/types && pnpm build || true
+RUN cd packages/utils && pnpm build || true
 
 # Generate Prisma client
 RUN cd apps/backend && npx prisma generate

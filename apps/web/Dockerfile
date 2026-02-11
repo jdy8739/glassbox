@@ -19,7 +19,6 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
 COPY packages/design-tokens/package.json ./packages/design-tokens/
-COPY packages/config/package.json ./packages/config/ 2>/dev/null || true
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -45,9 +44,9 @@ COPY apps/web ./apps/web
 COPY packages ./packages
 
 # Build shared packages first (if they have build scripts)
-RUN cd packages/types && pnpm build 2>/dev/null || true
-RUN cd packages/utils && pnpm build 2>/dev/null || true
-RUN cd packages/design-tokens && pnpm build 2>/dev/null || true
+RUN cd packages/types && pnpm build || true
+RUN cd packages/utils && pnpm build || true
+RUN cd packages/design-tokens && pnpm build || true
 
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL
