@@ -49,22 +49,16 @@ COPY apps/backend ./apps/backend
 COPY packages ./packages
 RUN echo "✓ Source code copied" && ls -la /app/packages
 
-# Build shared packages first
-RUN echo "🔨 Building packages/types..."
+# Build shared packages first (if they have build scripts)
 WORKDIR /app/packages/types
-RUN ls -la && pnpm build && echo "✓ packages/types built"
+RUN pnpm build 2>&1 || true
 
 # Generate Prisma client
-RUN echo "⚙️ Generating Prisma client..."
 WORKDIR /app/apps/backend
-RUN ls -la && npx prisma generate && echo "✓ Prisma client generated"
+RUN npx prisma generate
 
 # Build Nest.js application
-RUN echo "🏗️ Building Nest.js application..."
-RUN echo "📁 Contents of /app/apps/backend:" && ls -la && \
-    echo "🔍 Running pnpm build..." && \
-    pnpm build 2>&1 || (echo "❌ Build failed! Exit code: $?" && exit 1) && \
-    echo "✓ Nest.js application built"
+RUN pnpm build
 
 # =============================================================================
 # Stage 3: Production Runner

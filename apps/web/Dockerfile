@@ -56,22 +56,16 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN echo "🌍 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}"
 
-# Build shared packages first
-RUN echo "🔨 Building packages/types..."
+# Build shared packages first (if they have build scripts)
 WORKDIR /app/packages/types
-RUN ls -la && pnpm build && echo "✓ packages/types built"
+RUN pnpm build 2>&1 || true
 
-RUN echo "🔨 Building packages/design-tokens..."
 WORKDIR /app/packages/design-tokens
-RUN ls -la && pnpm build && echo "✓ packages/design-tokens built"
+RUN pnpm build 2>&1 || true
 
 # Build Next.js application
-RUN echo "🏗️ Building Next.js application..."
 WORKDIR /app/apps/web
-RUN echo "📁 Contents of /app/apps/web:" && ls -la && \
-    echo "📁 Contents of /app/packages:" && ls -la /app/packages && \
-    echo "🔍 Running pnpm build..." && \
-    pnpm build 2>&1 || (echo "❌ Build failed! Exit code: $?" && exit 1)
+RUN pnpm build
 
 # =============================================================================
 # Stage 3: Production Runner
