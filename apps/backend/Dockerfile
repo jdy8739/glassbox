@@ -58,7 +58,8 @@ WORKDIR /app/apps/backend
 RUN npx prisma generate
 
 # Build Nest.js application
-RUN pnpm build
+RUN echo "Building Nest.js application..." && \
+    pnpm build --verbose 2>&1
 
 # =============================================================================
 # Stage 3: Production Runner
