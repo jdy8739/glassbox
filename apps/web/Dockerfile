@@ -48,6 +48,7 @@ RUN echo "📄 Copying source code..."
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/web ./apps/web
 COPY packages ./packages
+COPY translation ./translation
 RUN echo "✓ Source code copied" && ls -la /app/packages
 
 # Set environment variables for build

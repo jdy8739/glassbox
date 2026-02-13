@@ -1,7 +1,7 @@
 /**
- * Next.js Middleware for i18n Language Detection & Redirection
+ * Next.js Proxy for i18n Language Detection & Redirection
  *
- * This middleware:
+ * This proxy:
  * 1. Detects user's preferred language from Accept-Language header
  * 2. Redirects root path (/) to localized version (/en/ or /ko/)
  * 3. Sets NEXT_LOCALE cookie to remember preference
@@ -35,7 +35,7 @@ function detectLanguage(request: NextRequest): Language {
   return detectedLang as Language;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // Skip middleware for:
