@@ -123,6 +123,8 @@ jobs:
       # Build and push frontend image
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
+        env:
+          BUILDKIT_PROGRESS: plain
         with:
           context: .
           file: ./apps/web/Dockerfile
@@ -137,6 +139,8 @@ jobs:
       # Build and push backend image
       - name: Build and push backend image
         uses: docker/build-push-action@v5
+        env:
+          BUILDKIT_PROGRESS: plain
         with:
           context: .
           file: ./apps/backend/Dockerfile
