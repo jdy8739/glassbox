@@ -79,10 +79,15 @@ RUN apk add --no-cache \
     py3-pandas \
     py3-scipy \
     build-base \
+    gcc \
+    g++ \
     python3-dev \
     gfortran \
     openblas-dev \
-    libffi-dev
+    libffi-dev \
+    cmake \
+    git \
+    wget
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nestjs
@@ -93,7 +98,7 @@ RUN mkdir -p /app/python /app/dist /app/prisma /app/node_modules
 
 # Copy Python requirements and install Python packages
 COPY apps/backend/python/requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt && \
+RUN pip3 install --no-cache-dir --break-system-packages --prefer-binary -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # Copy built application from builder
