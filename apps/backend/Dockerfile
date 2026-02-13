@@ -103,7 +103,6 @@ COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/prisma ./prisma
 
 # Copy node_modules (including Prisma client)
 COPY --from=builder /app/apps/backend/node_modules ./node_modules
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Set ownership
 RUN chown -R nestjs:nestjs /app
