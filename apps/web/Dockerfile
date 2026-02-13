@@ -51,6 +51,12 @@ COPY packages ./packages
 COPY translation ./translation
 RUN echo "✓ Source code copied" && ls -la /app/packages
 
+# Generate translation JSON files from CSV
+WORKDIR /app/translation
+RUN npx tsx csv-parser.ts && \
+    echo "✓ Translation JSON files generated" && \
+    ls -la /app/translation/*.json
+
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL=http://localhost:4000
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
