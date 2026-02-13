@@ -59,7 +59,9 @@ RUN npx tsx csv-parser.ts && \
 
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ARG NEXTAUTH_SECRET=build-time-secret-will-be-overridden-at-runtime
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN echo "🌍 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}"
 

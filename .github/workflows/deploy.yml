@@ -136,6 +136,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=frontend
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.example.com' }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
 
       # Build and push backend image
       - name: Build and push backend image
