@@ -59,7 +59,7 @@ RUN npx prisma generate
 
 # Build Nest.js application
 RUN echo "Building Nest.js application..." && \
-    pnpm build --verbose 2>&1
+    pnpm build 2>&1
 
 # =============================================================================
 # Stage 3: Production Runner
