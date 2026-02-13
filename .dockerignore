@@ -119,5 +119,4 @@ certbot
 # =============================================================================
 # Translation and Generated Files
 # =============================================================================
-translation
-*.csv
+# (translation folder and CSV needed for Docker build to generate JSON files)
