@@ -18,6 +18,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../auth/public.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { LogAction } from '../common/decorators/log-action.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -28,6 +29,7 @@ export class UsersController {
 
   @Post('sync')
   @Public()
+  @LogAction('OAUTH_SYNC')
   async syncUser(@Body() dto: SyncUserDto, @Res({ passthrough: true }) res: Response) {
     const user = await this.usersService.syncUser(dto);
 
@@ -51,25 +53,26 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @LogAction('GET_PROFILE')
   async getProfile(@Request() req: any) {
-    return this.usersService.findById(req.user.userId);
+    return await this.usersService.findById(req.user.userId);
   }
 
   @Patch('me')
   @UseGuards(JwtAuthGuard)
+  @LogAction('UPDATE_PROFILE')
   async updateProfile(@Request() req: any, @Body() dto: UpdateUserDto) {
-    return this.usersService.updateUserName(req.user.userId, dto.name);
+    return await this.usersService.updateUserName(req.user.userId, dto.name);
   }
 
   @Delete('me')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @LogAction('DELETE_ACCOUNT')
   async deleteAccount(@Request() req: any, @Res({ passthrough: true }) res: Response) {
     await this.usersService.deleteUser(req.user.userId);
 
     // Clear the auth cookie
     res.clearCookie('accessToken');
-
-    return;
   }
 }
