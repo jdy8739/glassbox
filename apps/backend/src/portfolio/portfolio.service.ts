@@ -17,52 +17,58 @@ export class PortfolioService {
   ) {}
 
   async create(userId: string, dto: CreatePortfolioDto): Promise<void> {
+    try {
+      // Check for duplicate portfolio name
+      const existingPortfolio = await this.prisma.portfolio.findFirst({
+        where: {
+          userId,
+          name: dto.name,
+        },
+      });
 
-    // Check for duplicate portfolio name
-    const existingPortfolio = await this.prisma.portfolio.findFirst({
-      where: {
-        userId,
-        name: dto.name,
-      },
-    });
+      if (existingPortfolio) {
+        throw new ConflictException('A portfolio with this name already exists');
+      }
 
-    if (existingPortfolio) {
-      throw new ConflictException('A portfolio with this name already exists');
+      // Extract summary stats if analysis is present
+      let stats: {
+        sharpeRatio?: number | null;
+        volatility?: number | null;
+        expectedReturn?: number | null;
+        analysisDate?: string | null;
+        analysisEndDate?: string | null;
+      } = {};
+      if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
+        stats = {
+          sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
+          volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
+          expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
+          analysisDate: dto.analysisSnapshot.analysisDate,
+          analysisEndDate: dto.analysisSnapshot.analysisEndDate,
+        };
+      }
+
+      await this.prisma.portfolio.create({
+        data: {
+          userId,
+          name: dto.name,
+          tickers: dto.tickers,
+          quantities: dto.quantities,
+          // Cast to InputJsonValue to avoid type error with 'any'
+          analysisSnapshot: dto.analysisSnapshot ? (dto.analysisSnapshot as unknown as Prisma.InputJsonValue) : undefined,
+          sharpeRatio: stats.sharpeRatio ?? undefined,
+          volatility: stats.volatility ?? undefined,
+          expectedReturn: stats.expectedReturn ?? undefined,
+          analysisDate: stats.analysisDate ?? undefined,
+          analysisEndDate: stats.analysisEndDate ?? undefined,
+        },
+      });
+
+      this.logger.log(`Portfolio created: "${dto.name}" with ${dto.tickers.length} assets`);
+    } catch (error) {
+      this.logger.error(`Failed to create portfolio: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw error;
     }
-
-    // Extract summary stats if analysis is present
-    let stats: {
-      sharpeRatio?: number | null;
-      volatility?: number | null;
-      expectedReturn?: number | null;
-      analysisDate?: string | null;
-      analysisEndDate?: string | null;
-    } = {};
-    if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
-      stats = {
-        sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
-        volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
-        expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
-        analysisDate: dto.analysisSnapshot.analysisDate,
-        analysisEndDate: dto.analysisSnapshot.analysisEndDate,
-      };
-    }
-
-    await this.prisma.portfolio.create({
-      data: {
-        userId,
-        name: dto.name,
-        tickers: dto.tickers,
-        quantities: dto.quantities,
-        // Cast to InputJsonValue to avoid type error with 'any'
-        analysisSnapshot: dto.analysisSnapshot ? (dto.analysisSnapshot as unknown as Prisma.InputJsonValue) : undefined,
-        sharpeRatio: stats.sharpeRatio ?? undefined,
-        volatility: stats.volatility ?? undefined,
-        expectedReturn: stats.expectedReturn ?? undefined,
-        analysisDate: stats.analysisDate ?? undefined,
-        analysisEndDate: stats.analysisEndDate ?? undefined,
-      },
-    });
   }
 
   async findAll(userId: string) {
@@ -86,6 +92,8 @@ export class PortfolioService {
         // Explicitly exclude analysisSnapshot to reduce payload size
       },
     });
+
+    this.logger.log(`Retrieved ${portfolios.length} portfolios for user`);
 
     // Reconstruct the expected structure for frontend
     return portfolios.map((p) => {
@@ -118,10 +126,12 @@ export class PortfolioService {
     });
 
     if (!portfolio) {
+      this.logger.warn(`Portfolio not found: ${id}`);
       throw new NotFoundException(`Portfolio with ID ${id} not found`);
     }
 
     if (portfolio.userId !== userId) {
+      this.logger.warn(`Unauthorized access attempt to portfolio: ${id}`);
       throw new ForbiddenException('You do not have access to this portfolio');
     }
 
@@ -129,54 +139,69 @@ export class PortfolioService {
   }
 
   async update(userId: string, id: string, dto: UpdatePortfolioDto) {
-    // Check existence and ownership first
-    await this.findOne(userId, id);
+    try {
+      // Check existence and ownership first
+      await this.findOne(userId, id);
 
-    // Extract stats if updating snapshot
-    let stats: {
-      sharpeRatio?: number | null;
-      volatility?: number | null;
-      expectedReturn?: number | null;
-      analysisDate?: string | null;
-      analysisEndDate?: string | null;
-    } = {};
-    if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
-      stats = {
-        sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
-        volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
-        expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
-        analysisDate: dto.analysisSnapshot.analysisDate,
-        analysisEndDate: dto.analysisSnapshot.analysisEndDate,
-      };
+      // Extract stats if updating snapshot
+      let stats: {
+        sharpeRatio?: number | null;
+        volatility?: number | null;
+        expectedReturn?: number | null;
+        analysisDate?: string | null;
+        analysisEndDate?: string | null;
+      } = {};
+      if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
+        stats = {
+          sharpeRatio: dto.analysisSnapshot.maxSharpe.stats.sharpe,
+          volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
+          expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
+          analysisDate: dto.analysisSnapshot.analysisDate,
+          analysisEndDate: dto.analysisSnapshot.analysisEndDate,
+        };
+      }
+
+      const result = await this.prisma.portfolio.update({
+        where: { id },
+        data: {
+          ...(dto.name !== undefined && { name: dto.name }),
+          ...(dto.tickers !== undefined && { tickers: dto.tickers }),
+          ...(dto.quantities !== undefined && { quantities: dto.quantities }),
+          ...(dto.analysisSnapshot !== undefined && {
+            analysisSnapshot: dto.analysisSnapshot as unknown as Prisma.InputJsonValue
+          }),
+          ...(Object.keys(stats).length > 0 && {
+            sharpeRatio: stats.sharpeRatio,
+            volatility: stats.volatility,
+            expectedReturn: stats.expectedReturn,
+            analysisDate: stats.analysisDate,
+            analysisEndDate: stats.analysisEndDate,
+          }),
+        },
+      });
+
+      this.logger.log(`Portfolio updated: ${id}`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Failed to update portfolio ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw error;
     }
-
-    return this.prisma.portfolio.update({
-      where: { id },
-      data: {
-        ...(dto.name !== undefined && { name: dto.name }),
-        ...(dto.tickers !== undefined && { tickers: dto.tickers }),
-        ...(dto.quantities !== undefined && { quantities: dto.quantities }),
-        ...(dto.analysisSnapshot !== undefined && {
-          analysisSnapshot: dto.analysisSnapshot as unknown as Prisma.InputJsonValue
-        }),
-        ...(Object.keys(stats).length > 0 && {
-          sharpeRatio: stats.sharpeRatio,
-          volatility: stats.volatility,
-          expectedReturn: stats.expectedReturn,
-          analysisDate: stats.analysisDate,
-          analysisEndDate: stats.analysisEndDate,
-        }),
-      },
-    });
   }
 
   async remove(userId: string, id: string): Promise<void> {
-    // Check existence and ownership first
-    await this.findOne(userId, id);
+    try {
+      // Check existence and ownership first
+      await this.findOne(userId, id);
 
-    await this.prisma.portfolio.delete({
-      where: { id },
-    });
+      await this.prisma.portfolio.delete({
+        where: { id },
+      });
+
+      this.logger.log(`Portfolio deleted: ${id}`);
+    } catch (error) {
+      this.logger.error(`Failed to delete portfolio ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw error;
+    }
   }
 
   /**

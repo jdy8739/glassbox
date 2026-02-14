@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TickerService, TickerSearchResult } from './ticker.service';
+import { LogAction } from '../common/decorators/log-action.decorator';
 
 @ApiTags('Ticker')
 @Controller('ticker')
@@ -8,6 +9,7 @@ export class TickerController {
   constructor(private readonly tickerService: TickerService) {}
 
   @Get('search')
+  @LogAction('SEARCH_TICKERS')
   @ApiOperation({ summary: 'Search for ticker symbols' })
   @ApiQuery({
     name: 'q',
@@ -34,6 +36,7 @@ export class TickerController {
   }
 
   @Get('quote')
+  @LogAction('GET_QUOTE')
   @ApiOperation({ summary: 'Get quote for a specific ticker' })
   @ApiQuery({
     name: 'symbol',

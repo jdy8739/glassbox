@@ -5,8 +5,8 @@ import { AnalyzePortfolioDto } from './dto/analyze-portfolio.dto';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { PortfolioAnalysisResultDto } from './dto/portfolio-analysis-result.dto';
-import { PinoLoggerService } from '../logger/pino-logger.service';
 import { Public } from '../auth/public.decorator';
+import { LogAction } from '../common/decorators/log-action.decorator';
 
 @ApiTags('portfolio')
 @Controller('portfolio')
@@ -14,19 +14,19 @@ import { Public } from '../auth/public.decorator';
 export class PortfolioController {
   constructor(
     private readonly portfolioService: PortfolioService,
-    private readonly logger: PinoLoggerService,
   ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @LogAction('CREATE_PORTFOLIO')
   @ApiOperation({ summary: 'Create a new portfolio' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Portfolio created successfully' })
   async create(@Request() req: any, @Body() dto: CreatePortfolioDto): Promise<void> {
-    this.logger.log(`Creating portfolio for user ${req.user.userId}`);
     await this.portfolioService.create(req.user.userId, dto);
   }
 
   @Get()
+  @LogAction('LIST_PORTFOLIOS')
   @ApiOperation({ summary: 'Get all portfolios for current user' })
   @ApiResponse({ status: HttpStatus.OK, description: 'List of portfolios' })
   async findAll(@Request() req: any) {
@@ -53,6 +53,7 @@ export class PortfolioController {
   }
 
   @Get(':id')
+  @LogAction('GET_PORTFOLIO')
   @ApiOperation({ summary: 'Get a specific portfolio by ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Portfolio details' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Portfolio not found' })
@@ -61,6 +62,7 @@ export class PortfolioController {
   }
 
   @Put(':id')
+  @LogAction('UPDATE_PORTFOLIO')
   @ApiOperation({ summary: 'Update a portfolio' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Portfolio updated successfully' })
   async update(
@@ -73,6 +75,7 @@ export class PortfolioController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @LogAction('DELETE_PORTFOLIO')
   @ApiOperation({ summary: 'Delete a portfolio' })
   @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Portfolio deleted successfully' })
   async remove(@Request() req: any, @Param('id') id: string): Promise<void> {
@@ -81,6 +84,7 @@ export class PortfolioController {
 
   @Post('analyze')
   @HttpCode(HttpStatus.OK)
+  @LogAction('ANALYZE_PORTFOLIO')
   @ApiOperation({
     summary: 'Analyze portfolio and calculate efficient frontier',
     description:
@@ -101,15 +105,6 @@ export class PortfolioController {
     description: 'Failed to analyze portfolio',
   })
   async analyzePortfolio(@Body() dto: AnalyzePortfolioDto): Promise<PortfolioAnalysisResultDto> {
-    this.logger.log(`Analyzing portfolio: ${dto.tickers.join(', ')}`);
-
-    try {
-      const result = await this.portfolioService.analyzePortfolio(dto);
-      this.logger.log('Portfolio analysis successful');
-      return result;
-    } catch (error) {
-      this.logger.error('Portfolio analysis failed', error);
-      throw error;
-    }
+    return this.portfolioService.analyzePortfolio(dto);
   }
 }
