@@ -399,8 +399,8 @@ function HomeContent() {
 
           {/* Bottom Footer */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-            <p className="text-black/50 dark:text-white/50 text-xs">
-              © 2024 Glassbox. Built with transparency and precision.
+            <p className="text-black/50 dark:text-white/50 text-xs" suppressHydrationWarning>
+              © {new Date().getFullYear()} Glassbox. Built with transparency and precision.
             </p>
             <div className="flex items-center gap-2 text-black/50 dark:text-white/50 text-xs">
               <span className="flex gap-1.5 items-center">
