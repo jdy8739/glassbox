@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { ThemeProvider } from '../providers';
 import { Header } from '@/components/header';
 import { SUPPORTED_LANGUAGES, isSupportedLanguage, type Language } from '@/lib/i18n/config';
-import { auth } from '@/lib/auth';
 
 type Props = {
   children: React.ReactNode;
@@ -75,9 +74,6 @@ export default async function LangLayout({ children, params }: Props) {
     notFound();
   }
 
-  // Get session on server side for proper hydration
-  const session = await auth();
-
   // Use absolute URLs for hreflang tags (better SEO)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.app';
 
@@ -97,7 +93,7 @@ export default async function LangLayout({ children, params }: Props) {
         />
       </head>
       <body>
-        <ThemeProvider lang={lang} session={session}>
+        <ThemeProvider lang={lang}>
           <Header />
           {children}
         </ThemeProvider>

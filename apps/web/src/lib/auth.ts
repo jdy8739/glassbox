@@ -1,7 +1,10 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import NextAuth, { DefaultSession, type NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
-import type { NextAuthConfig } from 'next-auth';
+import { authConfig } from '@/auth.config';
+import type { User, Account, Profile, Session } from 'next-auth';
+import type { AdapterUser } from 'next-auth/adapters';
+import type { JWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
   interface Session {
@@ -12,10 +15,7 @@ declare module 'next-auth' {
 }
 
 export const config = {
-  session: {
-    strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 7 days (matches backend JWT expiry)
-  },
+  ...authConfig,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -61,7 +61,9 @@ export const config = {
   })(),
   debug: process.env.NODE_ENV === 'development',
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn(params) {
+      const { user, account } = params;
+
       // Skip sync for credentials provider (user already verified against backend)
       if (account?.provider === 'credentials') {
         return true;
@@ -96,22 +98,22 @@ export const config = {
         return false;
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt(params) {
+      const { token, user } = params;
+
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session(params) {
+      const { session, token } = params;
+
       if (session.user && token.id) {
         session.user.id = token.id as string;
       }
       return session;
     },
-  },
-  pages: {
-    signIn: '/login',
-    error: '/login',
   },
 } satisfies NextAuthConfig;
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -10,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { signIn } from 'next-auth/react';
 import axiosClient, { type SignupData, type AuthResponse } from '@/lib/axios-client';
 
-export default function SignupPage() {
+function SignupContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -248,5 +249,17 @@ export default function SignupPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   );
 }
