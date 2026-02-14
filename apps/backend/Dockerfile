@@ -101,10 +101,10 @@ COPY apps/backend/python/requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir --break-system-packages --prefer-binary -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
-# Copy built application from builder
-COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/dist ./dist
-COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/python ./python
-COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/prisma ./prisma
+# Copy built application from builder (maintain workspace structure)
+COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/python ./apps/backend/python
+COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/prisma ./apps/backend/prisma
 
 # Copy node_modules (including Prisma client)
 COPY --from=builder /app/node_modules ./node_modules
@@ -122,10 +122,11 @@ EXPOSE 4000
 # Set environment variables
 ENV PORT=4000
 ENV HOSTNAME="0.0.0.0"
+ENV NODE_PATH=/app/node_modules:/app/apps/backend/node_modules
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:4000/health || exit 1
 
-# Start the application
-CMD ["node", "dist/main.js"]
+# Start the application from correct directory
+CMD ["node", "apps/backend/dist/main.js"]
