@@ -72,7 +72,7 @@ export const config = {
       // Sync user with backend
       try {
         if (!process.env.NEXT_PUBLIC_API_URL) {
-          // NEXT_PUBLIC_API_URL is required for backend sync
+          console.error('NEXT_PUBLIC_API_URL not configured');
           return false;
         }
 
@@ -88,13 +88,17 @@ export const config = {
         });
 
         if (!response.ok) {
-          // Backend will log the detailed error
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Backend sync failed:', {
+            status: response.status,
+            error: errorData.message || 'Unknown error',
+          });
           return false;
         }
 
         return true;
       } catch (error) {
-        // Backend will log the detailed error
+        console.error('Auth sync error:', error instanceof Error ? error.message : 'Unknown error');
         return false;
       }
     },
@@ -113,6 +117,24 @@ export const config = {
         session.user.id = token.id as string;
       }
       return session;
+    },
+    async redirect(params) {
+      const { url, baseUrl } = params;
+
+      // Allow relative URLs (already have language prefix)
+      if (url.startsWith('/')) {
+        return url;
+      }
+
+      // Allow URLs from same domain
+      if (new URL(url).origin === new URL(baseUrl).origin) {
+        return url;
+      }
+
+      // For auth flow redirects, use language from request headers (Accept-Language)
+      // Or default to 'en' if no preference detected
+      // The proxy.ts middleware will handle language detection on the next request
+      return `${baseUrl}/portfolios`;
     },
   },
 } satisfies NextAuthConfig;

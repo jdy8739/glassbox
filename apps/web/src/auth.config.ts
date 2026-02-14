@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { DEFAULT_LANGUAGE } from '@/lib/i18n/config';
 
 /**
  * Edge-compatible auth configuration
@@ -13,8 +14,8 @@ export const authConfig = {
     maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: `/${DEFAULT_LANGUAGE}/login`,
+    error: '/auth/error',  // Custom error handler that redirects to language-specific page
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -23,10 +24,8 @@ export const authConfig = {
                            nextUrl.pathname.startsWith('/profile');
 
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return true;
+        // Allow access if logged in, otherwise will redirect to signIn page
+        return isLoggedIn;
       }
 
       return true;
