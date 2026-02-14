@@ -71,7 +71,7 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-# Install system dependencies for Python
+# Install system dependencies for Python and Prisma
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -88,6 +88,7 @@ RUN apk add --no-cache \
     cmake \
     git \
     wget \
+    openssl \
     openssl-dev
 
 # Create non-root user for security
