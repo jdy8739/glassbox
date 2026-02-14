@@ -119,7 +119,7 @@ RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
 
 # Remove old Prisma client and regenerate for this architecture
 RUN rm -rf node_modules/.prisma node_modules/@prisma/client apps/backend/node_modules/.prisma
-RUN cd apps/backend && npx prisma generate
+RUN cd apps/backend && PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-3.0.x npx prisma generate
 
 # Set ownership
 RUN chown -R nestjs:nestjs /app
