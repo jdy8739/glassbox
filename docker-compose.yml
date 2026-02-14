@@ -7,9 +7,6 @@
 #   docker-compose down           # Stop all services
 #   docker-compose up -d --build  # Rebuild and start
 
-x-build-progress: &build-progress
-  BUILDKIT_PROGRESS: plain
-
 services:
   # ==========================================================================
   # Nginx Reverse Proxy
@@ -47,10 +44,6 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
-      cache_from:
-        - type=gha
-      extra_build_options:
-        - --progress=plain
     container_name: glassbox-frontend
     environment:
       - NODE_ENV=production
@@ -79,8 +72,6 @@ services:
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
-      extra_build_options:
-        - --progress=plain
     container_name: glassbox-backend
     environment:
       - NODE_ENV=production

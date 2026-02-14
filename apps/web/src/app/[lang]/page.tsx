@@ -5,11 +5,13 @@ import { HeroVisual } from '@/components/landing/hero-visual';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { LandingErrorFallback } from '@/components/landing/LandingErrorFallback';
 import { LocalizedLink } from '@/components/LocalizedLink';
+import { useSystemHealth } from '@/hooks/useSystemHealth';
 
 
 
 function HomeContent() {
   const { t } = useTranslation();
+  const healthStatus = useSystemHealth();
   return (
     <main className="min-h-screen overflow-hidden">
       {/* Animated Background Elements */}
@@ -397,13 +399,20 @@ function HomeContent() {
 
           {/* Bottom Footer */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-            <p className="text-black/50 dark:text-white/50 text-xs">
-              © 2024 Glassbox. Built with transparency and precision.
+            <p className="text-black/50 dark:text-white/50 text-xs" suppressHydrationWarning>
+              © {new Date().getFullYear()} Glassbox. Built with transparency and precision.
             </p>
             <div className="flex items-center gap-2 text-black/50 dark:text-white/50 text-xs">
-              <span className="flex gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                {t('footer.status.operational')}
+              <span className="flex gap-1.5 items-center">
+                <span className={`w-2 h-2 rounded-full transition-colors ${
+                  healthStatus.isHealthy
+                    ? 'bg-green-500 animate-pulse'
+                    : 'bg-red-500'
+                }`}></span>
+                {healthStatus.isHealthy
+                  ? t('footer.status.operational')
+                  : t('footer.status.error')
+                }
               </span>
             </div>
           </div>

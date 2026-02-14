@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { PortfolioService } from './portfolio/portfolio.service';
 
 @Injectable()
 export class AppService {
-  getHealth() {
+  constructor(private readonly portfolioService: PortfolioService) {}
+
+  async getHealth() {
+    // Check if Python worker is available
+    const pythonOk = await this.portfolioService.checkPythonHealth();
+
     return {
-      status: 'ok',
+      status: pythonOk ? 'ok' : 'error',
+      python: pythonOk,
       timestamp: new Date().toISOString(),
     };
   }
