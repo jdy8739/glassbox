@@ -87,7 +87,8 @@ RUN apk add --no-cache \
     libffi-dev \
     cmake \
     git \
-    wget
+    wget \
+    openssl-dev
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nestjs
@@ -102,6 +103,9 @@ RUN pip3 install --no-cache-dir --break-system-packages --prefer-binary -r /tmp/
     rm /tmp/requirements.txt
 
 # Copy built application from builder (maintain workspace structure)
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/package.json ./apps/backend/package.json
 COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/python ./apps/backend/python
 COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/prisma ./apps/backend/prisma
@@ -109,6 +113,9 @@ COPY --from=builder --chown=nestjs:nestjs /app/apps/backend/prisma ./apps/backen
 # Copy node_modules (including Prisma client)
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
+
+# Install pnpm for prisma generate
+RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
 
 # Generate Prisma client for this architecture (before switching user)
 RUN cd apps/backend && npx prisma generate
