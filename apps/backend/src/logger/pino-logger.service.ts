@@ -15,6 +15,9 @@ export class PinoLoggerService implements LoggerService {
               options: {
                 colorize: true,
                 translateTime: 'SYS:standard',
+                singleLine: false,
+                messageFormat: '{levelLabel} [{time}] {msg}',
+                ignore: 'pid,hostname',
               },
             }
           : undefined,

@@ -30,57 +30,46 @@ export class UsersService {
       timestamp,
     });
 
-    try {
-      // Check if user exists
-      const existingUser = await this.findByEmail(dto.email);
+    // Check if user exists
+    const existingUser = await this.findByEmail(dto.email);
 
-      if (existingUser) {
-        // Audit log: OAuth user updated
-        this.logger.log({
-          event: 'OAUTH_USER_UPDATED',
-          userId: existingUser.id,
-          email: dto.email,
-          timestamp,
-        });
+    if (existingUser) {
+      // Audit log: OAuth user updated
+      this.logger.log({
+        event: 'OAUTH_USER_UPDATED',
+        userId: existingUser.id,
+        email: dto.email,
+        timestamp,
+      });
 
-        // Update user info if changed
-        return this.prisma.user.update({
-          where: { email: dto.email },
-          data: {
-            name: dto.name,
-            googleId: dto.googleId,
-          },
-        });
-      }
-
-      // Create new user
-      const newUser = await this.prisma.user.create({
+      // Update user info if changed
+      return this.prisma.user.update({
+        where: { email: dto.email },
         data: {
-          email: dto.email,
           name: dto.name,
           googleId: dto.googleId,
         },
       });
-
-      // Audit log: OAuth user created
-      this.logger.log({
-        event: 'OAUTH_USER_CREATED',
-        userId: newUser.id,
-        email: dto.email,
-        timestamp,
-      });
-
-      return newUser;
-    } catch (error) {
-      // Audit log: OAuth sync error
-      this.logger.error({
-        event: 'OAUTH_SYNC_ERROR',
-        email: dto.email,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp,
-      });
-      throw error;
     }
+
+    // Create new user
+    const newUser = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        name: dto.name,
+        googleId: dto.googleId,
+      },
+    });
+
+    // Audit log: OAuth user created
+    this.logger.log({
+      event: 'OAUTH_USER_CREATED',
+      userId: newUser.id,
+      email: dto.email,
+      timestamp,
+    });
+
+    return newUser;
   }
 
   async updateUserName(userId: string, name: string) {
