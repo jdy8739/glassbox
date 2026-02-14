@@ -50,11 +50,13 @@ export default auth((request) => {
 
   // Skip proxy for:
   // - API routes
+  // - Auth routes (NextAuth)
   // - Static files (_next/static, _next/image)
   // - Public files (favicon, etc.)
   // - Already localized paths (starts with /en/ or /ko/)
   const shouldSkip =
     pathname.startsWith('/api') ||
+    pathname.startsWith('/auth') ||  // Skip NextAuth routes
     pathname.startsWith('/_next') ||
     pathname.includes('.') || // Files with extensions
     SUPPORTED_LANGUAGES.some((lang) => pathname.startsWith(`/${lang}/`) || pathname === `/${lang}`);
