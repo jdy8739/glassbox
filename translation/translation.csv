@@ -329,3 +329,4 @@ cta.feature-count,Core Features,핵심 기능
 cta.portfolio-count,Portfolios,포트폴리오
 cta.transparency-percent,Transparent,투명함
 footer.status.operational,All systems operational,모든 시스템 정상 운영 중
+footer.status.error,System unavailable,시스템 사용 불가
