@@ -11,11 +11,15 @@ import { useTranslation } from 'react-i18next';
 import { signIn } from 'next-auth/react';
 import axiosClient, { type LoginData, type AuthResponse } from '@/lib/axios-client';
 
-function LoginContent() {
+function LoginContent({ params }: { params: { lang: string } }) {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/portfolios';
+  const lang = params.lang;
+
+  // Construct callback URL with language prefix
+  const defaultCallback = `/${lang}/portfolios`;
+  const callbackUrl = searchParams.get('callbackUrl') || defaultCallback;
 
   // React Hook Form
   const {
@@ -183,7 +187,7 @@ function LoginContent() {
           <div className="mt-6">
             <button
               type="button"
-              onClick={() => signIn('google', { callbackUrl: '/portfolios' })}
+              onClick={() => signIn('google', { callbackUrl })}
               className="glass-button-outline w-full py-2.5 hover:bg-white/40 dark:hover:bg-slate-800/60 group transition-all duration-300"
             >
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
@@ -223,14 +227,14 @@ function LoginContent() {
   );
 }
 
-export default function LoginPage() {
+export default function LoginPage({ params }: { params: { lang: string } }) {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
       </div>
     }>
-      <LoginContent />
+      <LoginContent params={params} />
     </Suspense>
   );
 }

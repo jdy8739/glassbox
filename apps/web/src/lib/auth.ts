@@ -69,14 +69,21 @@ export const config = {
         return true;
       }
 
-      // Sync user with backend
+      // Sync user with backend (OAuth flow)
+      console.log('[Auth] Starting OAuth signin for:', user.email);
+
       try {
         if (!process.env.NEXT_PUBLIC_API_URL) {
-          console.error('NEXT_PUBLIC_API_URL not configured');
-          return false;
+          console.error('[Auth] NEXT_PUBLIC_API_URL not set:', {
+            isDev: process.env.NODE_ENV === 'development',
+          });
+          return false; // Will redirect to login page
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/sync`, {
+        const syncUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/sync`;
+        console.log('[Auth] Syncing with backend:', { syncUrl, email: user.email });
+
+        const response = await fetch(syncUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include', // Send cookies
@@ -87,19 +94,37 @@ export const config = {
           }),
         });
 
+        console.log('[Auth] Backend response:', {
+          status: response.status,
+          ok: response.ok,
+        });
+
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          console.error('Backend sync failed:', {
+          let errorMessage = 'Unknown error';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorData.error || JSON.stringify(errorData);
+          } catch (e) {
+            const text = await response.text();
+            errorMessage = text.substring(0, 200);
+          }
+
+          console.error('[Auth] Backend sync failed:', {
             status: response.status,
-            error: errorData.message || 'Unknown error',
+            error: errorMessage,
+            email: user.email,
           });
-          return false;
+          return false; // Will redirect to login page
         }
 
+        console.log('[Auth] ✅ OAuth user synced successfully:', user.email);
         return true;
       } catch (error) {
-        console.error('Auth sync error:', error instanceof Error ? error.message : 'Unknown error');
-        return false;
+        console.error('[Auth] ❌ OAuth sync error:', {
+          message: error instanceof Error ? error.message : String(error),
+          type: error instanceof Error ? error.constructor.name : typeof error,
+        });
+        return false; // Will redirect to login page
       }
     },
     async jwt(params) {

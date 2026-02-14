@@ -15,7 +15,7 @@ export const authConfig = {
   },
   pages: {
     signIn: `/${DEFAULT_LANGUAGE}/login`,
-    error: '/auth/error',  // Custom error handler that redirects to language-specific page
+    // On error, redirect to login page - proxy.ts handles language localization
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -24,7 +24,7 @@ export const authConfig = {
                            nextUrl.pathname.startsWith('/profile');
 
       if (isOnDashboard) {
-        // Allow access if logged in, otherwise will redirect to signIn page
+        // Allow access if logged in, otherwise redirect to signIn
         return isLoggedIn;
       }
 
