@@ -36,6 +36,7 @@ export class PortfolioService {
       volatility?: number | null;
       expectedReturn?: number | null;
       analysisDate?: string | null;
+      analysisEndDate?: string | null;
     } = {};
     if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
       stats = {
@@ -43,6 +44,7 @@ export class PortfolioService {
         volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
         expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
         analysisDate: dto.analysisSnapshot.analysisDate,
+        analysisEndDate: dto.analysisSnapshot.analysisEndDate,
       };
     }
 
@@ -58,6 +60,7 @@ export class PortfolioService {
         volatility: stats.volatility ?? undefined,
         expectedReturn: stats.expectedReturn ?? undefined,
         analysisDate: stats.analysisDate ?? undefined,
+        analysisEndDate: stats.analysisEndDate ?? undefined,
       },
     });
   }
@@ -77,6 +80,7 @@ export class PortfolioService {
         volatility: true,
         expectedReturn: true,
         analysisDate: true,
+        analysisEndDate: true,
         createdAt: true,
         updatedAt: true,
         // Explicitly exclude analysisSnapshot to reduce payload size
@@ -97,6 +101,7 @@ export class PortfolioService {
             },
           },
           analysisDate: p.analysisDate || undefined,
+          analysisEndDate: p.analysisEndDate || undefined,
         };
       }
 
@@ -133,6 +138,7 @@ export class PortfolioService {
       volatility?: number | null;
       expectedReturn?: number | null;
       analysisDate?: string | null;
+      analysisEndDate?: string | null;
     } = {};
     if (dto.analysisSnapshot && dto.analysisSnapshot.maxSharpe?.stats) {
       stats = {
@@ -140,6 +146,7 @@ export class PortfolioService {
         volatility: dto.analysisSnapshot.maxSharpe.stats.volatility,
         expectedReturn: dto.analysisSnapshot.maxSharpe.stats.return,
         analysisDate: dto.analysisSnapshot.analysisDate,
+        analysisEndDate: dto.analysisSnapshot.analysisEndDate,
       };
     }
 
@@ -149,14 +156,15 @@ export class PortfolioService {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.tickers !== undefined && { tickers: dto.tickers }),
         ...(dto.quantities !== undefined && { quantities: dto.quantities }),
-        ...(dto.analysisSnapshot !== undefined && { 
-          analysisSnapshot: dto.analysisSnapshot as unknown as Prisma.InputJsonValue 
+        ...(dto.analysisSnapshot !== undefined && {
+          analysisSnapshot: dto.analysisSnapshot as unknown as Prisma.InputJsonValue
         }),
         ...(Object.keys(stats).length > 0 && {
           sharpeRatio: stats.sharpeRatio,
           volatility: stats.volatility,
           expectedReturn: stats.expectedReturn,
           analysisDate: stats.analysisDate,
+          analysisEndDate: stats.analysisEndDate,
         }),
       },
     });

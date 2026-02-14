@@ -36,10 +36,11 @@ model Portfolio {
   analysisSnapshot Json? // Full analysis results (nullable until first analysis)
   
   // Summary stats for list view optimization
-  sharpeRatio    Float?
-  volatility     Float?
-  expectedReturn Float?
-  analysisDate   String?
+  sharpeRatio     Float?
+  volatility      Float?
+  expectedReturn  Float?
+  analysisDate    String?
+  analysisEndDate String?
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
