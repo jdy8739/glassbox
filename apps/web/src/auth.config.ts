@@ -9,6 +9,7 @@ import { DEFAULT_LANGUAGE } from '@/lib/i18n/config';
  * This config must be compatible with Edge Runtime
  */
 export const authConfig = {
+  basePath: '/auth',  // Use /auth instead of /api/auth
   session: {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60, // 7 days

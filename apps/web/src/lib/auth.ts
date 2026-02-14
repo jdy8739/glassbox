@@ -16,6 +16,7 @@ declare module 'next-auth' {
 
 export const config = {
   ...authConfig,
+  basePath: '/auth',  // Change from /api/auth to /auth
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
