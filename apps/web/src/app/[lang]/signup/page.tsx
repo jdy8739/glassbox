@@ -86,7 +86,7 @@ function SignupContent() {
                   <p className="text-sm">
                     {signupMutation.error instanceof Error
                       ? signupMutation.error.message
-                      : 'Failed to create account. Please try again.'}
+                      : t('auth.signup.error.failed')}
                   </p>
                 </div>
               </div>
@@ -104,8 +104,8 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('name', {
-                      required: 'Name is required',
-                      minLength: { value: 2, message: 'Name must be at least 2 characters' },
+                      required: t('auth.signup.validation.name-required'),
+                      minLength: { value: 2, message: t('auth.signup.validation.name-min-length') },
                     })}
                     type="text"
                     placeholder="John Doe"
@@ -130,10 +130,10 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('email', {
-                      required: 'Email is required',
+                      required: t('auth.validation.email-required'),
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Invalid email address',
+                        message: t('auth.validation.email-invalid'),
                       },
                     })}
                     type="email"
@@ -159,11 +159,11 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('password', {
-                      required: 'Password is required',
-                      minLength: { value: 8, message: 'Password must be at least 8 characters' },
+                      required: t('auth.validation.password-required'),
+                      minLength: { value: 8, message: t('auth.signup.validation.password-min-length') },
                       pattern: {
                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                        message: 'Password must contain uppercase, lowercase, and number',
+                        message: t('auth.signup.validation.password-pattern'),
                       },
                     })}
                     type="password"
@@ -177,7 +177,7 @@ function SignupContent() {
                   <p className="text-xs text-red-500 ml-1">{errors.password.message}</p>
                 )}
                 <p className="text-xs text-slate-500 dark:text-slate-400 ml-1">
-                  Must be 8+ characters with uppercase, lowercase, and number
+                  {t('auth.signup.validation.password-hint')}
                 </p>
               </div>
             </div>
