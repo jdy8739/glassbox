@@ -182,6 +182,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 - [ ] Test CORS (verify only frontend domain allowed)
 - [ ] Attempt SQL injection (should be blocked by Prisma)
 - [ ] Attempt XSS (should be blocked by Helmet CSP)
+- [ ] Verify services are running: `docker-compose ps`
 
 ### 6. Logging & Monitoring
 
@@ -214,6 +215,10 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 
 ### 8. Post-Deployment Verification
 
+- [ ] Verify services are running on Lightsail
+  ```bash
+  ssh user@your-host "docker-compose ps"
+  ```
 - [ ] Test frontend loads (HTTPS)
 - [ ] Test backend API responds (HTTPS)
 - [ ] Test authentication end-to-end
@@ -228,7 +233,15 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 
 ---
 
-## Security Testing Commands
+## Post-Deployment Commands
+
+### Verify Services Running
+```bash
+# SSH into your Lightsail instance and check docker-compose status
+ssh user@your-host "docker-compose ps"
+
+# Should show all services: frontend, backend, postgres, nginx
+```
 
 ### Check Security Headers
 ```bash
@@ -249,6 +262,12 @@ for i in {1..5}; do
     -H "Content-Type: application/json" \
     -d '{"email":"test@example.com","password":"test"}'
 done
+```
+
+### View Backend Logs
+```bash
+# SSH into your instance and view logs
+ssh user@your-host "docker-compose logs -f backend"
 ```
 
 ### Verify Environment Variables
