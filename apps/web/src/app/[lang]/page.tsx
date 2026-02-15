@@ -9,7 +9,10 @@ import { LocalizedLink } from '@/components/LocalizedLink';
 
 
 function HomeContent() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language || 'en';
+  const pdfUrl = `/glassbox-introduction-${currentLang}.pdf`;
+
   return (
     <main className="min-h-screen overflow-hidden">
       {/* Animated Background Elements */}
@@ -331,7 +334,7 @@ function HomeContent() {
                 <Zap className="w-5 h-5 group-hover:animate-spin" />
                 <span>{t('cta.launch')}</span>
               </LocalizedLink>
-              <a href="/glassbox-introduction.pdf" download className="text-lg px-8 sm:px-12 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm rounded-lg" title="Download introduction PDF">
+              <a href={pdfUrl} download className="text-lg px-8 sm:px-12 py-4 hover:scale-105 transition-transform flex items-center justify-center gap-2 text-slate-900 dark:text-white bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-sm shadow-sm rounded-lg" title="Download introduction PDF">
                 <BookOpen className="w-5 h-5" />
                 <span>{t('cta.learn')}</span>
               </a>
@@ -339,7 +342,7 @@ function HomeContent() {
 
             {/* Bottom Trust Text */}
             <p className="text-center text-sm text-black/50 dark:text-white/50 pt-4">
-              Start optimizing your portfolio with transparency and precision
+              {t('cta.transparency-message')}
             </p>
           </div>
         </div>
@@ -369,7 +372,7 @@ function HomeContent() {
             <div className="flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-black dark:text-white">Resources</h4>
               <nav className="flex flex-col gap-3">
-                <a href="/glassbox-introduction.pdf" download className="group flex items-center gap-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-cyan-300 transition-colors font-medium text-sm">
+                <a href={pdfUrl} download className="group flex items-center gap-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-cyan-300 transition-colors font-medium text-sm">
                   <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span>{t('footer.docs')}</span>
                   <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
