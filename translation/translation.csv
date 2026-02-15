@@ -279,6 +279,7 @@ auth.login.error.failed,Failed to login. Please try again.,로그인에 실패�
 auth.signup.title,Create Account,계정 만들기
 auth.signup.subtitle,Join Glassbox to optimize your portfolio,Glassbox에 가입하여 포트폴리오를 최적화하세요
 auth.signup.fullname,Full Name,이름
+auth.signup.confirm-password,Confirm Password,비밀번호 확인
 auth.signup.submit,Create Account,계정 만들기
 auth.signup.divider,Or sign up with,또는 다음으로 가입
 auth.signup.google,Sign up with Google,Google로 가입하기
@@ -286,9 +287,13 @@ auth.signup.has-account,Already have an account?,이미 계정이 있으신가�
 auth.signup.signin-link,Sign in,로그인
 auth.signup.validation.name-required,Name is required,이름은 필수입니다
 auth.signup.validation.name-min-length,Name must be at least 2 characters,이름은 최소 2자 이상이어야 합니다
+auth.signup.validation.name-max-length,Name must be less than 100 characters,이름은 100자 이하여야 합니다
 auth.signup.validation.password-min-length,Password must be at least 8 characters,비밀번호는 최소 8자 이상이어야 합니다
+auth.signup.validation.password-max-length,Password must be less than 100 characters,비밀번호는 100자 이하여야 합니다
 auth.signup.validation.password-pattern,"Password must contain uppercase, lowercase, and number","비밀번호는 대문자, 소문자, 숫자를 포함해야 합니다"
 auth.signup.validation.password-hint,"Must be 8+ characters with uppercase, lowercase, and number","8자 이상이며 대문자, 소문자, 숫자를 포함해야 합니다"
+auth.signup.validation.confirm-password-required,Please confirm your password,비밀번호를 다시 입력해주세요
+auth.signup.validation.passwords-must-match,Passwords do not match,비밀번호가 일치하지 않습니다
 auth.signup.error.failed,Failed to create account. Please try again.,계정 생성에 실패했습니다. 다시 시도해주세요.
 auth.reset.title,Reset Password,비밀번호 재설정
 auth.reset.subtitle,Enter your email to receive reset instructions,비밀번호 재설정 안내를 받으려면 이메일을 입력하세요

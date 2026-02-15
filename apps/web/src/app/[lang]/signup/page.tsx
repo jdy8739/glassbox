@@ -22,7 +22,8 @@ function SignupContent() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupData>();
+    getValues,
+  } = useForm<SignupData & { confirmPassword: string }>();
 
   // Signup mutation with axios
   const signupMutation = useMutation({
@@ -48,8 +49,10 @@ function SignupContent() {
     },
   });
 
-  const onSubmit = (data: SignupData) => {
-    signupMutation.mutate(data);
+  const onSubmit = (data: SignupData & { confirmPassword: string }) => {
+    // Exclude confirmPassword from API call
+    const { confirmPassword, ...signupData } = data;
+    signupMutation.mutate(signupData);
   };
 
   return (
@@ -106,6 +109,7 @@ function SignupContent() {
                     {...register('name', {
                       required: t('auth.signup.validation.name-required'),
                       minLength: { value: 2, message: t('auth.signup.validation.name-min-length') },
+                      maxLength: { value: 100, message: t('auth.signup.validation.name-max-length') },
                     })}
                     type="text"
                     placeholder="John Doe"
@@ -161,6 +165,7 @@ function SignupContent() {
                     {...register('password', {
                       required: t('auth.validation.password-required'),
                       minLength: { value: 8, message: t('auth.signup.validation.password-min-length') },
+                      maxLength: { value: 100, message: t('auth.signup.validation.password-max-length') },
                       pattern: {
                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
                         message: t('auth.signup.validation.password-pattern'),
@@ -179,6 +184,33 @@ function SignupContent() {
                 <p className="text-xs text-slate-500 dark:text-slate-400 ml-1">
                   {t('auth.signup.validation.password-hint')}
                 </p>
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
+                  {t('auth.signup.confirm-password')}
+                </label>
+                <div className="relative group">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-500 transition-colors duration-200">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <input
+                    {...register('confirmPassword', {
+                      required: t('auth.signup.validation.confirm-password-required'),
+                      validate: (value) =>
+                        value === getValues('password') || t('auth.signup.validation.passwords-must-match'),
+                    })}
+                    type="password"
+                    placeholder="••••••••"
+                    className={`glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01] ${
+                      errors.confirmPassword ? 'border-red-500' : ''
+                    }`}
+                  />
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-xs text-red-500 ml-1">{errors.confirmPassword.message}</p>
+                )}
               </div>
             </div>
 
