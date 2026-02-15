@@ -635,7 +635,6 @@ The CI/CD pipeline is defined in `.github/workflows/deploy.yml` and includes:
 1. **Test Job**: Runs type checking and linting
 2. **Build Job**: Builds and pushes Docker images to ghcr.io
 3. **Deploy Job**: SSHs into Lightsail and deploys new images
-4. **Health Check Job**: Verifies deployment success
 
 ### Required GitHub Secrets
 
@@ -778,8 +777,7 @@ The workflow runs automatically on:
 3. **Database Backup**: Creates backup before deployment
 4. **Rolling Update**: Updates backend first, then frontend
 5. **Migrations**: Runs Prisma database migrations
-6. **Health Check**: Verifies services are responding
-7. **Cleanup**: Removes old Docker images
+6. **Cleanup**: Removes old Docker images
 
 #### Rollback Procedure
 
@@ -811,7 +809,6 @@ Each run shows:
 - Build logs and timing
 - Image tags created
 - Deployment output
-- Health check results
 
 ### Troubleshooting
 
@@ -839,10 +836,7 @@ Error: manifest for ghcr.io/.../frontend:abc123 not found
 - Wait for build job to complete
 - Check image was pushed successfully in build logs
 
-**Health Check Failed**
-```
-ERROR: Backend health check failed after 30 attempts
-```
+**Backend Not Responding**
 - Check backend logs: `docker-compose logs backend`
 - Verify DATABASE_URL is correct
 - Check Prisma migrations ran successfully
@@ -903,17 +897,9 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ## Monitoring and Maintenance
 
-### Health Checks
+### Service Monitoring
 
-Add health check endpoints:
-
-**Backend** (`/health`):
-```typescript
-@Get('health')
-@Public()
-async healthCheck() {
-  const pythonOk = await this.pythonExecutor.checkPythonEnvironment();
-  const dbOk = await this.prisma.$queryRaw`SELECT 1`;
+Monitor your services using Docker commands:
 
   return {
     status: pythonOk && dbOk ? 'healthy' : 'degraded',

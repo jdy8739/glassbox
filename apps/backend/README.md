@@ -80,7 +80,6 @@ src/
 
 ### Health
 - `GET /` - API info
-- `GET /health` - Health check
 
 ### Portfolios (TODO)
 - `POST /portfolios` - Create portfolio

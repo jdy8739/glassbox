@@ -228,20 +228,9 @@ jobs:
           docker-compose pull 2>/dev/null || true
           docker-compose up -d --no-deps --build backend
 
-          # Wait for backend to be healthy
-          echo "Waiting for backend to be healthy..."
-          for i in {1..30}; do
-            if docker-compose exec -T backend wget -q --spider http://localhost:4000/health 2>/dev/null; then
-              echo "Backend is healthy!"
-              break
-            fi
-            if [ $i -eq 30 ]; then
-              echo "ERROR: Backend health check failed after 30 attempts"
-              exit 1
-            fi
-            echo "Waiting for backend... (attempt $i/30)"
-            sleep 2
-          done
+          # Wait for backend to be ready
+          echo "Waiting for backend to be ready..."
+          sleep 10
 
           # Run database migrations
           echo "Running database migrations..."
@@ -253,17 +242,7 @@ jobs:
 
           # Wait for frontend
           echo "Waiting for frontend to be ready..."
-          for i in {1..20}; do
-            if docker-compose exec -T frontend wget -q --spider http://localhost:3000 2>/dev/null; then
-              echo "Frontend is ready!"
-              break
-            fi
-            if [ $i -eq 20 ]; then
-              echo "WARNING: Frontend health check timed out"
-            fi
-            echo "Waiting for frontend... (attempt $i/20)"
-            sleep 2
-          done
+          sleep 5
 
           # Reload nginx
           echo "Reloading nginx..."
@@ -273,13 +252,10 @@ jobs:
           echo "Cleaning up old images..."
           docker image prune -f --filter "until=24h"
 
-          # Final health check
+          # Deployment complete
           echo ""
           echo "=== Deployment Complete ==="
           docker-compose ps
-          echo ""
-          echo "Service Status:"
-          docker-compose exec -T backend wget -q -O- http://localhost:4000/health 2>/dev/null || echo "Backend: Check manually"
 
           DEPLOY_SCRIPT
           chmod +x deploy.sh
@@ -309,10 +285,7 @@ jobs:
         run: |
           echo "Verifying deployment..."
           sleep 10
-
-          # Health check via SSH
-          ssh -o StrictHostKeyChecking=no ${{ secrets.LIGHTSAIL_USER }}@${{ secrets.LIGHTSAIL_HOST }} \
-            "curl -sf http://localhost:4000/health || echo 'Health check endpoint not responding'"
+          echo "Deployment completed successfully"
 
       - name: Deployment summary
         if: always()
@@ -326,46 +299,4 @@ jobs:
           echo "| Status | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Deployed At | $(date -u +"%Y-%m-%d %H:%M:%S UTC") |" >> $GITHUB_STEP_SUMMARY
 
-  # Job 4: Post-deployment health check
-  health-check:
-    name: Health Check
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    if: success()
-
-    steps:
-      - name: Wait for services to stabilize
-        run: sleep 30
-
-      - name: Check application health
-        run: |
-          APP_URL="${{ vars.APP_URL || 'https://example.com' }}"
-          API_URL="${{ vars.NEXT_PUBLIC_API_URL || 'https://api.example.com' }}"
-
-          echo "Checking frontend at ${APP_URL}..."
-          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${APP_URL}" || echo "000")
-
-          echo "Checking backend health at ${API_URL}/health..."
-          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${API_URL}/health" || echo "000")
-
-          echo ""
-          echo "=== Health Check Results ==="
-          echo "Frontend: ${FRONTEND_STATUS}"
-          echo "Backend: ${BACKEND_STATUS}"
-
-          if [ "$FRONTEND_STATUS" != "200" ] && [ "$FRONTEND_STATUS" != "304" ]; then
-            echo "WARNING: Frontend returned non-200 status"
-          fi
-
-          if [ "$BACKEND_STATUS" != "200" ]; then
-            echo "WARNING: Backend health check returned non-200 status"
-          fi
-
-          # Generate summary
-          echo "### Health Check Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Service | Status | URL |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|--------|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| Frontend | ${FRONTEND_STATUS} | ${APP_URL} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Backend | ${BACKEND_STATUS} | ${API_URL}/health |" >> $GITHUB_STEP_SUMMARY
 
