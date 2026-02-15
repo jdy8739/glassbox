@@ -118,6 +118,9 @@ COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
 # Install pnpm for prisma generate
 RUN corepack enable && corepack prepare pnpm@9.2.0 --activate
 
+# Install Prisma CLI globally for migrations
+RUN npm install -g prisma@5.18.0
+
 # Remove old Prisma client and regenerate for this architecture
 RUN rm -rf node_modules/.prisma node_modules/@prisma/client apps/backend/node_modules/.prisma
 RUN cd apps/backend && PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-3.0.x npx prisma generate
