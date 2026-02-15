@@ -289,6 +289,8 @@ auth.reset.back-to-login,Back to Sign In,로그인으로 돌아가기
 nav.signin,Sign In,로그인
 nav.signup,Get Started,시작하기
 auth.logout,Sign Out,로그아웃
+auth.required.title,Save Your Analysis,분석 저장하기
+auth.required.message,Sign in to save this portfolio and access your analysis history.,이 포트폴리오를 저장하고 분석 기록에 액세스하려면 로그인하세요.
 profile.title,Profile Settings,프로필 설정
 profile.subtitle,Manage your account settings and preferences,계정 설정 및 환경설정을 관리하세요
 profile.nav.account,Account,계정
