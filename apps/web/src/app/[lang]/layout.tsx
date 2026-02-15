@@ -57,11 +57,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'Glassbox',
       locale: lang === 'ko' ? 'ko_KR' : 'en_US',
       type: 'website',
+      images: [
+        {
+          url: `${siteUrl}/og-image.png`, // Use absolute URL for social media
+          width: 1200,
+          height: 630,
+          alt: 'Glassbox Logo',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: titles[lang as Language] || titles.en,
       description: descriptions[lang as Language] || descriptions.en,
+      images: [`${siteUrl}/og-image.png`],
     },
   };
 }

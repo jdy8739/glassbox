@@ -34,7 +34,8 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
       return axiosClient.post('/auth/login', data);
     },
     onSuccess: async (response: AuthResponse) => {
-      // Sync NextAuth session with backend session by passing user data
+      // Backend has set httpOnly cookie for API authentication
+      // Sync NextAuth session for client-side UI state (display name, email, etc.)
       const result = await signIn('credentials', {
         id: response.user.id,
         email: response.user.email,
@@ -43,11 +44,9 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
       });
 
       if (result?.ok) {
-        // Client-side navigation to callbackUrl (e.g., /portfolio/new) or default to /portfolios
-        // Session is already synced by signIn(), no need for full reload
         router.push(callbackUrl);
       } else {
-        console.error('Failed to sync NextAuth session');
+        console.error('[Login] Failed to sync NextAuth session');
       }
     },
   });
@@ -90,7 +89,7 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
                   <p className="text-sm">
                     {loginMutation.error instanceof Error
                       ? loginMutation.error.message
-                      : 'Failed to login. Please try again.'}
+                      : t('auth.login.error.failed')}
                   </p>
                 </div>
               </div>
@@ -108,10 +107,10 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
                   </div>
                   <input
                     {...register('email', {
-                      required: 'Email is required',
+                      required: t('auth.validation.email-required'),
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Invalid email address',
+                        message: t('auth.validation.email-invalid'),
                       },
                     })}
                     type="email"
@@ -142,7 +141,7 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
                   </div>
                   <input
                     {...register('password', {
-                      required: 'Password is required',
+                      required: t('auth.validation.password-required'),
                     })}
                     type="password"
                     placeholder="••••••••"

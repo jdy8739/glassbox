@@ -243,12 +243,4 @@ export class PortfolioService {
       analysisEndDate: endDate,
     };
   }
-
-  /**
-   * Health check for Python environment
-   * @returns Promise<boolean>
-   */
-  async checkPythonHealth(): Promise<boolean> {
-    return this.pythonExecutor.checkPythonEnvironment();
-  }
 }

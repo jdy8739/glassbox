@@ -108,13 +108,3 @@ export const getPortfolio = async (id: string) => {
 export const deletePortfolio = async (id: string) => {
   return axiosClient.delete<void>(`/portfolio/${id}`);
 };
-
-/**
- * Check if backend and Python environment are healthy
- */
-export const checkPortfolioHealth = async () => {
-  return axiosClient.get<{
-    status: string;
-    pythonAvailable: boolean;
-  }>('/portfolio/health');
-};

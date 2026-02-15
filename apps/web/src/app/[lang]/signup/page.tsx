@@ -22,7 +22,8 @@ function SignupContent() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupData>();
+    getValues,
+  } = useForm<SignupData & { confirmPassword: string }>();
 
   // Signup mutation with axios
   const signupMutation = useMutation({
@@ -30,7 +31,8 @@ function SignupContent() {
       return axiosClient.post('/auth/signup', data);
     },
     onSuccess: async (response: AuthResponse) => {
-      // Sync NextAuth session with backend session by passing user data
+      // Backend has set httpOnly cookie for API authentication
+      // Sync NextAuth session for client-side UI state (display name, email, etc.)
       const result = await signIn('credentials', {
         id: response.user.id,
         email: response.user.email,
@@ -39,17 +41,17 @@ function SignupContent() {
       });
 
       if (result?.ok) {
-        // Client-side navigation to callbackUrl (e.g., /portfolio/new) or default to /portfolios
-        // Session is already synced by signIn(), no need for full reload
         router.push(callbackUrl);
       } else {
-        console.error('Failed to sync NextAuth session');
+        console.error('[Signup] Failed to sync NextAuth session');
       }
     },
   });
 
-  const onSubmit = (data: SignupData) => {
-    signupMutation.mutate(data);
+  const onSubmit = (data: SignupData & { confirmPassword: string }) => {
+    // Exclude confirmPassword from API call
+    const { confirmPassword, ...signupData } = data;
+    signupMutation.mutate(signupData);
   };
 
   return (
@@ -86,7 +88,7 @@ function SignupContent() {
                   <p className="text-sm">
                     {signupMutation.error instanceof Error
                       ? signupMutation.error.message
-                      : 'Failed to create account. Please try again.'}
+                      : t('auth.signup.error.failed')}
                   </p>
                 </div>
               </div>
@@ -104,8 +106,9 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('name', {
-                      required: 'Name is required',
-                      minLength: { value: 2, message: 'Name must be at least 2 characters' },
+                      required: t('auth.signup.validation.name-required'),
+                      minLength: { value: 2, message: t('auth.signup.validation.name-min-length') },
+                      maxLength: { value: 100, message: t('auth.signup.validation.name-max-length') },
                     })}
                     type="text"
                     placeholder="John Doe"
@@ -130,10 +133,10 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('email', {
-                      required: 'Email is required',
+                      required: t('auth.validation.email-required'),
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Invalid email address',
+                        message: t('auth.validation.email-invalid'),
                       },
                     })}
                     type="email"
@@ -159,11 +162,12 @@ function SignupContent() {
                   </div>
                   <input
                     {...register('password', {
-                      required: 'Password is required',
-                      minLength: { value: 8, message: 'Password must be at least 8 characters' },
+                      required: t('auth.validation.password-required'),
+                      minLength: { value: 8, message: t('auth.signup.validation.password-min-length') },
+                      maxLength: { value: 100, message: t('auth.signup.validation.password-max-length') },
                       pattern: {
                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                        message: 'Password must contain uppercase, lowercase, and number',
+                        message: t('auth.signup.validation.password-pattern'),
                       },
                     })}
                     type="password"
@@ -177,8 +181,35 @@ function SignupContent() {
                   <p className="text-xs text-red-500 ml-1">{errors.password.message}</p>
                 )}
                 <p className="text-xs text-slate-500 dark:text-slate-400 ml-1">
-                  Must be 8+ characters with uppercase, lowercase, and number
+                  {t('auth.signup.validation.password-hint')}
                 </p>
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
+                  {t('auth.signup.confirm-password')}
+                </label>
+                <div className="relative group">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-500 transition-colors duration-200">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <input
+                    {...register('confirmPassword', {
+                      required: t('auth.signup.validation.confirm-password-required'),
+                      validate: (value) =>
+                        value === getValues('password') || t('auth.signup.validation.passwords-must-match'),
+                    })}
+                    type="password"
+                    placeholder="••••••••"
+                    className={`glass-input w-full pl-10 transition-all duration-200 focus:scale-[1.01] ${
+                      errors.confirmPassword ? 'border-red-500' : ''
+                    }`}
+                  />
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-xs text-red-500 ml-1">{errors.confirmPassword.message}</p>
+                )}
               </div>
             </div>
 

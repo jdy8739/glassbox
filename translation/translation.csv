@@ -113,7 +113,7 @@ portfolio.card.new-description,Start a fresh analysis,새로운 분석 시작
 portfolio.save-modal.title,Save Portfolio,포트폴리오 저장
 portfolio.save-modal.description,Give your portfolio a name to save it to your library.,포트폴리오에 이름을 지정하여 라이브러리에 저장하세요.
 portfolio.save-modal.label,Portfolio Name,포트폴리오 이름
-portfolio.save-modal.placeholder,e.g., My Tech Portfolio,예: 내 기술 포트폴리오
+portfolio.save-modal.placeholder,"e.g., My Tech Portfolio","예: 내 기술 포트폴리오"
 portfolio.save-modal.error-short,Name must be at least 3 characters,이름은 최소 3자 이상이어야 합니다
 portfolio.save-modal.error-long,Name must be 50 characters or less,이름은 50자 이하여야 합니다
 portfolio.save-modal.error-duplicate,A portfolio with this name already exists,이 이름의 포트폴리오가 이미 존재합니다
@@ -123,7 +123,7 @@ portfolio.save-modal.loading,Loading...,로드 중...
 portfolio.save-modal.save,Save,저장
 portfolio.template.assets,Assets,자산
 portfolio.template.classic-60-40.name,The Classic 60/40,클래식 60/40
-portfolio.template.classic-60-40.description,60% Stocks 40% Bonds. A time-tested balance.,60% 주식, 40% 채권. 검증된 균형 배분.
+portfolio.template.classic-60-40.description,"60% Stocks 40% Bonds. A time-tested balance.","60% 주식, 40% 채권. 검증된 균형 배분."
 portfolio.template.big-tech.name,Big Tech Growth,빅 테크 성장
 portfolio.template.big-tech.description,High exposure to major US technology companies.,미국 주요 기술 기업에 높은 노출.
 portfolio.template.all-weather.name,All Weather,올 웨더
@@ -272,18 +272,33 @@ auth.login.divider,Or continue with,또는 다음으로 계속
 auth.login.google,Continue with Google,Google로 계속하기
 auth.login.no-account,Don't have an account?,계정이 없으신가요?
 auth.login.signup-link,Sign up,회원가입
+auth.validation.email-required,Email is required,이메일은 필수입니다
+auth.validation.email-invalid,Invalid email address,유효하지 않은 이메일 주소입니다
+auth.validation.password-required,Password is required,비밀번호는 필수입니다
+auth.login.error.failed,Failed to login. Please try again.,로그인에 실패했습니다. 다시 시도해주세요.
 auth.signup.title,Create Account,계정 만들기
 auth.signup.subtitle,Join Glassbox to optimize your portfolio,Glassbox에 가입하여 포트폴리오를 최적화하세요
 auth.signup.fullname,Full Name,이름
+auth.signup.confirm-password,Confirm Password,비밀번호 확인
 auth.signup.submit,Create Account,계정 만들기
 auth.signup.divider,Or sign up with,또는 다음으로 가입
 auth.signup.google,Sign up with Google,Google로 가입하기
 auth.signup.has-account,Already have an account?,이미 계정이 있으신가요?
 auth.signup.signin-link,Sign in,로그인
+auth.signup.validation.name-required,Name is required,이름은 필수입니다
+auth.signup.validation.name-min-length,Name must be at least 2 characters,이름은 최소 2자 이상이어야 합니다
+auth.signup.validation.name-max-length,Name must be less than 100 characters,이름은 100자 이하여야 합니다
+auth.signup.validation.password-min-length,Password must be at least 8 characters,비밀번호는 최소 8자 이상이어야 합니다
+auth.signup.validation.password-max-length,Password must be less than 100 characters,비밀번호는 100자 이하여야 합니다
+auth.signup.validation.password-pattern,"Password must contain uppercase, lowercase, and number","비밀번호는 대문자, 소문자, 숫자를 포함해야 합니다"
+auth.signup.validation.password-hint,"Must be 8+ characters with uppercase, lowercase, and number","8자 이상이며 대문자, 소문자, 숫자를 포함해야 합니다"
+auth.signup.validation.confirm-password-required,Please confirm your password,비밀번호를 다시 입력해주세요
+auth.signup.validation.passwords-must-match,Passwords do not match,비밀번호가 일치하지 않습니다
+auth.signup.error.failed,Failed to create account. Please try again.,계정 생성에 실패했습니다. 다시 시도해주세요.
 auth.reset.title,Reset Password,비밀번호 재설정
 auth.reset.subtitle,Enter your email to receive reset instructions,비밀번호 재설정 안내를 받으려면 이메일을 입력하세요
 auth.reset.submit,Send Reset Link,재설정 링크 보내기
-auth.reset.success-message,If an account exists for that email, we have sent password reset instructions.,해당 이메일로 계정이 존재하면 비밀번호 재설정 안내를 보냈습니다.
+auth.reset.success-message,"If an account exists for that email, we have sent password reset instructions.","해당 이메일로 계정이 존재하면 비밀번호 재설정 안내를 보냈습니다."
 auth.reset.check-email,Please check your email inbox and spam folder.,이메일 수신함과 스팸함을 확인해주세요.
 auth.reset.back-to-login,Back to Sign In,로그인으로 돌아가기
 nav.signin,Sign In,로그인
@@ -313,8 +328,7 @@ profile.error.update-failed,Failed to update profile. Please try again.,프로�
 profile.validation.name-required,Name is required,이름은 필수입니다
 profile.validation.name-min-length,Name must be at least 2 characters,이름은 최소 2자 이상이어야 합니다
 profile.validation.name-max-length,Name must be 50 characters or less,이름은 50자 이하여야 합니다
-profile.validation.name-pattern,Name can only contain letters, spaces, hyphens, apostrophes, and periods,이름은 문자, 공백, 하이픈, 아포스트로피, 마침표만 포함할 수 있습니다
-profile.validation.name-no-spaces,Name cannot be only spaces,이름은 공백만으로 구성될 수 없습니다
+profile.validation.name-empty,Please enter a valid name,유효한 이름을 입력해주세요
 profile.delete.confirm-title,Delete Account,계정 삭제
 profile.delete.confirm-message,Are you sure you want to delete your account? This action cannot be undone and all your portfolios will be permanently deleted.,계정을 삭제하시겠습니까? 이 작업은 취소할 수 없으며 모든 포트폴리오가 영구적으로 삭제됩니다.
 profile.delete.confirm-button,Delete My Account,내 계정 삭제
@@ -332,3 +346,4 @@ cta.portfolio-count,Portfolios,포트폴리오
 cta.transparency-percent,Transparent,투명함
 footer.status.operational,All systems operational,모든 시스템 정상 운영 중
 footer.status.error,System unavailable,시스템 사용 불가
+cta.transparency-message,Start optimizing your portfolio with transparency and precision,투명성과 정확성을 갖춘 포트폴리오 최적화를 시작하세요
