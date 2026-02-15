@@ -320,13 +320,9 @@ export default function ProfilePage() {
                         value: 50,
                         message: t('profile.validation.name-max-length'),
                       },
-                      pattern: {
-                        value: /^[a-zA-Z\s'\-\.]+$/,
-                        message: t('profile.validation.name-pattern'),
-                      },
                       validate: {
-                        noOnlySpaces: (value) =>
-                          value.trim().length > 0 || t('profile.validation.name-no-spaces'),
+                        notEmpty: (value) =>
+                          value.trim().length > 0 || t('profile.validation.name-empty'),
                       },
                     })}
                     className="glass-input w-full"
