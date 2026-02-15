@@ -1,308 +1,233 @@
-# Glassbox - Portfolio Optimization Tool
+# Glassbox — Portfolio Optimization with Transparency
 
-A monorepo containing a portfolio optimization and beta hedging tool with Glass UI design. This project includes a Next.js frontend, Nest.js backend, and CLI tool for MVP testing.
+**Make smarter investment decisions with complete clarity.**
 
-> **👋 New to development?** Check out **[GETTING_STARTED.md](./GETTING_STARTED.md)** for a complete beginner's guide with step-by-step instructions!
+Stop guessing about your portfolio. Glassbox gives you the insights and recommendations you need to optimize your investments, reduce risk, and understand exactly what you own.
 
-## 🏗️ Project Structure
+---
 
-```
-glassbox/
-├── apps/
-│   ├── web/               # Next.js 14+ web application
-│   ├── backend/           # Nest.js 10+ REST API
-│   └── cli/               # CLI tool for MVP testing
-├── packages/
-│   ├── types/             # Shared TypeScript types
-│   ├── utils/             # Shared utility functions
-│   └── config/            # Shared ESLint/TS configs
-├── package.json           # Root workspace config
-├── pnpm-workspace.yaml    # pnpm workspaces definition
-├── turbo.json             # Turborepo build orchestration
-└── README.md              # This file
-```
+## 💡 The Problem
 
-## 🚀 Quick Start
+Most investors face three challenges:
 
-### Prerequisites
+1. **Portfolio Confusion** — Should I own 20% AAPL or 10%? How much is too much?
+2. **Hidden Risk** — Is my portfolio exposed to market crashes? By how much?
+3. **No Roadmap** — If I want to reduce market risk, what exactly should I do?
 
-- **Node.js 18+**
-- **pnpm 9+** (recommended for monorepo management)
-- **Python 3.9+** (for portfolio optimization calculations)
-- **PostgreSQL 12+** (for backend database)
+Glassbox solves all three.
 
-### Installation
+---
+
+## 🎯 What Glassbox Delivers
+
+### 1. **Optimal Portfolio Weights**
+Discover the exact allocation that balances risk and return for your goals.
+- See what "optimal" actually looks like for your stocks
+- Compare lowest-risk vs. highest-return strategies instantly
+- Make confident rebalancing decisions with data, not emotion
+
+### 2. **Complete Risk Visibility**
+Understand your portfolio's market exposure—down to the number.
+- Know exactly how your portfolio moves with market crashes
+- Identify concentration risks before they hurt you
+- Compare your portfolio to the market itself
+
+### 3. **Actionable Hedging Strategies**
+Get specific, executable recommendations to protect your wealth.
+- "Short 23 shares of SPY" — actionable instructions
+- Protect your portfolio while keeping your alpha
+- Choose hedging methods that fit your account size and style
+
+---
+
+## 📊 Why Glassbox?
+
+**No Black Boxes** — See exactly how every number is calculated. No proprietary secrets.
+
+**Instant Results** — Analysis in 10-30 seconds, not hours or days.
+
+**Built for Everyone** — Whether you manage $50k or $5M, Glassbox works for you.
+
+**Transparent Methodology** — Based on Modern Portfolio Theory, not marketing claims.
+
+**Free to Explore** — No signup required to play with your portfolio ideas.
+
+**Save & Compare** — Track multiple strategies over time and see how they perform.
+
+---
+
+## 🚀 How It Works
+
+**Step 1: Enter Your Portfolio**
+- Type in stock tickers you own or want to own
+- Add quantities (the actual number of shares you hold)
+- Glassbox automatically includes treasury bonds for stability
+
+**Step 2: Get Your Analysis**
+- Historical data fetched automatically
+- Efficient frontier calculated in seconds
+- Results shown in clear, visual form
+
+**Step 3: Understand Your Options**
+- See the lowest-risk portfolio for your stocks
+- See the highest return-per-risk portfolio
+- See your current portfolio plotted on the risk/return spectrum
+
+**Step 4: Get Hedging Guidance**
+- Learn your portfolio's beta (market sensitivity)
+- Get specific recommendations for reducing market exposure
+- Choose between simple (SPY) or advanced (futures) hedging
+
+**Step 5: Make Better Decisions**
+- Save your analysis for future reference
+- Compare multiple portfolio strategies
+- Rebalance with confidence
+
+---
+
+## ✨ Real Value You Get
+
+✅ **Confidence** — Know your portfolio is optimized, not random
+
+✅ **Risk Control** — See and manage your market exposure explicitly
+
+✅ **Time Savings** — Get analysis in seconds instead of research hours
+
+✅ **Better Returns** — Optimize risk-adjusted returns mathematically
+
+✅ **Protection** — Know how to hedge when you need to
+
+✅ **Transparency** — Understand every calculation
+
+---
+
+## 🎨 Designed for Trust
+
+Glassbox uses transparent glass UI design reflecting our core values:
+- **Transparency** — See through every recommendation
+- **Clarity** — Complex ideas explained simply
+- **Trust** — No hidden costs, no proprietary algorithms
+
+Every interaction is designed to build confidence in your investment decisions.
+
+---
+
+## ⚠️ Important: This Is Not Financial Advice
+
+Glassbox is an educational and analytical tool. It provides analysis based on historical data, but historical performance does not guarantee future results. Market conditions change. Past correlations may break down.
+
+**Always consult a qualified financial advisor before making investment decisions.**
+
+[Read full disclaimers →](./apps/web/public/glassbox-introduction-en.pdf)
+
+---
+
+## 🏃 Ready to Optimize Your Portfolio?
+
+1. Visit [glassbox.space](https://glassbox.space)
+2. Enter your stock tickers
+3. Click "Analyze"
+4. Get insights in seconds
+5. Save your strategy
+
+**No signup required to explore. Sign up to save and track.**
+
+---
+
+## 🏗️ For Developers & Contributors
+
+Interested in how Glassbox works under the hood?
+
+### Technology
+- **Frontend**: Next.js 14+ with modern Glass UI
+- **Backend**: Nest.js 10+ REST API with Python optimization engine
+- **Database**: PostgreSQL
+- **Market Data**: Yahoo Finance real-time data
+- **Optimization**: Modern Portfolio Theory with Monte Carlo sampling
+
+### Get Started Locally
 
 ```bash
-# Install all dependencies
+# Install everything
 pnpm install
+cd apps/backend/python && pip3 install -r requirements.txt && cd ../../..
 
-# Install Python dependencies for backend
-cd apps/backend/python
-pip3 install -r requirements.txt
-cd ../../..
-
-# Build all packages
-pnpm build
-
-# Start development servers
+# Start dev servers
 pnpm dev
 ```
 
-This will start:
-- **Frontend**: http://localhost:3000
-- **Backend**: http://localhost:4000
-- **CLI**: Available via `pnpm dev` in `apps/cli`
+Runs at:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:4000
 
-## 📦 Packages
+### Project Structure
 
-### Frontend (`apps/web`)
-
-Next.js 14+ web application with Glass UI design.
-
-```bash
-cd apps/web
-pnpm dev      # Start development server
-pnpm build    # Build for production
+```
+glassbox/
+├── apps/web/           # Next.js frontend (Glass UI)
+├── apps/backend/       # Nest.js API + Python worker
+├── apps/cli/           # Command-line tool (MVP)
+└── packages/           # Shared types, utils, configs
 ```
 
-**Features:**
-- Landing page with marketing content
-- Portfolio builder (ticker search, quantity input)
-- Analysis results with efficient frontier visualization
-- Portfolio library for saved portfolios
-
-**Technology Stack:**
-- Next.js 14+
-- React 18+
-- TypeScript
-- Tailwind CSS
-- Glass UI design
-
-See [apps/web/README.md](./apps/web/README.md) for details.
-
-### Backend (`apps/backend`)
-
-Nest.js 10+ REST API for portfolio optimization.
+### Common Commands
 
 ```bash
-cd apps/backend
-pnpm dev      # Start development server
-pnpm build    # Build for production
+pnpm dev              # Start all services
+pnpm run fe           # Frontend only
+pnpm run be           # Backend only
+pnpm build            # Build everything
+pnpm lint             # Check code quality
+pnpm format           # Auto-format code
 ```
 
-**Features:**
-- Portfolio CRUD operations
-- Efficient frontier calculation
-- Beta calculation and hedging recommendations
-- Market data fetching from Yahoo Finance
-- Google OAuth authentication
-- API documentation (Swagger)
+---
 
-**Technology Stack:**
-- Nest.js 10+
-- TypeScript
-- PostgreSQL
-- Prisma ORM
-- Passport.js (Auth)
-- Swagger/OpenAPI
+## 📖 Learn More
 
-See [apps/backend/README.md](./apps/backend/README.md) for details.
+- **[Introduction Guide](./apps/web/public/glassbox-introduction-en.pdf)** — Full user guide with disclaimers
+- **[.claude/ Documentation](./CLAUDE.md)** — Complete technical specs
+- **[Frontend README](./apps/web/README.md)** — Next.js setup
+- **[Backend README](./apps/backend/README.md)** — Nest.js setup
 
-### CLI (`apps/cli`)
+---
 
-Command-line tool for portfolio analysis (MVP).
+## 🚀 Deploy Glassbox
 
-```bash
-cd apps/cli
-pnpm dev analyze -t AAPL MSFT NVDA    # Run analysis
-pnpm build                             # Build CLI
-```
+### Frontend
+Vercel, Netlify, or any Node.js host
 
-**Features:**
-- Ticker input and validation
-- Portfolio analysis via CLI
-- Efficient frontier calculation
-- Beta hedging recommendations
-- JSON output support
+### Backend
+AWS, Heroku, Railway, or any Node.js host
 
-**Technology Stack:**
-- Node.js CLI
-- TypeScript
-- Commander.js
-- Chalk (colored output)
+### Database
+PostgreSQL 12+ required
 
-See [apps/cli/README.md](./apps/cli/README.md) for details.
-
-## 🎨 Shared Packages
-
-### `packages/types`
-
-Shared TypeScript interfaces and types used across all applications.
-
-**Includes:**
-- `PortfolioInput` - Portfolio builder input
-- `AnalysisResult` - Analysis results structure
-- `PortfolioStats` - Portfolio statistics
-- `EfficientPortfolio` - Efficient frontier portfolio
-- API response types
-
-### `packages/utils`
-
-Shared utility functions for calculations and formatting.
-
-**Includes:**
-- Portfolio validation
-- Currency/percentage formatting
-- Sharpe ratio calculation
-- Portfolio weight normalization
-- Ticker validation
-
-### `packages/config`
-
-Shared development configurations.
-
-**Includes:**
-- ESLint rules
-- TypeScript base configs
-- Prettier formatting rules
-
-## 📋 Available Scripts
-
-### Root Level
-
-```bash
-# Development
-pnpm dev                # Start all development servers (turbo)
-pnpm run fe             # Start only frontend
-pnpm run be             # Start only backend (runs on port 4000)
-
-# Building
-pnpm build              # Build all packages (turbo)
-pnpm build:frontend     # Build only frontend
-pnpm build:backend      # Build only backend
-
-# Quality
-pnpm lint               # Lint all packages
-pnpm type-check         # Type check all packages
-pnpm format             # Format code with Prettier
-
-# Maintenance
-pnpm clean              # Clean all build outputs
-```
-
-### Individual Apps
-
-Each app has its own scripts. See individual README files for details.
-
-## 🔧 Configuration Files
-
-- **`package.json`** - Root workspace configuration
-- **`pnpm-workspace.yaml`** - Defines workspace packages
-- **`turbo.json`** - Build pipeline and caching configuration
-- **`tsconfig.json`** - Base TypeScript configuration
-- **`.prettierrc`** - Prettier code formatting rules
-- **`.gitignore`** - Git ignore patterns
-
-## 🗄️ Database Setup (Backend)
-
-```bash
-cd apps/backend
-
-# Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your database URL
-
-# Generate Prisma client
-pnpm prisma generate
-
-# Run migrations
-pnpm prisma migrate dev
-
-# View database (optional)
-pnpm prisma studio
-```
-
-## 🌐 API Documentation
-
-Once the backend is running, visit:
-- **Swagger UI**: http://localhost:4000/api
-- **Health Check**: http://localhost:4000/health
-
-## 📖 Documentation
-
-Project documentation is organized in `.claude/`:
-
-- **`.claude/rules/prd.md`** - Product requirements document
-- **`.claude/rules/architecture.md`** - Technical architecture
-- **`.claude/rules/design.md`** - Glass UI design specifications
-- **`.claude/rules/pages.md`** - Web application page structure
-
-## 🧪 Testing
-
-```bash
-# Run tests
-pnpm test
-
-# Run tests with coverage
-pnpm test:cov
-
-# Watch mode
-pnpm test:watch
-```
-
-## 🚀 Deployment
-
-### Frontend (Next.js)
-
-```bash
-cd apps/web
-pnpm build
-pnpm start
-```
-
-Deploy to Vercel, Netlify, or your preferred hosting.
-
-### Backend (Nest.js)
-
-```bash
-cd apps/backend
-pnpm build
-pnpm start
-```
-
-Deploy to AWS, Heroku, Railway, or your preferred Node.js hosting.
-
-### Docker Support (TODO)
-
-Docker configurations for containerized deployment.
-
-## 📚 Technology Stack
-
-| Component | Technology | Version |
-|-----------|-----------|---------|
-| **Package Manager** | pnpm | 9+ |
-| **Build Tool** | Turborepo | 2.3+ |
-| **Frontend Framework** | Next.js | 14+ |
-| **Backend Framework** | Nest.js | 10+ |
-| **Language** | TypeScript | 5.6+ |
-| **Database** | PostgreSQL | 12+ |
-| **ORM** | Prisma | 5+ |
-| **UI Framework** | React | 18+ |
-| **Styling** | Tailwind CSS | 3.4+ |
-| **Testing** | Jest | 29+ |
+---
 
 ## 🤝 Contributing
 
-1. Create a feature branch
-2. Make your changes
-3. Run `pnpm lint` and `pnpm type-check`
-4. Create a pull request
+Help us make Glassbox better:
+
+1. Fork the repo
+2. Create a feature branch
+3. Make your changes (`pnpm lint`, `pnpm type-check`)
+4. Submit a pull request
+
+---
 
 ## 📝 License
 
-MIT
+MIT — Use freely, commercially and personally.
 
-## 📞 Support
+---
 
-For issues or questions, refer to the project documentation in `.claude/` or the individual app README files.
+## 💬 Have Questions?
+
+- 📚 Read the [Introduction Guide](./apps/web/public/glassbox-introduction-en.pdf)
+- 🛠️ Check [.claude/ docs](./CLAUDE.md) for technical details
+- 📖 See individual app READMEs for setup help
+
+---
+
+**Glassbox — Make smarter investment decisions with complete clarity.**
