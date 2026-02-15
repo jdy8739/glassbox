@@ -4,6 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Glassbox',
   description: 'Portfolio optimization and beta hedging',
+  // Language-specific metadata (including OG tags) is in app/[lang]/layout.tsx
 };
 
 /**
