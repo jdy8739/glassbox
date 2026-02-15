@@ -30,8 +30,13 @@ export const config = {
       },
       async authorize(credentials) {
         try {
-          // This provider is used to sync NextAuth session with backend session
-          // User data is passed directly from the login response
+          // SECURITY NOTE: This provider syncs NextAuth session with backend session
+          // - Backend auth: Uses httpOnly cookies (set by /auth/login or /auth/signup)
+          // - NextAuth: Client-side UI state only (user name, email display)
+          // - API requests: Authenticated via backend httpOnly cookie (withCredentials: true)
+          //
+          // NextAuth session is NOT used for backend authentication!
+          // All API calls use backend's httpOnly cookie, not NextAuth token.
           if (!credentials?.id || !credentials?.email) {
             return null;
           }
@@ -42,7 +47,6 @@ export const config = {
             name: credentials.name as string || '',
           };
         } catch (e) {
-          // Silently fail - error already logged by backend
           return null;
         }
       },
