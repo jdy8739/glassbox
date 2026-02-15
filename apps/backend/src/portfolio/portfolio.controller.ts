@@ -33,25 +33,6 @@ export class PortfolioController {
     return this.portfolioService.findAll(req.user.userId);
   }
 
-  @Get('health')
-  @Public()
-  @ApiOperation({
-    summary: 'Check Python environment health',
-    description: 'Verifies that the Python environment is properly configured',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Python environment is healthy',
-  })
-  async checkHealth(): Promise<{ status: string; pythonAvailable: boolean }> {
-    const pythonAvailable = await this.portfolioService.checkPythonHealth();
-
-    return {
-      status: pythonAvailable ? 'healthy' : 'unhealthy',
-      pythonAvailable,
-    };
-  }
-
   @Get(':id')
   @LogAction('GET_PORTFOLIO')
   @ApiOperation({ summary: 'Get a specific portfolio by ID' })
