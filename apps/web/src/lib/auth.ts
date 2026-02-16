@@ -74,6 +74,9 @@ export const config = {
       }
 
       // Sync user with backend (OAuth flow)
+      // NOTE: This runs on the SERVER (Next.js API route), so cookies
+      // set by backend won't be stored in user's browser!
+      // The actual cookie will be set client-side via the redirect callback.
       console.log('[Auth] Starting OAuth signin for:', user.email);
 
       try {
@@ -87,10 +90,11 @@ export const config = {
         const syncUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/sync`;
         console.log('[Auth] Syncing with backend:', { syncUrl, email: user.email });
 
+        // Just verify user exists in backend DB
+        // Don't try to get cookies here (server-side can't set browser cookies)
         const response = await fetch(syncUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Send cookies
           body: JSON.stringify({
             email: user.email,
             name: user.name,
@@ -121,7 +125,7 @@ export const config = {
           return false; // Will redirect to login page
         }
 
-        console.log('[Auth] ✅ OAuth user synced successfully:', user.email);
+        console.log('[Auth] ✅ OAuth user synced to DB:', user.email);
         return true;
       } catch (error) {
         console.error('[Auth] ❌ OAuth sync error:', {
