@@ -316,19 +316,7 @@ function PortfolioBuilderContent() {
 
   return (
     <main className="min-h-screen px-6 pt-8 pb-32">
-      <HeaderPortal
-        nav={<BackButton href="/" />}
-        actions={
-          <button
-            onClick={handleAnalyze}
-            disabled={items.length === 0}
-            className="hidden lg:flex h-9 px-3 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <TrendingUp className="w-5 h-5" />
-            <span>{t('nav.analyze')}</span>
-          </button>
-        }
-      />
+      <HeaderPortal nav={<BackButton href="/" />} />
 
       <div className="mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-12 gap-8 items-start">

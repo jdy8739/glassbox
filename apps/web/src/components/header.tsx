@@ -1,11 +1,10 @@
 'use client';
 
 import { LocalizedLink } from '@/components/LocalizedLink';
-import { Moon, Sun, Monitor, Zap, Languages, LogOut, User } from 'lucide-react';
+import { Moon, Sun, Monitor, Languages, LogOut, User } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
 import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
-import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
 import { useSession } from 'next-auth/react';
@@ -15,7 +14,6 @@ import { logout } from '@/lib/logout';
 export function Header() {
   const { navContent, actionContent } = useHeader();
   const { t, i18n } = useTranslation();
-  const router = useLocalizedRouter();
   const pathname = usePathname();
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { status } = useSession();
@@ -107,7 +105,7 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2 overflow-x-auto sm:overflow-x-visible flex-nowrap scrollbar-hide pr-2 sm:pr-0">
+        <div className="flex items-center gap-2 overflow-x-auto overflow-y-hidden sm:overflow-x-visible flex-nowrap scrollbar-hide pr-2 sm:pr-0">
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}
@@ -142,7 +140,7 @@ export function Header() {
           {actionContent}
 
           {isLoading ? (
-             <div className="w-20 h-9 bg-black/5 dark:bg-white/10 rounded-lg animate-pulse" />
+             <div className="w-9 h-9 bg-black/5 dark:bg-white/10 rounded-lg animate-pulse" />
           ) : isLoggedIn ? (
             /* Logged In State */
             <div className="flex items-center gap-2">
@@ -159,25 +157,16 @@ export function Header() {
               </button>
             </div>
           ) : (
-            /* Auth Buttons */
-            <div className="flex items-center gap-2">
-              {!pathname?.includes('/login') && (
-                <LocalizedLink 
-                  href="/login" 
-                  className="hidden sm:flex h-9 px-4 items-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-                >
-                  <span>{t('nav.signin')}</span>
-                </LocalizedLink>
-              )}
-              {!pathname?.includes('/signup') && (
-                <LocalizedLink 
-                  href="/signup" 
-                  className="hidden sm:flex h-9 px-4 items-center gap-2 rounded-lg text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:opacity-90 transition-all shadow-sm"
-                >
-                  <span>{t('nav.signup')}</span>
-                </LocalizedLink>
-              )}
-            </div>
+            /* Login Button */
+            !pathname?.includes('/login') && (
+              <LocalizedLink
+                href="/login"
+                className="h-9 w-9 sm:w-auto sm:px-4 flex-shrink-0 flex items-center justify-center gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all"
+              >
+                <User className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">{t('nav.signin')}</span>
+              </LocalizedLink>
+            )
           )}
         </div>
       </nav>
