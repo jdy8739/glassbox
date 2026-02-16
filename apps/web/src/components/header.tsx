@@ -8,7 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useQueryClient } from '@tanstack/react-query';
+import { logout } from '@/lib/logout';
 
 export function Header() {
   const { navContent, actionContent } = useHeader();
@@ -17,12 +19,16 @@ export function Header() {
   const pathname = usePathname();
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { status } = useSession();
-  
+  const queryClient = useQueryClient();
+
   const isLoading = status === 'loading';
   const isLoggedIn = status === 'authenticated';
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: '/' });
+  const handleLogout = async () => {
+    // Clear React Query cache to prevent showing old user's data
+    queryClient.clear();
+    // Then logout (backend + NextAuth)
+    await logout({ callbackUrl: '/' });
   };
 
   const toggleTheme = () => {

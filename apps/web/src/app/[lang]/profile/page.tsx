@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as userApi from '@/lib/api/user';
 import { useRouter } from 'next/navigation';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { signOut } from 'next-auth/react';
+import { logout } from '@/lib/logout';
 import type { UserProfile } from '@glassbox/types';
 
 interface ProfileFormData {
@@ -101,8 +101,8 @@ export default function ProfilePage() {
       // Clear all user-related cache
       queryClient.clear();
 
-      // Sign out from NextAuth to clear session
-      await signOut({ redirect: false });
+      // Sign out from NextAuth and clear all cookies
+      await logout({ redirect: false });
 
       // Show success message briefly before redirect
       setTimeout(() => {
