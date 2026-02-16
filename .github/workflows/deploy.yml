@@ -130,12 +130,13 @@ jobs:
           context: .
           file: ./apps/web/Dockerfile
           push: true
-          no-cache: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.example.com' }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
 
       # Build and push backend image
       - name: Build and push backend image
