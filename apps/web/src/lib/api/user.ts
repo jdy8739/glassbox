@@ -15,6 +15,11 @@ export interface UpdateProfileRequest {
   name: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 /**
  * Get current user profile
  */
@@ -34,4 +39,11 @@ export const updateProfile = async (name: string) => {
  */
 export const deleteAccount = async () => {
   return axiosClient.delete<void>('/users/me');
+};
+
+/**
+ * Change user password
+ */
+export const changePassword = async (data: ChangePasswordRequest) => {
+  return axiosClient.patch<void>('/users/me/change-password', data);
 };

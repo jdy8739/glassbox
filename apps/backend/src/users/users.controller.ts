@@ -12,9 +12,11 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
 import { UsersService } from './users.service';
 import { SyncUserDto } from './dto/sync-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Public } from '../auth/public.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
@@ -63,6 +65,19 @@ export class UsersController {
   @LogAction('UPDATE_PROFILE')
   async updateProfile(@Request() req: any, @Body() dto: UpdateUserDto) {
     return await this.usersService.updateUserName(req.user.userId, dto.name);
+  }
+
+  @Patch('me/change-password')
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 900000 } }) // 5 attempts per 15 minutes
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @LogAction('CHANGE_PASSWORD')
+  async changePassword(@Request() req: any, @Body() dto: ChangePasswordDto) {
+    await this.usersService.changePassword(
+      req.user.userId,
+      dto.currentPassword,
+      dto.newPassword,
+    );
   }
 
   @Delete('me')

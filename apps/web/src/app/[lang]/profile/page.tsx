@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { User as UserIcon, Trash2, Edit2, Save, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { User as UserIcon, Trash2, Edit2, Save, X, AlertCircle, CheckCircle, KeyRound } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,6 +10,7 @@ import * as userApi from '@/lib/api/user';
 import { useRouter } from 'next/navigation';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { logout } from '@/lib/logout';
+import { PasswordChangeForm } from '@/components/PasswordChangeForm';
 import type { UserProfile } from '@glassbox/types';
 
 interface ProfileFormData {
@@ -22,7 +23,8 @@ export default function ProfilePage() {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPasswordSuccess, setShowPasswordSuccess] = useState(false);
 
   // Fetch user profile with 401 handling
   const { data: user, isLoading, error } = useQuery<UserProfile>({
@@ -122,6 +124,17 @@ export default function ProfilePage() {
     return undefined;
   }, [updateMutation.isSuccess, updateMutation]);
 
+  // Auto-dismiss password success message after 5 seconds
+  useEffect(() => {
+    if (showPasswordSuccess) {
+      const timer = setTimeout(() => {
+        setShowPasswordSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [showPasswordSuccess]);
+
   const onSubmit = (data: ProfileFormData) => {
     // Sanitize input by trimming whitespace
     const sanitizedData = {
@@ -133,6 +146,15 @@ export default function ProfilePage() {
   const handleCancel = () => {
     reset({ name: user?.name || '' });
     setIsEditing(false);
+  };
+
+  const handlePasswordSuccess = () => {
+    setIsChangingPassword(false);
+    setShowPasswordSuccess(true);
+  };
+
+  const handlePasswordCancel = () => {
+    setIsChangingPassword(false);
   };
 
   const handleDeleteConfirm = () => {
@@ -234,6 +256,15 @@ export default function ProfilePage() {
                 </p>
               )}
             </div>
+          </div>
+        )}
+
+        {showPasswordSuccess && (
+          <div className="glass-panel p-4 border-green-200 dark:border-green-900/30 bg-green-50/50 dark:bg-green-900/10 flex items-center gap-3 animate-fade-in">
+            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <p className="text-sm text-green-700 dark:text-green-300">
+              {t('profile.success.password-changed')}
+            </p>
           </div>
         )}
 
@@ -353,6 +384,50 @@ export default function ProfilePage() {
             </div>
           </div>
         </form>
+
+        {/* Security Section - Only show for email/password users (not OAuth) */}
+        {!user.googleId && (
+          <div className="glass-panel p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <KeyRound className="w-6 h-6 text-cyan-500" />
+                <h2 className="text-xl font-bold text-black dark:text-white">
+                  {t('profile.section.security')}
+                </h2>
+              </div>
+              {!isChangingPassword && (
+                <button
+                  type="button"
+                  onClick={() => setIsChangingPassword(true)}
+                  disabled={deleteMutation.isPending || updateMutation.isPending}
+                  className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t('profile.security.change-password')}
+                </button>
+              )}
+            </div>
+
+            {/* Password display (collapsed state) */}
+            {!isChangingPassword && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-black/70 dark:text-white/70">
+                  {t('profile.security.password-hidden')}
+                </label>
+                <div className="px-4 py-3 rounded-lg bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">
+                  ••••••••••••
+                </div>
+              </div>
+            )}
+
+            {/* Password change form (expanded state) */}
+            {isChangingPassword && (
+              <PasswordChangeForm
+                onCancel={handlePasswordCancel}
+                onSuccess={handlePasswordSuccess}
+              />
+            )}
+          </div>
+        )}
 
         {/* Danger Zone */}
         <div className="glass-panel p-8 border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 space-y-6">

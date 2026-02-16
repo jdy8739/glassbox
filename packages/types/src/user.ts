@@ -18,11 +18,20 @@ export interface UpdateUserDto {
 }
 
 /**
+ * Change password DTO
+ */
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/**
  * User profile response (without sensitive data)
  */
 export interface UserProfile {
   id: string;
   email: string;
   name: string;
+  googleId?: string; // Present if user signed up via Google OAuth
   createdAt: string;
 }

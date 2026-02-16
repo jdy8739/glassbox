@@ -1,4 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { SyncUserDto } from './dto/sync-user.dto';
 
@@ -77,6 +83,80 @@ export class UsersService {
     return this.prisma.user.update({
       where: { id: userId },
       data: { name },
+    });
+  }
+
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const timestamp = new Date().toISOString();
+
+    // Fetch user with password
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Check if user is OAuth user (no password)
+    if (user.googleId) {
+      this.logger.warn({
+        event: 'PASSWORD_CHANGE_OAUTH_ATTEMPT',
+        userId,
+        timestamp,
+      });
+      throw new BadRequestException(
+        'Cannot change password for OAuth accounts',
+      );
+    }
+
+    // Verify user has a password
+    if (!user.password) {
+      throw new BadRequestException('User has no password set');
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isCurrentPasswordValid) {
+      this.logger.warn({
+        event: 'PASSWORD_CHANGE_FAILED_WRONG_PASSWORD',
+        userId,
+        timestamp,
+      });
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    // Check if new password is same as current
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      throw new BadRequestException(
+        'New password must be different from current password',
+      );
+    }
+
+    // Hash new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update password
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    // Audit log: password changed successfully
+    this.logger.log({
+      event: 'PASSWORD_CHANGED',
+      userId,
+      timestamp,
     });
   }
 
