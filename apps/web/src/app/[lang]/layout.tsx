@@ -84,7 +84,7 @@ export default async function LangLayout({ children, params }: Props) {
   }
 
   // Use absolute URLs for hreflang tags (better SEO)
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.space';
 
   return (
     <html lang={lang} suppressHydrationWarning>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.space'),
   title: 'Glassbox',
   description: 'Portfolio optimization and beta hedging',
   // Language-specific metadata (including OG tags) is in app/[lang]/layout.tsx

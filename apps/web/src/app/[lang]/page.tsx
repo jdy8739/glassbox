@@ -13,8 +13,33 @@ function HomeContent() {
   const currentLang = i18n.language || 'en';
   const pdfUrl = `/glassbox-introduction-${currentLang}.pdf`;
 
+  // JSON-LD for SoftwareApplication
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Glassbox',
+    operatingSystem: 'Web',
+    applicationCategory: 'FinanceApplication',
+    description: t('hero.description'),
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    featureList: [
+      t('features.card1.title'),
+      t('features.card2.title'),
+      t('features.card5.title'),
+    ],
+  };
+
   return (
     <main className="min-h-screen overflow-hidden">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300/5 rounded-full blur-3xl animate-pulse"></div>
