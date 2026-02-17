@@ -610,7 +610,7 @@ function PortfolioBuilderContent() {
 
           <button
             onClick={handleAnalyze}
-            disabled={items.length === 0}
+            disabled={items.length === 0 || !!validationError}
             className="glass-button px-6 py-3 flex items-center gap-2 disabled:opacity-50"
           >
             <Rocket className="w-4 h-4" />
@@ -618,6 +618,18 @@ function PortfolioBuilderContent() {
           </button>
         </div>
       </div>
+
+      {/* Mobile validation error */}
+      {validationError && (
+        <div className="fixed bottom-20 left-0 right-0 px-4 z-40 lg:hidden">
+          <div className="max-w-lg mx-auto px-4 py-3 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200/50 dark:border-rose-800/30 backdrop-blur-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-500 dark:text-rose-400 flex-shrink-0" />
+            <p className="text-sm text-rose-700 dark:text-rose-300">
+              {validationError}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Portal-based Dropdown */}
 
