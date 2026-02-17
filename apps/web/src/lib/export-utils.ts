@@ -18,6 +18,18 @@ type WeightEntry = [string, number];
 // Pure Formatters
 // ============================================================================
 
+const escapeCSV = (val: string | number | undefined): string => {
+  if (val === undefined || val === null) return '';
+  const s = String(val);
+  if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+    return `"${s.replace(/"/g, '""')}"`;
+  }
+  return s;
+};
+
+const sanitizeFilename = (name: string): string => 
+  name.replace(/[/\\?%*:|"<>]/g, '-').substring(0, 100);
+
 const formatPercent = (value: number, decimals = 2): string =>
   `${(value * 100).toFixed(decimals)}%`;
 
@@ -52,14 +64,14 @@ const topWeights = (weights: Record<string, number>, limit = 5): WeightEntry[] =
 const csvHeader = (portfolioName?: string, date?: Date): string[] => [
   'Glassbox Portfolio Analysis Report',
   `Generated: ${formatDateISO(date)}`,
-  ...(portfolioName ? [`Portfolio: ${portfolioName}`] : []),
+  ...(portfolioName ? [`Portfolio: ${escapeCSV(portfolioName)}`] : []),
   '',
 ];
 
 const csvComposition = (items: PortfolioItem[]): string[] => [
   'Portfolio Composition',
   'Ticker,Quantity',
-  ...items.map((i) => `${i.symbol},${i.quantity}`),
+  ...items.map((i) => `${escapeCSV(i.symbol)},${i.quantity}`),
   '',
 ];
 
@@ -240,12 +252,24 @@ const downloadBlob = (blob: Blob, filename: string): void => {
 // ============================================================================
 
 export const exportAsCSV = (data: ExportData): void => {
-  const csv = buildCSV(data);
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  downloadBlob(blob, `glassbox-analysis-${formatDateISO(data.timestamp)}.csv`);
+  try {
+    const csv = buildCSV(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const dateStr = formatDateISO(data.timestamp);
+    const namePart = data.portfolioName ? `-${sanitizeFilename(data.portfolioName)}` : '';
+    downloadBlob(blob, `glassbox-analysis${namePart}-${dateStr}.csv`);
+  } catch (error) {
+    throw new Error('CSV export failed');
+  }
 };
 
 export const exportAsPDF = (data: ExportData): void => {
-  const pdf = buildPDF(data);
-  pdf.save(`glassbox-analysis-${formatDateISO(data.timestamp)}.pdf`);
+  try {
+    const pdf = buildPDF(data);
+    const dateStr = formatDateISO(data.timestamp);
+    const namePart = data.portfolioName ? `-${sanitizeFilename(data.portfolioName)}` : '';
+    pdf.save(`glassbox-analysis${namePart}-${dateStr}.pdf`);
+  } catch (error) {
+    throw new Error('PDF export failed');
+  }
 };

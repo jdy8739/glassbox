@@ -7,8 +7,7 @@ import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useFetchPortfolioData } from './useFetchPortfolioData';
-import { exportAsCSV, exportAsPDF } from '@/lib/export-utils';
-import { RefreshCw, Download, BarChart3, FileText, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check, AlertCircle } from 'lucide-react';
+import { RefreshCw, BarChart3, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check, AlertCircle } from 'lucide-react';
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
 import { HeaderPortal } from '@/lib/header-context';
@@ -18,6 +17,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { TimestampBadge } from '@/components/TimestampBadge';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { BackButton } from '@/components/back-button';
+import { ExportDropdown } from '@/components/export-dropdown';
 
 const EfficientFrontierChart = dynamic(
   () => import('./efficient-frontier-chart').then((mod) => mod.EfficientFrontierChart),
@@ -63,14 +63,12 @@ function AnalysisResultContent() {
   const portfolioId = searchParams.get('portfolioId');
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [isExportOpen, setIsExportOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveModalError, setSaveModalError] = useState<string | null>(null);
   const [isReanalyzeConfirmOpen, setIsReanalyzeConfirmOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isSaveAsMode, setIsSaveAsMode] = useState(false);
-  const exportMenuRef = useRef<HTMLDivElement>(null);
 
   // Derive activeTab directly from URL - single source of truth
   const activeTab = (searchParams.get('tab') === 'hedging' ? 'hedging' : 'frontier') as 'frontier' | 'hedging';
@@ -145,7 +143,6 @@ function AnalysisResultContent() {
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
       } catch (error) {
-        console.error('Failed to update portfolio:', error);
         setError(t('analysis.error.update-failed'));
         setTimeout(() => setError(null), 3000);
       }
@@ -176,7 +173,6 @@ function AnalysisResultContent() {
         router.push('/portfolios');
       }, 1500);
     } catch (error: any) {
-      console.error('Failed to save portfolio:', error);
       // Map backend errors to translated messages
       let errorMessage = t('analysis.error.save-failed');
       if (error?.message?.includes('already exists')) {
@@ -187,43 +183,6 @@ function AnalysisResultContent() {
       setSaveModalError(errorMessage);
     }
   };
-
-  const handleExportCSV = () => {
-    if (!portfolioData) return;
-    exportAsCSV({
-      portfolioName: savedPortfolio?.name,
-      items: portfolioData.items,
-      analysis: portfolioData.analysis,
-      timestamp: new Date(),
-    });
-    setIsExportOpen(false);
-  };
-
-  const handleExportPDF = () => {
-    if (!portfolioData) return;
-    exportAsPDF({
-      portfolioName: savedPortfolio?.name,
-      items: portfolioData.items,
-      analysis: portfolioData.analysis,
-      timestamp: new Date(),
-    });
-    setIsExportOpen(false);
-  };
-
-  // Close export menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
-        setIsExportOpen(false);
-      }
-    };
-
-    if (isExportOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return undefined;
-  }, [isExportOpen]);
 
   // Keyboard shortcuts
   useKeyboardShortcuts([
@@ -240,15 +199,8 @@ function AnalysisResultContent() {
       },
     },
     {
-      key: 'e',
-      ctrl: true,
-      meta: true,
-      handler: () => setIsExportOpen(!isExportOpen),
-    },
-    {
       key: 'Escape',
       handler: () => {
-        setIsExportOpen(false);
         setIsSaveModalOpen(false);
         setIsReanalyzeConfirmOpen(false);
       },
@@ -328,34 +280,11 @@ function AnalysisResultContent() {
                 )}
               </button>
             )}
-            {/* Export Dropdown */}
-            <div className="relative" ref={exportMenuRef}>
-              <button
-                onClick={() => setIsExportOpen(!isExportOpen)}
-                className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
-              >
-                <Download className="w-4 h-4" />
-                <span className="hidden lg:inline">{t('analysis.button.export')}</span>
-              </button>
-              {isExportOpen && (
-                <div className="absolute right-0 mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-lg z-10">
-                  <button
-                    onClick={handleExportCSV}
-                    className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 first:rounded-t-lg flex items-center gap-2"
-                  >
-                    <BarChart3 className="w-4 h-4" />
-                    <span>{t('analysis.button.export-csv')}</span>
-                  </button>
-                  <button
-                    onClick={handleExportPDF}
-                    className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white last:rounded-b-lg flex items-center gap-2"
-                  >
-                    <FileText className="w-4 h-4" />
-                    <span>{t('analysis.button.export-pdf')}</span>
-                  </button>
-                </div>
-              )}
-            </div>
+            <ExportDropdown 
+              portfolioName={portfolioData.savedPortfolio?.name}
+              items={portfolioData.items}
+              analysis={portfolioData.analysis}
+            />
             <button
               onClick={handleSaveButton}
               className={`h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative ${

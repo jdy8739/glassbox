@@ -107,7 +107,7 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2 overflow-x-auto overflow-y-hidden sm:overflow-x-visible flex-nowrap scrollbar-hide pr-2 sm:pr-0">
+        <div className="flex items-center gap-2 pr-2 sm:pr-0">
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}

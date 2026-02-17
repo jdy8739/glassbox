@@ -6,6 +6,7 @@ import { LocalizedLink } from '@/components/LocalizedLink';
 import { Trash2, TrendingUp, Activity, Calendar } from 'lucide-react';
 import type { Portfolio } from '@glassbox/types';
 import { formatShortDate, type DateLocale } from '@/lib/utils/date';
+import { ExportDropdown } from '@/components/export-dropdown';
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
@@ -46,21 +47,32 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
             )}
           </p>
         </div>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onDelete(portfolio.id);
-          }}
-          disabled={isDeleting}
-          className="w-8 h-8 flex items-center justify-center rounded-lg text-black/20 dark:text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
-        >
-          {isDeleting ? (
-            <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Trash2 className="w-4 h-4" />
-          )}
-        </button>
+        <div className="flex items-center gap-1">
+          <ExportDropdown
+            portfolioName={portfolio.name}
+            items={portfolio.tickers.map((symbol, i) => ({
+              symbol,
+              quantity: portfolio.quantities[i]
+            }))}
+            analysis={portfolio.analysisSnapshot}
+            showLabel={false}
+          />
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDelete(portfolio.id);
+            }}
+            disabled={isDeleting}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-black/20 dark:text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
+          >
+            {isDeleting ? (
+              <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Composition Bar */}
