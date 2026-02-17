@@ -66,6 +66,7 @@ function PortfolioLibraryContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [portfolioToDelete, setPortfolioToDelete] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const isAuthenticated = status === 'authenticated';
   const isAuthLoading = status === 'loading';
@@ -99,8 +100,7 @@ function PortfolioLibraryContent() {
       if (context?.previous) {
         queryClient.setQueryData(['portfolios'], context.previous);
       }
-      // TODO: Replace alert with proper toast notification
-      alert(t('portfolio.delete.failed'));
+      setDeleteError(t('portfolio.delete.failed'));
     },
     onSuccess: () => {
       // Close dialog on success
@@ -116,6 +116,7 @@ function PortfolioLibraryContent() {
   const handleDeleteClick = (portfolioId: string) => {
     setPortfolioToDelete(portfolioId);
     setDeleteDialogOpen(true);
+    setDeleteError(null);
   };
 
   const handleConfirmDelete = () => {
@@ -162,6 +163,22 @@ function PortfolioLibraryContent() {
              </div>
           </div>
         </div>
+
+        {/* Delete Error Banner */}
+        {deleteError && (
+          <div className="glass-panel px-4 py-3 bg-rose-50/80 dark:bg-rose-950/30 border-rose-200/50 dark:border-rose-800/30">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-500 dark:text-rose-400 flex-shrink-0" />
+              <p className="text-sm text-rose-700 dark:text-rose-300">{deleteError}</p>
+              <button
+                onClick={() => setDeleteError(null)}
+                className="ml-auto text-rose-500 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 text-sm font-medium"
+              >
+                {t('common.button.dismiss')}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         {isAuthLoading || isLoading ? (

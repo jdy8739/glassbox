@@ -90,7 +90,7 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
                       type="number"
                       value={item.quantity}
                       onChange={(e) => {
-                        const value = parseFloat(e.target.value);
+                        const value = parseInt(e.target.value);
                         onUpdateQuantity(item.symbol, Math.max(0, value || 0));
                       }}
                       className="w-full text-center bg-transparent font-bold text-sm text-black dark:text-white focus:outline-none p-0"
