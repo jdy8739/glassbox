@@ -47,6 +47,8 @@ export function Header() {
     return theme === 'dark' ? t('theme.dark') : t('theme.light');
   };
 
+  const themeLabel = getThemeLabel();
+
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'en' ? 'ko' : 'en';
 
@@ -121,8 +123,8 @@ export function Header() {
           <button
             onClick={toggleTheme}
             className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all relative"
-            title={t('theme.current-label', { theme: getThemeLabel() })}
-            aria-label={t('theme.current-label', { theme: getThemeLabel() })}
+            title={t('theme.current-label', { theme: themeLabel })}
+            aria-label={t('theme.current-label', { theme: themeLabel })}
           >
             {theme === 'light' ? (
               <Moon className="w-4 h-4" />
@@ -133,7 +135,7 @@ export function Header() {
             )}
             {/* Tooltip */}
             <div className="theme-toggle-tooltip">
-              {getThemeLabel()}
+              {themeLabel}
             </div>
           </button>
 
