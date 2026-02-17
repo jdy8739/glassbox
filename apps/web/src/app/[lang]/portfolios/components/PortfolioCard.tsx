@@ -29,7 +29,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
   }));
 
   return (
-    <div className="glass-panel p-5 group hover:border-cyan-500/30 transition-all flex flex-col h-full">
+    <div className={`glass-panel p-5 group hover:border-cyan-500/30 transition-all flex flex-col h-full ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}>
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <div>

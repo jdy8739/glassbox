@@ -115,6 +115,7 @@ function PortfolioBuilderContent() {
   // UI state (dialogs)
   const [showTodayWarning, setShowTodayWarning] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // Dropdown UI state
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -459,14 +460,14 @@ function PortfolioBuilderContent() {
 
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-black dark:text-white flex items-center gap-2">
+                    <label className="text-sm font-semibold text-black dark:text-white flex items-center gap-2">
                       <Layers className="w-4 h-4" />
 
                       {t('portfolio.builder.assets.label')}
                     </label>
 
                     <button
-                      onClick={() => loadTemplate([])}
+                      onClick={() => setShowClearConfirm(true)}
                       className="text-xs text-red-400 hover:text-red-500 transition-colors"
                     >
                       {t('portfolio.builder.assets.clear')}
@@ -565,6 +566,12 @@ function PortfolioBuilderContent() {
                 <Rocket className="w-5 h-5 group-hover:animate-bounce" />
                 <span>{t('portfolio.builder.analyze.button')}</span>
               </button>
+
+              {items.length === 0 && !validationError && (
+                <p className="text-xs text-center text-black/50 dark:text-white/50 mt-2">
+                  {t('portfolio.builder.analyze.hint')}
+                </p>
+              )}
 
               {validationError && (
                 <div className="flex items-center justify-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200/50 dark:border-rose-800/30 backdrop-blur-sm">
@@ -704,6 +711,21 @@ function PortfolioBuilderContent() {
 
           document.body
         )}
+
+      {/* Clear Assets Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+        onConfirm={() => {
+          loadTemplate([]);
+          setShowClearConfirm(false);
+        }}
+        title={t('portfolio.builder.clear.title')}
+        message={t('portfolio.builder.clear.message')}
+        confirmText={t('portfolio.builder.clear.confirm')}
+        cancelText={t('common.button.cancel')}
+        variant="danger"
+      />
 
       {/* Today Warning Dialog */}
       <ConfirmDialog
