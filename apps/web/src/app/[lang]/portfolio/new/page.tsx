@@ -72,10 +72,16 @@ function PortfolioBuilderContent() {
 
   // Auto-dismiss toast
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
     if (addedTicker) {
-      const timer = setTimeout(() => setAddedTicker(null), 3000);
+      timer = setTimeout(() => setAddedTicker(null), 3000);
       return () => clearTimeout(timer);
     }
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [addedTicker]);
 
   // Computed state
