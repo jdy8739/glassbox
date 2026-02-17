@@ -224,8 +224,6 @@ function PortfolioBuilderContent() {
         window.removeEventListener('scroll', updatePosition);
       };
     }
-
-    return undefined;
   }, [showDropdown]);
 
   // Close dropdown when clicking outside
@@ -419,7 +417,7 @@ function PortfolioBuilderContent() {
                       type="date"
                       value={dateRange.startDate}
                       onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-                      className="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 transition-colors"
                     />
                   </div>
 
@@ -431,7 +429,7 @@ function PortfolioBuilderContent() {
                       type="date"
                       value={dateRange.endDate}
                       onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-                      className="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-cyan-500 transition-colors"
                     />
                   </div>
                 </div>

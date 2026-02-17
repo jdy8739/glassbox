@@ -101,6 +101,8 @@ function PortfolioLibraryContent() {
         queryClient.setQueryData(['portfolios'], context.previous);
       }
       setDeleteError(t('portfolio.delete.failed'));
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => setDeleteError(null), 5000);
     },
     onSuccess: () => {
       // Close dialog on success
