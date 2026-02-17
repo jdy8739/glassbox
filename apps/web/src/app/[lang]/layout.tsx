@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 
   // Use absolute URLs for better SEO (requires NEXT_PUBLIC_SITE_URL env variable)
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glassbox.space';
 
   return {
     title: titles[lang as Language] || titles.en,
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: `${siteUrl}/og-image.png`, // Use absolute URL for social media
+          url: `${siteUrl}/og-image.png`,
           width: 1200,
           height: 630,
           alt: 'Glassbox Logo',
