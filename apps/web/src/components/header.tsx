@@ -69,7 +69,7 @@ export function Header() {
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
         {/* Left Side: Logo, Back Nav, and Main Links */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center">
           <LocalizedLink href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
             <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
               <GlassboxIcon />
