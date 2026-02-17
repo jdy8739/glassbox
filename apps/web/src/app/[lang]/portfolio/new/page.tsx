@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Layers, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Layers, AlertCircle, Check } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { usePortfolioBuilder } from './usePortfolioBuilder';
@@ -66,6 +67,17 @@ function PortfolioBuilderContent() {
     setShowClearConfirm,
   } = useDialogs();
 
+  // Toast state
+  const [addedTicker, setAddedTicker] = useState<string | null>(null);
+
+  // Auto-dismiss toast
+  useEffect(() => {
+    if (addedTicker) {
+      const timer = setTimeout(() => setAddedTicker(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [addedTicker]);
+
   // Computed state
   const isAuthenticated = status === 'authenticated';
   const validationError = validatePortfolioAnalysis(items, dateRange, t);
@@ -110,6 +122,7 @@ function PortfolioBuilderContent() {
   // Add item handler
   const handleAddItem = (symbol: string, name?: string) => {
     addItem(symbol);
+    setAddedTicker(symbol);
   };
 
   return (
@@ -202,6 +215,18 @@ function PortfolioBuilderContent() {
           <div className="max-w-lg mx-auto px-4 py-3 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200/50 dark:border-rose-800/30 backdrop-blur-sm flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-500 dark:text-rose-400 flex-shrink-0" />
             <p className="text-sm text-rose-700 dark:text-rose-300">{validationError}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Ticker added toast (mobile only) */}
+      {addedTicker && (
+        <div className="fixed top-20 right-6 z-50 glass-panel px-6 py-4 border-cyan-400/30 bg-cyan-500/10 animate-fade-in shadow-xl lg:hidden">
+          <div className="flex items-center gap-3">
+            <Check className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+            <p className="font-bold text-black dark:text-white">
+              {addedTicker} {t('portfolio.builder.toast.added')}
+            </p>
           </div>
         </div>
       )}
