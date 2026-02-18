@@ -17,9 +17,7 @@ import { PageHeader } from './components/PageHeader';
 import { SearchWithDropdown } from './components/SearchWithDropdown';
 import { PortfolioSummaryPanel } from './components/PortfolioSummaryPanel';
 import { AuthRequiredDialog } from './components/AuthRequiredDialog';
-import { HeaderPortal } from '@/lib/header-context';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { BackButton } from '@/components/back-button';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { validatePortfolioAnalysis, isEndDateToday } from '@/lib/portfolio-validation';
@@ -133,8 +131,6 @@ function PortfolioBuilderContent() {
 
   return (
     <main className="min-h-screen px-6 pt-8 pb-32">
-      <HeaderPortal nav={<BackButton href="/" />} />
-
       <div className="mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Workbench (8 cols) */}

@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HeaderProvider } from '@/lib/header-context';
 import { I18nextProvider } from 'react-i18next';
 import { createI18nInstance } from '@/lib/i18n';
 import { useTheme as useThemeState, type ThemePreference, type ResolvedTheme } from '@/hooks/useTheme';
@@ -49,9 +48,7 @@ export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; 
       <QueryClientProvider client={queryClient}>
         {mounted ? (
           <ThemeContext.Provider value={value}>
-            <HeaderProvider>
-              {children}
-            </HeaderProvider>
+            {children}
           </ThemeContext.Provider>
         ) : (
           <>{children}</>

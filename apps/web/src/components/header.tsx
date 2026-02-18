@@ -1,25 +1,42 @@
 'use client';
 
 import { LocalizedLink } from '@/components/LocalizedLink';
-import { Moon, Sun, Monitor, Languages, LogOut, User } from 'lucide-react';
+import { Moon, Sun, Monitor, Languages, LogOut, User, Menu, X } from 'lucide-react';
 import { GlassboxIcon } from './glassbox-icon';
-import { useHeader } from '@/lib/header-context';
 import { useTranslation } from 'react-i18next';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
 import { useSession } from 'next-auth/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { logout } from '@/lib/logout';
+import { useState, useEffect } from 'react';
 
 export function Header() {
-  const { navContent, actionContent } = useHeader();
   const { t, i18n } = useTranslation();
   const pathname = usePathname();
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { status } = useSession();
   const queryClient = useQueryClient();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isLoading = status === 'loading';
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   const isLoggedIn = status === 'authenticated';
 
   const handleLogout = async () => {
@@ -71,7 +88,7 @@ export function Header() {
       {/* Content */}
       <nav className="relative mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
         {/* Left Side: Logo, Back Nav, and Main Links */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <LocalizedLink href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity duration-200">
             <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
               <GlassboxIcon />
@@ -81,16 +98,9 @@ export function Header() {
               <span className="text-black dark:text-white">box</span>
             </span>
           </LocalizedLink>
-          
-          {/* Dynamic Back/Nav controls injected from pages */}
-          {navContent && (
-            <div className="pl-3 md:pl-6 border-l border-black/10 dark:border-white/10 ml-3 md:ml-6 mr-4 sm:mr-0 flex items-center">
-              {navContent}
-            </div>
-          )}
 
           {/* Navigation Links (Always Visible) */}
-          <div className={`hidden lg:flex items-center gap-1 ${!navContent ? 'pl-6 border-l border-black/10 dark:border-white/10' : ''}`}>
+          <div className="hidden lg:flex items-center gap-1 pl-2 border-l border-black/10 dark:border-white/10">
             <LocalizedLink
               href="/portfolio/new"
               className="px-4 h-9 flex items-center text-black/60 dark:text-white/80 hover:text-black dark:hover:text-white transition-colors duration-200 text-sm font-medium rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
@@ -108,15 +118,23 @@ export function Header() {
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-2 pr-2 sm:pr-0">
+          {/* Mobile Menu Toggle (visible on < lg) */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
+
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}
-            className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
+            className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all"
             title={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
             aria-label={t(i18n.language === 'en' ? 'language.switch-to-korean' : 'language.switch-to-english')}
           >
             <Languages className="w-4 h-4" />
-            <span className="hidden lg:inline">{t('common.language')}</span>
           </button>
 
           {/* Theme Toggle Button */}
@@ -133,17 +151,9 @@ export function Header() {
             ) : (
               <Monitor className="w-4 h-4" />
             )}
-            {/* Tooltip */}
-            <div className="theme-toggle-tooltip">
-              {themeLabel}
-            </div>
           </button>
 
-          {actionContent}
-
-          {isLoading ? (
-             <div className="w-9 h-9 bg-black/5 dark:bg-white/10 rounded-lg animate-pulse" />
-          ) : isLoggedIn ? (
+          {isLoggedIn ? (
             /* Logged In State */
             <div className="flex items-center gap-2">
               <LocalizedLink href="/profile" className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
@@ -151,11 +161,11 @@ export function Header() {
               </LocalizedLink>
               <button
                 onClick={handleLogout}
-                className="h-9 w-9 lg:w-auto lg:px-3 flex-shrink-0 flex items-center justify-center lg:justify-start gap-2 rounded-lg text-xs font-medium text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"
+                className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-700 dark:text-white/80 bg-white/10 dark:bg-slate-800/50 border border-black/5 dark:border-white/10 hover:text-coral-600 dark:hover:text-coral-400 hover:bg-coral-50 dark:hover:bg-coral-900/20 transition-all"
                 title={t('auth.logout')}
+                aria-label={t('auth.logout')}
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden lg:inline">{t('auth.logout')}</span>
               </button>
             </div>
           ) : (
@@ -172,6 +182,43 @@ export function Header() {
           )}
         </div>
       </nav>
+
+      {/* Mobile Menu (visible on < lg when open) */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop - Click outside to close */}
+          <div
+            className="lg:hidden fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Menu Panel */}
+          <div className="lg:hidden absolute top-16 left-4 right-4 z-10 glass-card p-4 space-y-2 border border-black/10 dark:border-white/10 rounded-2xl">
+            <LocalizedLink
+              href="/portfolio/new"
+              className="block px-4 py-3 text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors text-sm font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {t('nav.analyze')}
+            </LocalizedLink>
+            <LocalizedLink
+              href="/portfolios"
+              className="block px-4 py-3 text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors text-sm font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {t('nav.portfolios')}
+            </LocalizedLink>
+            <LocalizedLink
+              href="/introduction"
+              className="block px-4 py-3 text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors text-sm font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {t('footer.docs')}
+            </LocalizedLink>
+          </div>
+        </>
+      )}
     </header>
   );
 }

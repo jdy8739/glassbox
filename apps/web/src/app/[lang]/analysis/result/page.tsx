@@ -10,13 +10,11 @@ import { useFetchPortfolioData } from './useFetchPortfolioData';
 import { RefreshCw, BarChart3, Save, TrendingUp, Shield, Target, Zap, Lightbulb, Check, AlertCircle } from 'lucide-react';
 import { KeyMetrics } from './components/KeyMetrics';
 import { HedgingComparison } from './components/HedgingComparison';
-import { HeaderPortal } from '@/lib/header-context';
 import { SavePortfolioModal } from './components/SavePortfolioModal';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { TimestampBadge } from '@/components/TimestampBadge';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { BackButton } from '@/components/back-button';
 import { ExportDropdown } from '@/components/export-dropdown';
 
 const EfficientFrontierChart = dynamic(
@@ -225,8 +223,6 @@ function AnalysisResultContent() {
   const isSnapshot = !!savedPortfolio;
   const isProcessing = isSaving || isUpdating;
 
-  const backLink = isSnapshot ? '/portfolios' : '/portfolio/new';
-
   return (
     <main className="min-h-screen px-6 py-8">
       {/* Success Notification */}
@@ -257,9 +253,36 @@ function AnalysisResultContent() {
         </div>
       )}
 
-      <HeaderPortal
-        nav={<BackButton href={backLink} />}
-        actions={
+      <div className="mx-auto max-w-7xl space-y-8">
+        {/* Header with Action Buttons */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="text-xs font-semibold text-black/70 dark:text-white/70">{t('analysis.status.complete')}</span>
+              </div>
+
+              {/* Timestamp Badge */}
+              <TimestampBadge
+                date={savedPortfolio?.updatedAt}
+                isFresh={!isSnapshot}
+              />
+            </div>
+
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-2">
+                {t('analysis.title')}
+              </h1>
+              <p className="text-lg text-black/60 dark:text-white/60 max-w-2xl">
+                {isSnapshot
+                  ? t('portfolio.analysis.viewing-snapshot', { portfolioName: savedPortfolio?.name })
+                  : t('portfolio.analysis.optimized-allocation-desc', { numAssets: portfolioItems.length })}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
           <div className="flex gap-2 items-center">
             {isSnapshot && (
               <button
@@ -280,7 +303,7 @@ function AnalysisResultContent() {
                 )}
               </button>
             )}
-            <ExportDropdown 
+            <ExportDropdown
               portfolioName={portfolioData.savedPortfolio?.name}
               items={portfolioData.items}
               analysis={portfolioData.analysis}
@@ -317,37 +340,6 @@ function AnalysisResultContent() {
                  </>
               )}
             </button>
-          </div>
-        }
-      />
-
-      <div className="mx-auto max-w-7xl space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="text-xs font-semibold text-black/70 dark:text-white/70">{t('analysis.status.complete')}</span>
-              </div>
-
-              {/* Timestamp Badge */}
-              <TimestampBadge
-                date={savedPortfolio?.updatedAt}
-                isFresh={!isSnapshot}
-              />
-            </div>
-
-            <div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-2">
-                {t('analysis.title')}
-              </h1>
-              <p className="text-lg text-black/60 dark:text-white/60 max-w-2xl">
-                {isSnapshot
-                  ? t('portfolio.analysis.viewing-snapshot', { portfolioName: savedPortfolio?.name })
-                  : t('portfolio.analysis.optimized-allocation-desc', { numAssets: portfolioItems.length })}
-              </p>
-            </div>
           </div>
         </div>
 
