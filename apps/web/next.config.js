@@ -20,6 +20,13 @@ const nextConfig = {
       },
     ],
   },
+
+  // Remove console logs in production (keep console.error for error tracking)
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production'
+      ? { exclude: ['error'] }
+      : false,
+  },
 };
 
 module.exports = nextConfig;
