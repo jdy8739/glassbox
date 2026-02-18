@@ -387,3 +387,74 @@ cta.transparency-percent,Transparent,투명함
 footer.status.operational,All systems operational,모든 시스템 정상 운영 중
 footer.status.error,System unavailable,시스템 사용 불가
 cta.transparency-message,Start optimizing your portfolio with transparency and precision,투명성과 정확성을 갖춘 포트폴리오 최적화를 시작하세요
+introduction.hero.title,Glassbox Introduction Guide,Glassbox 소개 가이드
+introduction.hero.subtitle,Everything you need to know about portfolio optimization and beta hedging,포트폴리오 최적화 및 베타 헤징에 대해 알아야 할 모든 것
+introduction.downloadPdf,Download PDF Guide,PDF 가이드 다운로드
+introduction.disclaimers.title,Important Disclaimers,중요 면책 조항
+introduction.disclaimers.item1.title,Not Financial Advice,금융 자문 아님
+introduction.disclaimers.item1.content,"Glassbox is an educational and analytical tool only. The recommendations and analysis provided are not financial advice. Always consult with a qualified financial advisor before making investment decisions.","Glassbox는 교육 및 분석용 도구일 뿐입니다. 제공되는 권장 사항 및 분석은 금융 자문이 아닙니다. 투자 결정을 내리기 전에 반드시 자격 갖춘 재무 고문과 상의하십시오."
+introduction.disclaimers.item2.title,Historical Data Limitations,과거 데이터의 한계
+introduction.disclaimers.item2.content,"Analysis is based on historical price data. Past performance does not guarantee future results. Market conditions change rapidly, and historical correlations may break down.","모든 분석은 과거 가격 데이터를 기반으로 합니다. 과거의 성과가 미래의 결과를 보장하지 않습니다. 시장 상황은 급변할 수 있으며, 과거의 상관관계는 무너질 수 있습니다."
+introduction.disclaimers.item3.title,Model Assumptions,모델 가정
+introduction.disclaimers.item3.content,"Our efficient frontier assumes normal distributions and stable correlations. Real markets exhibit fat tails, volatility clustering, and regime changes that models cannot predict.","본 도구의 효율적 투자선 분석은 정규 분포와 안정적인 상관관계를 가정합니다. 실제 시장은 모델이 예측할 수 없는 두터운 꼬리, 변동성 군집 현상, 체제 변화 등을 보입니다."
+introduction.disclaimers.item4.title,Beta Calculation Risk,베타 계산 리스크
+introduction.disclaimers.item4.content,"Beta is calculated from historical data and may not reflect future market sensitivity. Market betas change during crises and tail events.","베타는 과거 데이터를 통해 계산되며 미래의 시장 민감도를 반영하지 않을 수 있습니다. 시장 베타는 위기 상황이나 극단적인 사건 발생 시 변동될 수 있습니다."
+introduction.disclaimers.item5.title,Hedging Costs Not Included,헤징 비용 미포함
+introduction.disclaimers.item5.content,"Recommendations do not account for transaction costs, slippage, margin interest, or commissions. Actual costs may significantly impact returns.","권장 사항에는 거래 비용, 슬리피지, 증거금 이자 또는 수수료가 포함되어 있지 않습니다. 실제 비용은 수익률에 상당한 영향을 미칠 수 있습니다."
+introduction.disclaimers.item6.title,Data Quality,데이터 품질
+introduction.disclaimers.item6.content,"While we use Yahoo Finance data, errors in price data, corporate actions, or adjustments may occur. Verify critical data independently before trading.","Yahoo Finance 데이터를 사용하지만 가격 데이터 오류, 기업 활동 반영 누락 또는 조정 오류가 발생할 수 있습니다. 거래 전 중요한 데이터는 독립적으로 검증하십시오."
+introduction.disclaimers.item7.title,Use at Your Own Risk,자기 책임 원칙
+introduction.disclaimers.item7.content,"Trading and investing carry substantial risk of loss. Use Glassbox's recommendations at your own discretion and risk tolerance.","거래 및 투자에는 상당한 손실 위험이 따릅니다. Glassbox의 권장 사항은 사용자의 판단과 위험 감수 능력에 따라 본인의 책임하에 사용하십시오."
+introduction.whatIs.title,What is Glassbox?,Glassbox란?
+introduction.whatIs.content,"Glassbox is a modern portfolio optimization and beta hedging tool designed for individual investors, financial advisors, and quantitative analysts. It helps you discover optimal asset allocations, understand market exposure, and implement hedging strategies.","Glassbox는 개인 투자자, 재무 고문 및 퀀트 분석가를 위해 설계된 현대적인 포트폴리오 최적화 및 베타 헤징 도구입니다. 최적의 자산 배분 전략을 발견하고, 시장 노출도를 이해하며, 효과적인 헤징 전략을 구현할 수 있도록 지원합니다."
+introduction.coreFeatures.title,Three Core Features,3가지 핵심 기능
+introduction.coreFeatures.feature1.title,Efficient Frontier Analysis,효율적 투자선 분석
+introduction.coreFeatures.feature1.content,"Visualize the risk-return tradeoff and identify optimal portfolios (GMV, Max Sharpe, Target).","위험 대비 수익의 상충 관계를 시각화하고 최적의 포트폴리오(GMV, 최대 샤프 지수, 타겟)를 식별합니다."
+introduction.coreFeatures.feature2.title,Beta Calculation,베타 계산
+introduction.coreFeatures.feature2.content,Understand your portfolio's sensitivity to S&P 500 market movements.,S&P 500 시장 움직임에 대한 포트폴리오의 민감도를 측정하고 분석합니다.
+introduction.coreFeatures.feature3.title,Hedging Recommendations,헤징 권고
+introduction.coreFeatures.feature3.content,Get specific sizing for market-neutral or target-beta positions using SPY or ES futures.,SPY ETF 또는 ES 선물을 활용하여 시장 중립적 포트폴리오나 타겟 베타 포지션을 구축하기 위한 구체적인 사이징을 제공합니다.
+introduction.keyConcepts.title,Key Concepts,주요 개념 설명
+introduction.keyConcepts.efficientFrontier.title,Efficient Frontier,효율적 투자선
+introduction.keyConcepts.efficientFrontier.description,The efficient frontier is the set of optimal portfolios offering the highest expected return for a given risk level.,효율적 투자선이란 주어진 위험 수준에서 가장 높은 기대 수익을 제공하는 최적 포트폴리오들의 집합입니다.
+introduction.keyConcepts.efficientFrontier.gmv.title,Global Minimum Variance (GMV),글로벌 최소 분산 (GMV)
+introduction.keyConcepts.efficientFrontier.gmv.description,Lowest possible volatility. Good for conservative investors.,변동성이 가장 낮은 포트폴리오로, 보수적인 투자자에게 적합합니다.
+introduction.keyConcepts.efficientFrontier.maxSharpe.title,Maximum Sharpe Ratio,최대 샤프 지수
+introduction.keyConcepts.efficientFrontier.maxSharpe.description,Best risk-adjusted returns. Optimal for most investors.,위험 조정 수익률이 가장 높은 포트폴리오로, 대부분의 투자자에게 최적의 선택이 됩니다.
+introduction.keyConcepts.efficientFrontier.target.title,Target Portfolio,타겟 포트폴리오
+introduction.keyConcepts.efficientFrontier.target.description,Any custom allocation matching your specific risk/return target.,사용자의 특정 위험/수익 목표에 부합하도록 설정된 맞춤형 자산 배분 방식입니다.
+introduction.keyConcepts.beta.title,Beta,베타
+introduction.keyConcepts.beta.description,Beta measures portfolio sensitivity to S&P 500 movements.,베타는 S&P 500 지수의 움직임에 대한 포트폴리오의 민감도를 측정합니다.
+introduction.keyConcepts.beta.beta1,Beta = 1.0 means portfolio moves with the market.,베타 1.0: 포트폴리오가 시장 지수와 동일한 폭으로 움직임을 의미합니다.
+introduction.keyConcepts.beta.beta1_5,Beta = 1.5 means 50% more volatile than the market.,베타 1.5: 시장 움직임보다 50% 더 민감하게 반응한다는 것을 의미합니다.
+introduction.keyConcepts.hedging.title,Hedging,헤징
+introduction.keyConcepts.hedging.description,"Reduces market exposure by shorting SPY (ETF) or ES (futures). For example, a beta-1.5 portfolio requires shorting specific amounts of SPY to achieve market-neutral exposure (beta = 0).","SPY(ETF) 또는 ES(선물)를 매도하여 시장 노출도를 줄이는 전략입니다. 예를 들어, 베타가 1.5인 포트폴리오를 보유한 경우, 산출한 구체적인 수량만큼 SPY를 매도하여 시장 중립적 상태(베타 0)를 달성할 수 있습니다."
+introduction.howToUse.title,How to Use Glassbox,Glassbox 사용 방법
+introduction.howToUse.step1.title,Select Assets,자산 선택
+introduction.howToUse.step1.content,"Enter your target stocks (e.g., AAPL, MSFT, NVDA). SGOV is automatically included as a risk-free asset. Specify quantities you own or plan to own.","분석하고자 하는 대상 주식(예: AAPL, MSFT, NVDA)의 티커를 입력합니다. 무위험 자산으로 SGOV가 자동 포함됩니다. 현재 보유 중이거나 보유 예정인 수량을 입력하십시오."
+introduction.howToUse.step2.title,Run Analysis,분석 실행
+introduction.howToUse.step2.content,"Click ""Analyze"" to fetch historical data (2 years by default) and calculate optimal portfolios. Analysis completes in 10-30 seconds.","Analyze 버튼을 클릭하여 데이터를 수집하고 최적 포트폴리오를 계산합니다. 기본적으로 최근 2년 데이터가 사용되며, 분석에는 약 10~30초가 소요됩니다."
+introduction.howToUse.step3.title,Review Results,결과 검토
+introduction.howToUse.step3.content,"Efficient Frontier Chart shows risk vs. return. Your current portfolio is marked on the chart. GMV Portfolio displays lowest-risk allocation and expected performance. Max Sharpe Portfolio shows best risk-adjusted returns and asset weights.","효율적 투자선 차트에서 현재 포트폴리오의 위치를 확인합니다. GMV 포트폴리오의 최저 위험 배분 및 기대 성과와 최대 샤프 지수 포트폴리오의 자산 비중을 확인합니다."
+introduction.howToUse.step4.title,Consider Hedging,헤징 고려
+introduction.howToUse.step4.content,Review your portfolio beta and hedging recommendations. Short the recommended SPY shares or ES contracts to achieve zero market exposure or custom target beta.,포트폴리오 베타와 헤징 권장 사항을 검토합니다. 시장 노출을 제로로 만들거나 목표 베타를 달성하기 위해 권장된 수량만큼 SPY 주식이나 ES 계약을 매도하는 방안을 고려하십시오.
+introduction.howToUse.step5.title,Save & Track,저장 및 추적
+introduction.howToUse.step5.content,Save analysis to compare multiple portfolio strategies over time.,분석 결과를 저장하여 시간에 따른 여러 포트폴리오 전략을 비교하고 지속적으로 추적합니다.
+introduction.limitations.title,Known Limitations,알려진 한계점
+introduction.limitations.item1.title,Historical Data Only,과거 데이터 의존성
+introduction.limitations.item1.content,Correlations and volatility may change significantly.,자산 간의 상관관계와 변동성은 미래에 크게 변할 수 있습니다.
+introduction.limitations.item2.title,No Transaction Costs,거래 비용 미반영
+introduction.limitations.item2.content,"Real trading involves commissions, spreads, and taxes.","실제 거래 시 발생하는 수수료, 스프레드 및 세금이 고려되지 않았습니다."
+introduction.limitations.item3.title,Assumes Normal Distributions,정규 분포 가정의 위험
+introduction.limitations.item3.content,Real markets exhibit extreme events that models underestimate.,실제 시장에서는 모델이 과소평가할 수 있는 극단적인 사건이 빈번하게 발생합니다.
+introduction.limitations.item4.title,Rebalancing Not Modeled,리밸런싱 비용
+introduction.limitations.item4.content,Maintaining optimal weights requires periodic rebalancing with costs.,최적의 비중을 유지하기 위해 필요한 주기적인 리밸런싱 비용이 모델링에 포함되지 않았습니다.
+introduction.limitations.item5.title,No Fundamental Analysis,기본적 분석 부재
+introduction.limitations.item5.content,Purely statistical. Does not assess company fundamentals or strategic risks.,순수하게 통계적 분석에 의존하며, 기업의 펀더멘털이나 전략적 리스크를 평가하지 않습니다.
+introduction.limitations.item6.title,Limited Time Horizon,시간 지평의 한계
+introduction.limitations.item6.content,Structural market changes may invalidate recommendations.,시장의 구조적 변화로 인해 과거 데이터를 기반으로 한 권장 사항이 무효화될 수 있습니다.
+introduction.cta.title,Ready to Get Started?,시작하기
+introduction.cta.subtitle,"Visit glassbox.space and begin optimizing your portfolio with transparency and precision. Remember, Glassbox is a tool for education and analysis. Always consult with a financial advisor before making investment decisions.","투명한 포트폴리오 최적화를 시작하십시오. Glassbox는 교육 및 분석을 위한 도구입니다. 투자 결정을 내리기 전에는 반드시 전문 재무 고문과 상담하시기 바랍니다."
+introduction.cta.startButton,Start Your First Analysis,첫 분석 시작하기
+introduction.cta.downloadButton,Download PDF Guide,PDF 가이드 다운로드
+introduction.cta.disclaimer,"Remember: Glassbox is a tool for education and analysis. Always consult with a financial advisor before making investment decisions.","주의: Glassbox는 교육 및 분석을 위한 도구입니다. 투자 결정을 내리기 전에는 반드시 전문 재무 고문과 상담하시기 바랍니다."
