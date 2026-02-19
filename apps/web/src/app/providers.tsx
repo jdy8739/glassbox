@@ -16,7 +16,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; lang?: string }) {
-  const { theme, resolvedTheme, setTheme, mounted } = useThemeState();
+  const { theme, resolvedTheme, setTheme } = useThemeState();
 
   // Create i18n instance once with the server-provided language
   const [i18n] = useState(() => createI18nInstance(lang));
@@ -46,13 +46,9 @@ export function ThemeProvider({ children, lang = 'en' }: { children: ReactNode; 
     <SessionProvider>
       <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        {mounted ? (
-          <ThemeContext.Provider value={value}>
-            {children}
-          </ThemeContext.Provider>
-        ) : (
-          <>{children}</>
-        )}
+        <ThemeContext.Provider value={value}>
+          {children}
+        </ThemeContext.Provider>
       </QueryClientProvider>
       </I18nextProvider>
     </SessionProvider>
