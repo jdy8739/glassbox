@@ -61,10 +61,10 @@ export function SearchWithDropdown({
     setSelectedIndex(-1);
   }, [searchResults]);
 
-  // Auto-show dropdown when results arrive
+  // Auto-show dropdown when search input exists
   useEffect(() => {
-    setShowDropdown(searchResults.length > 0 && searchInput.length > 0);
-  }, [searchResults, searchInput, setShowDropdown]);
+    setShowDropdown(searchInput.length > 0 && !isSearching);
+  }, [searchInput, isSearching, setShowDropdown]);
 
   // Update dropdown position
   useEffect(() => {
