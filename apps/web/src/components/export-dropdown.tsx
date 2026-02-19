@@ -71,14 +71,14 @@ export function ExportDropdown({
               setIsOpen(false);
             }} 
           />
-          <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-white/20 shadow-xl z-50 overflow-hidden`}>
+          <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-1 w-40 rounded-lg bg-white dark:bg-gray-900 border border-slate-200 dark:border-white/20 shadow-xl z-50 overflow-hidden`}>
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 handleExport('csv');
               }}
-              className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-white/10 flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm text-black dark:text-white border-b border-slate-100 dark:border-white/10 flex items-center gap-2"
             >
               <BarChart3 className="w-4 h-4 text-cyan-500" />
               <span>{t('analysis.button.export-csv')}</span>

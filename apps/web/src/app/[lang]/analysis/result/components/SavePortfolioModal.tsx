@@ -60,7 +60,7 @@ export function SavePortfolioModal({ isOpen, onClose, onSave, error }: SavePortf
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-cyan-500/20 bg-cyan-500/5">
+      <div className="bg-white dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-cyan-500/20">
         <div className="flex items-start gap-4">
           <div className="p-3 rounded-full bg-cyan-500/10 text-cyan-500">
             <Check className="w-6 h-6" />

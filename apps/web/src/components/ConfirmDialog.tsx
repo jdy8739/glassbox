@@ -64,7 +64,7 @@ export const ConfirmDialog = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className={`bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border ${style.border} ${style.bg}`}>
+      <div className={`bg-white dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 border ${style.border}`}>
         <div className="flex items-start gap-4">
           <div className={`p-3 rounded-full bg-black/5 dark:bg-white/5 ${style.iconColor}`}>
             <Icon className="w-6 h-6" />
