@@ -18,7 +18,7 @@ interface SearchWithDropdownProps {
   isSearching: boolean;
   showDropdown: boolean;
   setShowDropdown: (show: boolean) => void;
-  onAddItem: (symbol: string, name?: string) => void;
+  onAddItem: (result: SearchResult) => void;
 }
 
 /**
@@ -40,6 +40,16 @@ export function SearchWithDropdown({
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  // Button state
+  const isAddButtonEnabled = searchInput.trim().length > 0 && searchResults.length > 0 && !isSearching;
+
+  // Get tooltip message for button state
+  const getButtonTooltip = (): string => {
+    if (searchInput.trim().length === 0) return t('portfolio.builder.search.enter-ticker');
+    if (isSearching) return t('portfolio.builder.search.searching');
+    if (searchResults.length === 0) return t('portfolio.builder.search.no-results-add');
+  };
+
   // Refs for DOM elements
   const searchRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
@@ -53,11 +63,7 @@ export function SearchWithDropdown({
 
   // Auto-show dropdown when results arrive
   useEffect(() => {
-    if (searchResults.length > 0 && searchInput.length >= 1) {
-      setShowDropdown(true);
-    } else if (searchInput.length < 1) {
-      setShowDropdown(false);
-    }
+    setShowDropdown(searchResults.length > 0 && searchInput.length > 0);
   }, [searchResults, searchInput, setShowDropdown]);
 
   // Update dropdown position
@@ -73,17 +79,11 @@ export function SearchWithDropdown({
       }
     };
 
-    if (showDropdown) {
-      updatePosition();
-      window.addEventListener('resize', updatePosition);
-      window.addEventListener('scroll', updatePosition);
+    if (!showDropdown) return;
 
-      return () => {
-        window.removeEventListener('resize', updatePosition);
-        window.removeEventListener('scroll', updatePosition);
-      };
-    }
-
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition);
     return () => {
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition);
@@ -110,9 +110,9 @@ export function SearchWithDropdown({
   // Keyboard navigation handler
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown || searchResults.length === 0) {
-      if (e.key === 'Enter' && searchInput) {
+      if (e.key === 'Enter' && searchInput.trim().length > 0 && searchResults.length > 0) {
         e.preventDefault();
-        onAddItem(searchInput);
+        onAddItem(searchResults[0]);
       }
       return;
     }
@@ -141,10 +141,9 @@ export function SearchWithDropdown({
       case 'Enter':
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
-          const selected = searchResults[selectedIndex];
-          onAddItem(selected.symbol, selected.name);
-        } else if (searchInput) {
-          onAddItem(searchInput);
+          onAddItem(searchResults[selectedIndex]);
+        } else if (searchResults.length > 0) {
+          onAddItem(searchResults[0]);
         }
         break;
 
@@ -187,8 +186,18 @@ export function SearchWithDropdown({
               </div>
 
               <button
-                onClick={() => onAddItem(searchInput)}
-                className="glass-button whitespace-nowrap"
+                onClick={() => {
+                  if (searchResults.length > 0) {
+                    onAddItem(searchResults[0]);
+                  }
+                }}
+                disabled={!isAddButtonEnabled}
+                className={`glass-button whitespace-nowrap transition-all duration-200 ${
+                  isAddButtonEnabled
+                    ? 'opacity-100 cursor-pointer hover:scale-105 active:scale-95'
+                    : 'opacity-50 cursor-not-allowed'
+                }`}
+                title={getButtonTooltip()}
               >
                 {t('portfolio.builder.search.add')}
               </button>
@@ -220,7 +229,7 @@ export function SearchWithDropdown({
                       ref={(el) => {
                         resultRefs.current[index] = el;
                       }}
-                      onClick={() => onAddItem(result.symbol, result.name)}
+                      onClick={() => onAddItem(result)}
                       className={`w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center justify-between group ${
                         index === selectedIndex
                           ? 'bg-slate-100 dark:bg-slate-800'

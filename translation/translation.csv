@@ -54,6 +54,9 @@ portfolio.builder.analysis.dismiss,Dismiss,닫기
 portfolio.builder.search.label,Add Stock Ticker,주식 티커 추가
 portfolio.builder.search.placeholder,Search ticker (e.g. AAPL)...,티커 검색 (예: AAPL)...
 portfolio.builder.search.add,Add,추가
+portfolio.builder.search.enter-ticker,Enter a ticker to search,티커를 입력하여 검색하세요
+portfolio.builder.search.searching,Searching for results...,검색 중...
+portfolio.builder.search.no-results-add,No results found for this ticker. Try a different search.,이 티커에 대한 결과가 없습니다. 다른 검색을 시도하세요.
 portfolio.builder.templates.title,Start with a Template,템플릿으로 시작
 portfolio.builder.assets.label,Your Assets,보유 자산
 portfolio.builder.assets.clear,Clear All,모두 삭제

@@ -2,13 +2,14 @@
 
 import { useTranslation } from 'react-i18next';
 import { Layers, Shield, Zap, TrendingUp, Bitcoin } from 'lucide-react';
+import type { PortfolioItem } from '@glassbox/types';
 
 interface Template {
   id: string;
   nameKey: string;
   descriptionKey: string;
   icon: any;
-  items: { symbol: string; quantity: number }[];
+  items: PortfolioItem[];
   color: string;
 }
 
@@ -19,8 +20,8 @@ const TEMPLATES: Template[] = [
     descriptionKey: 'portfolio.template.classic-60-40.description',
     icon: Shield,
     items: [
-      { symbol: 'SPY', quantity: 60 },
-      { symbol: 'TLT', quantity: 40 },
+      { symbol: 'SPY', quantity: 60, name: 'SPDR S&P 500 ETF Trust', exchange: 'NYSE' },
+      { symbol: 'TLT', quantity: 40, name: 'iShares 20+ Year Treasury Bond ETF', exchange: 'NASDAQ' },
     ],
     color: 'slate-glow',
   },
@@ -30,12 +31,12 @@ const TEMPLATES: Template[] = [
     descriptionKey: 'portfolio.template.big-tech.description',
     icon: Zap,
     items: [
-      { symbol: 'AAPL', quantity: 20 },
-      { symbol: 'MSFT', quantity: 20 },
-      { symbol: 'GOOGL', quantity: 15 },
-      { symbol: 'AMZN', quantity: 15 },
-      { symbol: 'NVDA', quantity: 15 },
-      { symbol: 'META', quantity: 15 },
+      { symbol: 'AAPL', quantity: 20, name: 'Apple Inc.', exchange: 'NASDAQ' },
+      { symbol: 'MSFT', quantity: 20, name: 'Microsoft Corporation', exchange: 'NASDAQ' },
+      { symbol: 'GOOGL', quantity: 15, name: 'Alphabet Inc.', exchange: 'NASDAQ' },
+      { symbol: 'AMZN', quantity: 15, name: 'Amazon.com Inc.', exchange: 'NASDAQ' },
+      { symbol: 'NVDA', quantity: 15, name: 'NVIDIA Corporation', exchange: 'NASDAQ' },
+      { symbol: 'META', quantity: 15, name: 'Meta Platforms Inc.', exchange: 'NASDAQ' },
     ],
     color: 'cyan-blue',
   },
@@ -45,11 +46,11 @@ const TEMPLATES: Template[] = [
     descriptionKey: 'portfolio.template.all-weather.description',
     icon: Layers,
     items: [
-      { symbol: 'SPY', quantity: 30 },
-      { symbol: 'TLT', quantity: 40 },
-      { symbol: 'IEF', quantity: 15 },
-      { symbol: 'GLD', quantity: 7.5 },
-      { symbol: 'DBC', quantity: 7.5 },
+      { symbol: 'SPY', quantity: 30, name: 'SPDR S&P 500 ETF Trust', exchange: 'NYSE' },
+      { symbol: 'TLT', quantity: 40, name: 'iShares 20+ Year Treasury Bond ETF', exchange: 'NASDAQ' },
+      { symbol: 'IEF', quantity: 15, name: 'iShares 7-10 Year Treasury Bond ETF', exchange: 'NYSE' },
+      { symbol: 'GLD', quantity: 7.5, name: 'SPDR Gold Shares', exchange: 'NYSE' },
+      { symbol: 'DBC', quantity: 7.5, name: 'Commodities Select Sector SPDR', exchange: 'NYSE' },
     ],
     color: 'coral-pink',
   },
@@ -59,16 +60,16 @@ const TEMPLATES: Template[] = [
     descriptionKey: 'portfolio.template.crypto-heavy.description',
     icon: Bitcoin,
     items: [
-      { symbol: 'BTC', quantity: 50 },
-      { symbol: 'ETH', quantity: 30 },
-      { symbol: 'COIN', quantity: 20 },
+      { symbol: 'BTC', quantity: 50, name: 'Bitcoin', exchange: 'CRYPTO' },
+      { symbol: 'ETH', quantity: 30, name: 'Ethereum', exchange: 'CRYPTO' },
+      { symbol: 'COIN', quantity: 20, name: 'Coinbase Global Inc.', exchange: 'NASDAQ' },
     ],
     color: 'cyan-purple',
   }
 ];
 
 interface StarterTemplatesProps {
-  onSelect: (items: { symbol: string; quantity: number }[]) => void;
+  onSelect: (items: PortfolioItem[]) => void;
 }
 
 export function StarterTemplates({ onSelect }: StarterTemplatesProps) {
@@ -86,7 +87,7 @@ export function StarterTemplates({ onSelect }: StarterTemplatesProps) {
           >
             <div className="flex items-start justify-between mb-3">
               <div className="p-3 rounded-xl bg-white/20 dark:bg-black/20 backdrop-blur-md">
-                <Icon className="w-6 h-6 text-black dark:text-white" />
+                <template.icon className="w-6 h-6 text-black dark:text-white" />
               </div>
               <span className="text-xs font-bold px-2 py-1 rounded-full bg-white/20 dark:bg-black/20 text-black dark:text-white">
                 {template.items.length} {t('portfolio.template.assets')}

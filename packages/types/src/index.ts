@@ -21,7 +21,8 @@ export interface Ticker {
 export interface PortfolioItem {
   symbol: string;
   quantity: number;
-  name?: string;
+  name: string;
+  exchange: string;
 }
 
 /**

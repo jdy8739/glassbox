@@ -2,11 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { X, Plus, Minus } from 'lucide-react';
-
-interface PortfolioItem {
-  symbol: string;
-  quantity: number;
-}
+import type { PortfolioItem } from '@glassbox/types';
 
 interface AssetListProps {
   items: PortfolioItem[];
@@ -57,11 +53,16 @@ export function AssetList({ items, colors, onRemove, onUpdateQuantity }: AssetLi
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-black dark:text-white text-lg leading-tight tracking-tight">
-                    {item.symbol}
-                  </h3>
-                  <p className="text-xs font-medium text-black/50 dark:text-white/50 mt-0.5 truncate">
-                    {t('portfolio.asset.label')} #{index + 1}
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="font-bold text-black dark:text-white text-lg leading-tight tracking-tight">
+                      {item.symbol}
+                    </h3>
+                    <span className="text-xs px-2 py-0.5 rounded-md bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-semibold uppercase tracking-wide">
+                      {item.exchange}
+                    </span>
+                  </div>
+                  <p className="text-sm max-w-40 font-medium text-black/70 dark:text-white/70 mt-1 truncate">
+                    {item.name}
                   </p>
                 </div>
 

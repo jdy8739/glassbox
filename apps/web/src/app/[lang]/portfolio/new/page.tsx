@@ -21,6 +21,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useLocalizedRouter } from '@/hooks/useLocalizedRouter';
 import { validatePortfolioAnalysis, isEndDateToday } from '@/lib/portfolio-validation';
+import type { PortfolioItem } from '@glassbox/types';
 
 const CHART_COLORS = [
   '#06b6d4', // Cyan 500
@@ -124,9 +125,9 @@ function PortfolioBuilderContent() {
   };
 
   // Add item handler
-  const handleAddItem = (symbol: string, name?: string) => {
-    addItem(symbol);
-    setAddedTicker(symbol);
+  const handleAddItem = (result: PortfolioItem) => {
+    addItem(result);
+    setAddedTicker(result.symbol);
   };
 
   return (
