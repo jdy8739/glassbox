@@ -46,7 +46,7 @@ function HomeContent() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative px-6 py-12 sm:py-20 md:py-28 lg:py-32">
+      <div className="relative px-6 pt-8 sm:pt-10 md:pt-16 lg:pt-32 pb-3 md:pb-6">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
           {/* Left Column: Text Content */}
@@ -107,7 +107,7 @@ function HomeContent() {
       </div>
 
 {/* Features Section */}
-      <div className="relative px-6 py-16">
+      <div className="relative px-6 pt-8 md:pt-16 pb-3 md:pb-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-20 space-y-6">
             <h2 className="text-5xl sm:text-6xl font-bold text-black dark:text-white">
@@ -208,7 +208,7 @@ function HomeContent() {
       </div>
 
       {/* How It Works Section */}
-      <div className="relative px-6 py-28 overflow-hidden">
+      <div className="relative px-6 pt-12 md:pt-24 pb-4 md:pb-8 overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 right-0 w-96 h-96 bg-cyan-400/10 rounded-full blur-3xl animate-pulse"></div>
@@ -218,7 +218,7 @@ function HomeContent() {
 
         <div className="mx-auto max-w-5xl relative z-10">
           {/* Section Header */}
-          <div className="text-center mb-24 space-y-6">
+          <div className="text-center mb-12 space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-400/50 backdrop-blur-sm">
               <span className="text-sm font-semibold text-cyan-900 dark:text-cyan-100">{t('howitworks.section-header')}</span>
             </div>
@@ -300,7 +300,7 @@ function HomeContent() {
       </div>
 
       {/* Final CTA Section */}
-      <div className="relative px-6 py-28 overflow-hidden">
+      <div className="relative px-6 pt-12 md:pt-24 pb-4 md:pb-8 overflow-hidden">
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-cyan-400/15 rounded-full blur-3xl animate-pulse"></div>
@@ -372,7 +372,7 @@ function HomeContent() {
       </div>
 
       {/* Footer */}
-      <div className="relative px-6 py-20 bg-gradient-to-b from-transparent via-cyan-500/5 to-cyan-500/10 dark:via-cyan-400/5 dark:to-cyan-400/10">
+      <div className="relative px-6 pt-8 md:pt-16 pb-3 md:pb-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-cyan-500/10 dark:via-cyan-400/5 dark:to-cyan-400/10">
         <div className="mx-auto max-w-6xl">
           {/* Main Footer Content */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
