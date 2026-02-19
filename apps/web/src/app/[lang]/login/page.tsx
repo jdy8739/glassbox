@@ -187,7 +187,7 @@ function LoginContent({ params }: { params: Promise<{ lang: string }> }) {
             <button
               type="button"
               onClick={() => signIn('google', { callbackUrl })}
-              className="glass-button-outline w-full py-2.5 hover:bg-white/40 dark:hover:bg-slate-800/60 group transition-all duration-300"
+              className="glass-button w-full py-2.5 group transition-all duration-300"
             >
               <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                 <path

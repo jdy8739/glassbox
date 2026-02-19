@@ -494,7 +494,7 @@ function IntroductionContent() {
               <a
                 href={pdfUrl}
                 download
-                className="glass-button-outline px-8 py-4 flex items-center justify-center gap-2"
+                className="glass-button-secondary px-8 py-4 flex items-center justify-center gap-2"
                 aria-label={`Download PDF guide in ${currentLang === 'ko' ? 'Korean' : 'English'}`}
               >
                 <Download className="w-5 h-5" />
