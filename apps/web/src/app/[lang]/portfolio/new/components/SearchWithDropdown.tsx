@@ -48,6 +48,7 @@ export function SearchWithDropdown({
     if (searchInput.trim().length === 0) return t('portfolio.builder.search.enter-ticker');
     if (isSearching) return t('portfolio.builder.search.searching');
     if (searchResults.length === 0) return t('portfolio.builder.search.no-results-add');
+    return '';
   };
 
   // Refs for DOM elements
@@ -63,8 +64,8 @@ export function SearchWithDropdown({
 
   // Auto-show dropdown when search input exists
   useEffect(() => {
-    setShowDropdown(searchInput.length > 0 && !isSearching);
-  }, [searchInput, isSearching, setShowDropdown]);
+    setShowDropdown(searchInput.length > 0);
+  }, [searchInput, setShowDropdown]);
 
   // Update dropdown position
   useEffect(() => {
@@ -109,13 +110,8 @@ export function SearchWithDropdown({
 
   // Keyboard navigation handler
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showDropdown || searchResults.length === 0) {
-      if (e.key === 'Enter' && searchInput.trim().length > 0 && searchResults.length > 0) {
-        e.preventDefault();
-        onAddItem(searchResults[0]);
-      }
-      return;
-    }
+    if (searchResults.length === 0) return;
+    if (!showDropdown) return;
 
     switch (e.key) {
       case 'ArrowDown':

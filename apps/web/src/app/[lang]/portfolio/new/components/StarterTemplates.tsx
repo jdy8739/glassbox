@@ -87,7 +87,7 @@ export function StarterTemplates({ onSelect }: StarterTemplatesProps) {
           >
             <div className="flex items-start justify-between mb-3">
               <div className="p-3 rounded-xl bg-white/20 dark:bg-black/20 backdrop-blur-md">
-                <template.icon className="w-6 h-6 text-black dark:text-white" />
+                <Icon className="w-6 h-6 text-black dark:text-white" />
               </div>
               <span className="text-xs font-bold px-2 py-1 rounded-full bg-white/20 dark:bg-black/20 text-black dark:text-white">
                 {template.items.length} {t('portfolio.template.assets')}
