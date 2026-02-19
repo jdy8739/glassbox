@@ -48,7 +48,7 @@ export function usePortfolioBuilder() {
   const addItem = (result: SearchResultItem) => {
     const upperSymbol = result.symbol.toUpperCase();
     if (!items.find((item) => item.symbol === upperSymbol)) {
-      setItems([...items, { ...result, symbol: upperSymbol }]);
+      setItems([...items, { ...result, symbol: upperSymbol, quantity: 1 }]);
       setSearchInput('');
       setShowDropdown(false);
     }
