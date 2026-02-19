@@ -52,7 +52,9 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
             portfolioName={portfolio.name}
             items={portfolio.tickers.map((symbol, i) => ({
               symbol,
-              quantity: portfolio.quantities[i]
+              quantity: portfolio.quantities[i],
+              name: '',
+              exchange: '',
             }))}
             analysis={portfolio.analysisSnapshot}
             showLabel={false}
@@ -92,7 +94,7 @@ export function PortfolioCard({ portfolio, onDelete, isDeleting, colors }: Portf
           ))}
         </div>
         <div className="flex gap-2 overflow-hidden">
-          {portfolio.tickers.slice(0, 4).map((ticker, i) => (
+          {portfolio.tickers.slice(0, 4).map((ticker) => (
             <span key={ticker} className="text-[10px] font-mono text-black/40 dark:text-white/40">
               {ticker}
             </span>

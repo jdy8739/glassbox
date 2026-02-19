@@ -29,6 +29,8 @@ const createItems = (tickers: string[], quantities: number[]): PortfolioItem[] =
   return tickers.map((ticker, index) => ({
     symbol: ticker,
     quantity: quantities[index] || 0,
+    name: '',
+    exchange: '',
   }));
 };
 

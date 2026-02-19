@@ -125,8 +125,8 @@ function PortfolioBuilderContent() {
   };
 
   // Add item handler
-  const handleAddItem = (result: PortfolioItem) => {
-    addItem(result);
+  const handleAddItem = (result: Omit<PortfolioItem, 'quantity'>) => {
+    addItem({ ...result, quantity: 1 });
     setAddedTicker(result.symbol);
   };
 
