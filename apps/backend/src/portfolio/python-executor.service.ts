@@ -78,32 +78,25 @@ export class PythonExecutorService {
       };
 
       // Create promise to handle Python execution
-      // TEMPORARY: Use mock script to avoid Yahoo Finance rate limiting
-      // Change back to 'efficient_frontier.py' when rate limit clears (usually 15-30 min)
       const result = await new Promise<PythonExecutorResult>((resolve, reject) => {
-        const pyshell = new PythonShell('efficient_frontier_mock.py', options);
+        const pyshell = new PythonShell('efficient_frontier.py', options);
 
-        // Send input data to Python script via stdin
         pyshell.send(JSON.stringify(input));
         pyshell.end((err) => {
           if (err) {
-            this.logger.error('Python script execution error:', err);
-            this.logger.error('Error details:', JSON.stringify(err, null, 2));
+            this.logger.error('Python execution error:', err.message || String(err));
             reject(new Error(`Python script failed: ${err.message || String(err)}`));
           }
         });
 
-        // Collect output from Python script
         let outputLines: string[] = [];
 
         pyshell.on('message', (message: string) => {
-          this.logger.debug('Python output line:', message);
           outputLines.push(message);
         });
 
         pyshell.on('stderr', (stderr: string) => {
-          // Log stderr for debugging - these could be warnings or errors
-          this.logger.warn('Python stderr:', stderr);
+          this.logger.warn('Python:', stderr);
         });
 
         pyshell.on('close', () => {
@@ -112,27 +105,24 @@ export class PythonExecutorService {
             return;
           }
 
-          // Join all output lines and try to parse as JSON
           const outputText = outputLines.join('\n');
 
           try {
             const output = JSON.parse(outputText);
 
             if (output.error) {
-              this.logger.error('Python script returned error:', output.error);
-              reject(new Error(output.error));
+              this.logger.error(`Python error [${output.type}]: ${output.error}`);
+              reject(new Error(`${output.error} (${output.type})`));
             } else {
               resolve(output);
             }
-          } catch (parseError: unknown) {
-            this.logger.error('Failed to parse Python output as JSON:', outputText);
-            const errorMsg = parseError instanceof Error ? parseError.message : String(parseError);
-            reject(new Error(`Failed to parse Python output: ${errorMsg}`));
+          } catch {
+            this.logger.error('Failed to parse Python output:', outputText.substring(0, 500));
+            reject(new Error('Failed to parse Python output'));
           }
         });
       });
 
-      this.logger.log('Python script executed successfully');
       return result;
     } catch (error: unknown) {
       this.logger.error('Failed to execute Python script:', error);

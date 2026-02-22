@@ -247,16 +247,20 @@ def fetch_single_ticker(ticker_symbol, start_date, end_date):
 
             if hist.empty:
                 if attempt < MAX_RETRIES - 1:
-                    time.sleep(1)
+                    print(f"[WARN] {ticker_symbol}: no data (attempt {attempt + 1}/{MAX_RETRIES}), retrying...", file=sys.stderr)
+                    time.sleep(2)
                     continue
-                raise ValueError(f"No data for {ticker_symbol}")
+                raise ValueError(f"No data for {ticker_symbol} (Yahoo Finance may be rate-limited)")
 
             return hist['Close']
 
+        except ValueError:
+            raise
         except Exception as e:
+            print(f"[ERROR] {ticker_symbol}: {str(e)} (attempt {attempt + 1}/{MAX_RETRIES})", file=sys.stderr)
             if attempt == MAX_RETRIES - 1:
                 raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
-            time.sleep(1)
+            time.sleep(2)
 
     raise ValueError(f"Failed to fetch {ticker_symbol} after {MAX_RETRIES} attempts")
 
