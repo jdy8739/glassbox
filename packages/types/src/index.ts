@@ -124,6 +124,15 @@ export interface AnalysisSnapshot {
       sharpe: number;
     };
   };
+  myPortfolio: {
+    weights: Record<string, number>; // User's actual portfolio weights from quantities
+    stats: {
+      return: number;
+      volatility: number;
+      sharpeRatio: number;
+    };
+    value: number; // Total portfolio value in dollars
+  };
   portfolioBeta: number;
   riskFreeRate: number;
   hedging: {
@@ -131,6 +140,7 @@ export interface AnalysisSnapshot {
     spyNotional: number;
     esContracts: number;
     esNotional: number;
+    targetBeta: number;
   };
   analysisDate?: string; // Optional start date for the analysis
   analysisEndDate?: string; // Optional end date for the analysis
