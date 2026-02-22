@@ -5,7 +5,6 @@ import { join } from 'path';
 export interface PythonExecutorInput {
   tickers: string[];
   quantities: number[];
-  portfolioValue?: number;
   targetBeta?: number;
   startDate?: string;
   endDate?: string;
@@ -28,6 +27,15 @@ export interface PythonExecutorResult {
       sharpe: number;
     };
   };
+  myPortfolio: {
+    weights: Record<string, number>;
+    stats: {
+      return: number;
+      volatility: number;
+      sharpeRatio: number;
+    };
+    value: number;
+  };
   efficientFrontier: Array<{
     return: number;
     volatility: number;
@@ -44,6 +52,7 @@ export interface PythonExecutorResult {
     spyNotional: number;
     esContracts: number;
     esNotional: number;
+    targetBeta: number;
   };
   riskFreeRate: number;
   error?: string;

@@ -250,7 +250,7 @@ def fetch_single_ticker(ticker_symbol, start_date, end_date):
                     print(f"[WARN] {ticker_symbol}: no data (attempt {attempt + 1}/{MAX_RETRIES}), retrying...", file=sys.stderr)
                     time.sleep(2)
                     continue
-                raise ValueError(f"No data for {ticker_symbol} (Yahoo Finance may be rate-limited)")
+                raise ValueError(f"No data returned for {ticker_symbol} from {start_date.date()} to {end_date.date()}")
 
             return hist['Close']
 
@@ -303,15 +303,17 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
             UserWarning
         )
 
-    # Always include SGOV as risk-free asset
+    # Always include SGOV (risk-free asset) and SPY (benchmark for beta)
     if 'SGOV' not in tickers:
         tickers = tickers + ['SGOV']
+    if 'SPY' not in tickers:
+        tickers = tickers + ['SPY']
 
     all_prices = {}
     for ticker_symbol in tickers:
         all_prices[ticker_symbol] = fetch_single_ticker(ticker_symbol, start_date, end_date)
 
-    # Combine and align dates (intersection)
+    # Combine and align dates (intersection of dates where ALL tickers have data)
     prices = pd.DataFrame(all_prices).dropna()
 
     validate_data_sufficiency(prices, MIN_DATA_POINTS, "price")
@@ -319,56 +321,31 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     return prices
 
 
-def fetch_benchmark_prices(prices, benchmark_ticker='SPY'):
-    """
-    Fetch or extract benchmark prices
-
-    Args:
-        prices: DataFrame with portfolio price data
-        benchmark_ticker: Benchmark ticker symbol
-
-    Returns:
-        pandas Series of benchmark prices
-    """
-    if benchmark_ticker in prices.columns:
-        return prices[benchmark_ticker]
-
-    start_date = prices.index[0]
-    end_date = prices.index[-1]
-    benchmark = yf.Ticker(benchmark_ticker)
-    benchmark_data = benchmark.history(start=start_date, end=end_date, auto_adjust=True)
-
-    if benchmark_data.empty:
-        raise ValueError(f"Failed to fetch benchmark data for {benchmark_ticker}")
-
-    return benchmark_data['Close']
-
-
-def fetch_latest_spy_price():
-    """
-    Fetch latest SPY price for hedge calculation
-
-    Returns:
-        float: Latest SPY price
-
-    Raises:
-        ValueError if fetch fails
-    """
-    spy_ticker = yf.Ticker('SPY')
-    spy_data = spy_ticker.history(period='1d', auto_adjust=True)
-
-    if spy_data.empty:
-        raise ValueError(
-            "Failed to fetch current SPY price for hedge calculation. "
-            "This is required to calculate hedge sizing. Please try again later."
-        )
-
-    return float(spy_data['Close'].iloc[-1])
 
 
 # ==================== Main Calculations ====================
 
-def optimize_portfolio(mu, S, objective, risk_free_rate):
+def build_weight_bounds(assets, max_stock_weight=0.5, rf_ticker='SGOV'):
+    """
+    Build per-asset weight bounds: cap risky assets, leave risk-free uncapped.
+    Only applies cap when there are 4+ assets (3+ stocks + SGOV).
+
+    Args:
+        assets: Index or list of asset names
+        max_stock_weight: Max weight for each risky asset (default 50%)
+        rf_ticker: Risk-free asset ticker (uncapped)
+
+    Returns:
+        list of (min, max) tuples per asset, or (0, 1) if too few assets to constrain
+    """
+    n = len(assets)
+    if n < 4:
+        return (0, 1)
+
+    return [(0, 1) if asset == rf_ticker else (0, max_stock_weight) for asset in assets]
+
+
+def optimize_portfolio(mu, S, objective, risk_free_rate, weight_bounds=(0, 1)):
     """
     Run a single portfolio optimization and return weights + stats
 
@@ -377,11 +354,12 @@ def optimize_portfolio(mu, S, objective, risk_free_rate):
         S: Covariance matrix
         objective: 'min_volatility' or 'max_sharpe'
         risk_free_rate: Risk-free rate
+        weight_bounds: Per-asset (min, max) bounds or list of tuples
 
     Returns:
         dict with 'weights' (dict) and 'stats' (dict with return, volatility, sharpe)
     """
-    ef = EfficientFrontier(mu, S)
+    ef = EfficientFrontier(mu, S, weight_bounds=weight_bounds)
 
     if objective == 'min_volatility':
         ef.min_volatility()
@@ -415,18 +393,23 @@ def calculate_efficient_frontier(prices, num_portfolios=10000):
     mu = expected_returns.mean_historical_return(prices)
     S = risk_models.sample_cov(prices)
     risk_free_rate = calculate_annualized_risk_free_rate(prices)
+    bounds = build_weight_bounds(prices.columns)
 
     # Optimal portfolios
-    gmv = optimize_portfolio(mu, S, 'min_volatility', risk_free_rate)
-    max_sharpe = optimize_portfolio(mu, S, 'max_sharpe', risk_free_rate)
+    gmv = optimize_portfolio(mu, S, 'min_volatility', risk_free_rate, bounds)
+    max_sharpe = optimize_portfolio(mu, S, 'max_sharpe', risk_free_rate, bounds)
 
     # Efficient Frontier Points
+    # Upper bound: extend 20% beyond max sharpe, but handle negative returns (bear markets)
+    gmv_ret = gmv['stats']['return']
+    ms_ret = max_sharpe['stats']['return']
+    upper_bound = ms_ret + abs(ms_ret) * 0.2 if ms_ret >= gmv_ret else gmv_ret
     frontier_points = []
-    target_returns = np.linspace(gmv['stats']['return'], max_sharpe['stats']['return'] * 1.2, 50)
+    target_returns = np.linspace(gmv_ret, upper_bound, 50)
 
     for target_return in target_returns:
         try:
-            ef_temp = EfficientFrontier(mu, S)
+            ef_temp = EfficientFrontier(mu, S, weight_bounds=bounds)
             ef_temp.efficient_return(target_return)
             perf = ef_temp.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
 
@@ -486,14 +469,17 @@ def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     β = Cov(R_portfolio, R_benchmark) / Var(R_benchmark)
 
     Args:
-        prices: DataFrame with historical prices
+        prices: DataFrame with historical prices (must include benchmark_ticker column)
         portfolio_weights: Dict of ticker -> weight
         benchmark_ticker: Benchmark ticker (default: SPY)
 
     Returns:
         float: Portfolio beta
     """
-    benchmark_prices = fetch_benchmark_prices(prices, benchmark_ticker)
+    if benchmark_ticker not in prices.columns:
+        raise ValueError(f"Benchmark {benchmark_ticker} not found in price data")
+
+    benchmark_prices = prices[benchmark_ticker]
     portfolio_return_series = calculate_weighted_returns(prices, portfolio_weights)
 
     if portfolio_return_series.empty:
@@ -548,7 +534,9 @@ def main():
         prices = fetch_price_data(tickers, start_date=start_date, end_date=end_date)
 
         # 3. Efficient frontier (theoretical optimal portfolios)
-        frontier_result = calculate_efficient_frontier(prices)
+        # Exclude SPY from optimization - it's a benchmark, not an investable asset
+        optimization_prices = prices.drop(columns=['SPY'], errors='ignore')
+        frontier_result = calculate_efficient_frontier(optimization_prices)
         mu = frontier_result.pop('mu')
         S = frontier_result.pop('S')
 
@@ -556,21 +544,34 @@ def main():
         user_portfolio = calculate_user_portfolio(tickers, quantities, prices.iloc[-1])
 
         # 5. User's portfolio metrics (position on frontier chart)
-        user_weights_array = weights_dict_to_array(user_portfolio['weights'], prices.columns)
-        user_metrics = calculate_portfolio_metrics(user_weights_array, mu, S, frontier_result['riskFreeRate'])
+        # Compute from return time series - works for ANY tickers including SPY
+        risk_free_rate = frontier_result['riskFreeRate']
+        user_return_series = calculate_weighted_returns(prices, user_portfolio['weights'])
+        annual_return = float(user_return_series.mean() * TRADING_DAYS_PER_YEAR)
+        annual_vol = float(user_return_series.std() * np.sqrt(TRADING_DAYS_PER_YEAR))
+        user_metrics = {
+            'return': annual_return,
+            'volatility': annual_vol,
+            'sharpeRatio': float(calculate_sharpe_ratio(annual_return, annual_vol, risk_free_rate))
+        }
 
-        # 6. Beta for user's actual portfolio
+        # 6. Beta for user's actual portfolio (uses SPY from prices)
         portfolio_beta = calculate_portfolio_beta(prices, user_portfolio['weights'])
 
         # 7. Hedge sizing (using real portfolio value and real beta)
-        spy_price = fetch_latest_spy_price()
+        spy_price = float(prices['SPY'].iloc[-1])
         hedging = calculate_hedge_sizing(portfolio_beta, target_beta, user_portfolio['value'], spy_price)
 
         # 8. Combine
+        # Include SGOV in output weights for consistency with frontier portfolios
+        output_weights = dict(user_portfolio['weights'])
+        if 'SGOV' not in output_weights:
+            output_weights['SGOV'] = 0.0
+
         result = {
             **frontier_result,
             'myPortfolio': {
-                'weights': user_portfolio['weights'],
+                'weights': output_weights,
                 'stats': user_metrics,
                 'value': user_portfolio['value']
             },

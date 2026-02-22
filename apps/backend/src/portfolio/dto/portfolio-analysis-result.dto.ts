@@ -45,6 +45,34 @@ export class HedgingDto {
 
   @ApiProperty({ description: 'ES futures hedge notional value', example: 17850 })
   esNotional!: number;
+
+  @ApiProperty({ description: 'Target beta for hedging', example: 0 })
+  targetBeta!: number;
+}
+
+export class UserPortfolioStatsDto {
+  @ApiProperty({ description: 'Expected annual return', example: 0.15 })
+  return!: number;
+
+  @ApiProperty({ description: 'Annual volatility', example: 0.20 })
+  volatility!: number;
+
+  @ApiProperty({ description: 'Sharpe ratio', example: 1.1 })
+  sharpeRatio!: number;
+}
+
+export class UserPortfolioDto {
+  @ApiProperty({
+    description: "User's actual portfolio weights from quantities",
+    example: { AAPL: 0.3, MSFT: 0.5, NVDA: 0.2, SGOV: 0.0 },
+  })
+  weights!: Record<string, number>;
+
+  @ApiProperty({ description: "User's portfolio statistics", type: UserPortfolioStatsDto })
+  stats!: UserPortfolioStatsDto;
+
+  @ApiProperty({ description: 'Total portfolio value in dollars', example: 12500 })
+  value!: number;
 }
 
 export class PortfolioAnalysisResultDto {
@@ -53,6 +81,9 @@ export class PortfolioAnalysisResultDto {
 
   @ApiProperty({ description: 'Maximum Sharpe Ratio portfolio', type: OptimalPortfolioDto })
   maxSharpe!: OptimalPortfolioDto;
+
+  @ApiProperty({ description: "User's actual portfolio metrics", type: UserPortfolioDto })
+  myPortfolio!: UserPortfolioDto;
 
   @ApiProperty({
     description: 'Efficient frontier points',

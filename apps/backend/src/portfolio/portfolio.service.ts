@@ -213,16 +213,14 @@ export class PortfolioService {
     this.logger.log(`Analyzing portfolio with ${dto.tickers.length} assets`);
 
     // Set defaults
-    const portfolioValue = dto.portfolioValue || 100000;
     const targetBeta = dto.targetBeta !== undefined ? dto.targetBeta : 0;
     const startDate = dto.startDate;
     const endDate = dto.endDate;
 
-    // Execute Python script
+    // Execute Python script (portfolio value is computed from quantities × prices in Python)
     const result = await this.pythonExecutor.executeEfficientFrontier({
       tickers: dto.tickers,
       quantities: dto.quantities,
-      portfolioValue,
       targetBeta,
       startDate,
       endDate,
@@ -234,6 +232,7 @@ export class PortfolioService {
     return {
       gmv: result.gmv,
       maxSharpe: result.maxSharpe,
+      myPortfolio: result.myPortfolio,
       efficientFrontier: result.efficientFrontier,
       randomPortfolios: result.randomPortfolios,
       portfolioBeta: result.portfolioBeta,
