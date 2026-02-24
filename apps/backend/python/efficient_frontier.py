@@ -217,7 +217,7 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     return prices
 
 
-def calculate_efficient_frontier(prices, num_portfolios=10000):
+def calculate_efficient_frontier(prices, num_portfolios=500):
     """
     Calculate efficient frontier using PyPortfolioOpt
 
@@ -531,7 +531,7 @@ def main():
         }
 
         # Output JSON result to stdout
-        print(json.dumps(result, indent=2))
+        print(json.dumps(result))
         sys.exit(0)
 
     except Exception as e:
@@ -540,7 +540,7 @@ def main():
             'error': str(e),
             'type': type(e).__name__
         }
-        print(json.dumps(error_result, indent=2))
+        print(json.dumps(error_result))
         sys.exit(1)
 
 
