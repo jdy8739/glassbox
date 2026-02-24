@@ -6,7 +6,6 @@ Calculates portfolio optimization metrics using PyPortfolioOpt
 
 import sys
 import json
-import time
 import yfinance as yf
 import numpy as np
 import pandas as pd
@@ -19,7 +18,6 @@ MIN_DATA_POINTS = 30
 TRADING_DAYS_PER_YEAR = 252
 DEFAULT_RISK_FREE_RATE = 0.05
 ES_MULTIPLIER = 50
-MAX_RETRIES = 3
 
 
 # ==================== Helper Functions ====================
@@ -59,40 +57,6 @@ def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price
         )
 
 
-def fetch_single_ticker(ticker_symbol, start_date, end_date):
-    """
-    Fetch historical price data for a single ticker with retry logic
-
-    Args:
-        ticker_symbol: Ticker symbol to fetch
-        start_date: Start date (datetime)
-        end_date: End date (datetime)
-
-    Returns:
-        pandas Series of adjusted close prices
-
-    Raises:
-        ValueError if fetch fails after retries
-    """
-    for attempt in range(MAX_RETRIES):
-        try:
-            ticker = yf.Ticker(ticker_symbol)
-            hist = ticker.history(start=start_date, end=end_date, auto_adjust=True)
-
-            if hist.empty:
-                if attempt < MAX_RETRIES - 1:
-                    time.sleep(1)
-                    continue
-                raise ValueError(f"No data for {ticker_symbol}")
-
-            return hist['Close']
-
-        except Exception as e:
-            if attempt == MAX_RETRIES - 1:
-                raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
-            time.sleep(1)
-
-    raise ValueError(f"Failed to fetch {ticker_symbol} after {MAX_RETRIES} attempts")
 
 
 def calculate_annualized_risk_free_rate(prices, ticker='SGOV'):
@@ -199,17 +163,27 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
             UserWarning
         )
 
-    # Always include SGOV as risk-free asset
+    # Always include SGOV (risk-free rate) and SPY (beta benchmark)
     if 'SGOV' not in tickers:
         tickers = tickers + ['SGOV']
+    if 'SPY' not in tickers:
+        tickers = tickers + ['SPY']
 
-    # Fetch data for each ticker
-    all_prices = {}
-    for ticker_symbol in tickers:
-        all_prices[ticker_symbol] = fetch_single_ticker(ticker_symbol, start_date, end_date)
+    # Fetch all tickers in a single request
+    raw = yf.download(tickers, start=start_date, end=end_date, auto_adjust=True, progress=False)
 
-    # Combine and align dates (intersection)
-    prices = pd.DataFrame(all_prices).dropna()
+    if raw.empty:
+        raise ValueError("No price data returned from Yahoo Finance")
+
+    # yf.download returns MultiIndex columns (field, ticker) for multiple tickers
+    prices = raw['Close'] if isinstance(raw.columns, pd.MultiIndex) else raw[['Close']]
+
+    # Detect tickers that returned no data at all
+    missing = [t for t in tickers if t not in prices.columns or prices[t].isna().all()]
+    if missing:
+        raise ValueError(f"No data returned for: {', '.join(missing)}")
+
+    prices = prices.dropna()
 
     # Validate sufficient data
     validate_data_sufficiency(prices, MIN_DATA_POINTS, "price")
