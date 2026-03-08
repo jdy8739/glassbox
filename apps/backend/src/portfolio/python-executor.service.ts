@@ -94,14 +94,14 @@ export class PythonExecutorService {
         });
 
         pyshell.on('stderr', (stderr: string) => {
-          this.logger.warn('Python stderr:', stderr);
+          this.logger.warn(`Python stderr: ${stderr}`);
         });
 
         // Capture shell-level error but don't reject yet —
         // Python may have printed a JSON error to stdout before exiting.
         pyshell.end((err) => {
           if (err) {
-            this.logger.warn('Python process exit error:', err.message);
+            this.logger.warn(`Python process exit error: ${err.message}`);
             shellError = err;
           }
         });
@@ -136,7 +136,7 @@ export class PythonExecutorService {
       this.logger.log('Python script executed successfully');
       return result;
     } catch (error: unknown) {
-      this.logger.error('Failed to execute Python script:', error);
+      this.logger.error(`Failed to execute Python script: ${error instanceof Error ? error.message : String(error)}`);
       throw new InternalServerErrorException({
         message: 'Failed to analyze portfolio',
         error: error instanceof Error ? error.message : String(error),
