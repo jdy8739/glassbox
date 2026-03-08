@@ -259,7 +259,7 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     return prices
 
 
-def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=None):
+def calculate_efficient_frontier(prices, num_portfolios=300, actual_weights=None):
     """
     Calculate efficient frontier using PyPortfolioOpt
 
@@ -292,37 +292,28 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     sharpe_weights = ef_sharpe.clean_weights()
     sharpe_performance = ef_sharpe.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
 
-    # === Generate Efficient Frontier Points ===
-    frontier_points = []
-
-    # Fix 3: Use mu.max() as the upper bound — Max Sharpe sits in the middle of
-    # the frontier, not at the top. Capping at maxSharpe * 1.2 truncates the curve.
-    min_return = gmv_performance[0]
-    max_return = float(mu.max())
-    
-    # MEMORY OPTIMIZATION: Reduce from 50 to 20 points.
-    # cvxpy caches problem matrices and compiling it 50 times in a loop consumes huge memory.
-    target_returns = np.linspace(min_return, max_return, 20)
-
-    for target_return in target_returns:
-        try:
-            ef_temp = EfficientFrontier(mu, S)
-            ef_temp.efficient_return(target_return)
-            perf = ef_temp.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
-
-            frontier_points.append({
-                'return': float(perf[0]),
-                'volatility': float(perf[1]),
-                'sharpeRatio': float(perf[2])
-            })
-            del ef_temp # MEMORY OPTIMIZATION: Explicitly free cvxpy instance
-        except Exception:
-            # Skip if optimization fails for this target return
-            continue
-            
-    # MEMORY OPTIMIZATION: Force garbage collection to clean up cvxpy internals 
-    # before allocating memory for random portfolios.
+    # === Generate Efficient Frontier Points (Two-Fund Separation) ===
+    # Any efficient portfolio is a linear combo of GMV and Max Sharpe weights.
+    # This avoids creating 20 separate cvxpy problems in a loop, which is the
+    # primary source of memory bloat (cvxpy caches compiled problem matrices).
     import gc
+
+    gmv_w = np.array([gmv_weights.get(t, 0.0) for t in opt_prices.columns])
+    sharpe_w = np.array([sharpe_weights.get(t, 0.0) for t in opt_prices.columns])
+    mu_vals = mu.values
+    S_vals = S.values
+
+    frontier_points = []
+    for lam in np.linspace(0.0, 1.0, 20):
+        w = lam * sharpe_w + (1.0 - lam) * gmv_w
+        w = np.maximum(w, 0.0)
+        total = w.sum()
+        if total == 0:
+            continue
+        w /= total
+        perf = calculate_portfolio_metrics(w, mu_vals, S_vals, risk_free_rate)
+        frontier_points.append(perf)
+
     gc.collect()
 
     # === Generate Random Portfolios for Visualization ===
@@ -331,10 +322,6 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     # MEMORY & CPU OPTIMIZATION: Vectorize the generation of random portfolios.
     # Instead of doing 1000 loop iterations, do matrix multiplications.
     weights_matrix = np.random.dirichlet(np.full(n_assets, 0.5), size=num_portfolios)
-    
-    # Extract raw numpy arrays to avoid pandas overhead in dot products
-    mu_vals = mu.values if hasattr(mu, 'values') else mu
-    S_vals = S.values if hasattr(S, 'values') else S
     
     # Shape: (num_portfolios, n_assets) dot (n_assets,) -> (num_portfolios,)
     port_returns = weights_matrix.dot(mu_vals)
@@ -606,7 +593,7 @@ def main():
         }
 
         # Output JSON result to stdout
-        print(json.dumps(result, indent=2))
+        print(json.dumps(result))
         sys.exit(0)
 
     except Exception as e:
