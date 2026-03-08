@@ -82,13 +82,18 @@ def fetch_single_ticker(ticker_symbol, start_date, end_date):
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(1)
                     continue
-                raise ValueError(f"No data for {ticker_symbol}")
+                raise ValueError(f"No data for {ticker_symbol}. Possible rate limit or delisted ticker.")
 
             return hist['Close']
 
         except Exception as e:
+            error_msg = str(e)
+            if "429" in error_msg or "Too Many Requests" in error_msg:
+                # If we hit a rate limit, fail fast so we don't hammer the API
+                raise ValueError(f"Yahoo Finance API Rate Limit Exceeded (429 Too Many Requests) while fetching {ticker_symbol}.")
+                
             if attempt == MAX_RETRIES - 1:
-                raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
+                raise ValueError(f"Failed to fetch {ticker_symbol}: {error_msg}")
             time.sleep(1)
 
     raise ValueError(f"Failed to fetch {ticker_symbol} after {MAX_RETRIES} attempts")
