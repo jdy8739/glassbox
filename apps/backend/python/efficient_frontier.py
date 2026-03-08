@@ -321,7 +321,10 @@ def calculate_efficient_frontier(prices, num_portfolios=300, actual_weights=None
         except Exception:
             continue
         finally:
-            del ef_temp  # free each cvxpy instance immediately after use
+            try:
+                del ef_temp  # free each cvxpy instance immediately after use
+            except NameError:
+                pass
             gc.collect()
 
     # === Generate Random Portfolios for Visualization ===
