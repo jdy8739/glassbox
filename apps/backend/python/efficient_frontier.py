@@ -280,41 +280,49 @@ def calculate_efficient_frontier(prices, num_portfolios=300, actual_weights=None
     mu = expected_returns.mean_historical_return(opt_prices, compounding=False)
     S = risk_models.sample_cov(opt_prices)
 
+    import gc
+
     # === Global Minimum Variance (GMV) Portfolio ===
     ef_gmv = EfficientFrontier(mu, S)
     ef_gmv.min_volatility()
     gmv_weights = ef_gmv.clean_weights()
     gmv_performance = ef_gmv.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef_gmv  # free cvxpy compiled problem immediately
+    gc.collect()
 
     # === Maximum Sharpe Ratio Portfolio ===
     ef_sharpe = EfficientFrontier(mu, S)
     ef_sharpe.max_sharpe(risk_free_rate=risk_free_rate)
     sharpe_weights = ef_sharpe.clean_weights()
     sharpe_performance = ef_sharpe.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef_sharpe  # free cvxpy compiled problem immediately
+    gc.collect()
 
-    # === Generate Efficient Frontier Points (Two-Fund Separation) ===
-    # Any efficient portfolio is a linear combo of GMV and Max Sharpe weights.
-    # This avoids creating 20 separate cvxpy problems in a loop, which is the
-    # primary source of memory bloat (cvxpy caches compiled problem matrices).
-    import gc
-
-    gmv_w = np.array([gmv_weights.get(t, 0.0) for t in opt_prices.columns])
-    sharpe_w = np.array([sharpe_weights.get(t, 0.0) for t in opt_prices.columns])
+    # === Generate Efficient Frontier Points ===
+    # Reduced from 20 → 10 points (halves cvxpy loop memory).
+    # Range extends to mu.max() to show the full frontier above Max Sharpe.
     mu_vals = mu.values
     S_vals = S.values
+    min_return = gmv_performance[0]
+    max_return = float(mu.max())
+    target_returns = np.linspace(min_return, max_return, 10)
 
     frontier_points = []
-    for lam in np.linspace(0.0, 1.0, 20):
-        w = lam * sharpe_w + (1.0 - lam) * gmv_w
-        w = np.maximum(w, 0.0)
-        total = w.sum()
-        if total == 0:
+    for target_return in target_returns:
+        try:
+            ef_temp = EfficientFrontier(mu, S)
+            ef_temp.efficient_return(target_return)
+            perf = ef_temp.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+            frontier_points.append({
+                'return': float(perf[0]),
+                'volatility': float(perf[1]),
+                'sharpeRatio': float(perf[2])
+            })
+        except Exception:
             continue
-        w /= total
-        perf = calculate_portfolio_metrics(w, mu_vals, S_vals, risk_free_rate)
-        frontier_points.append(perf)
-
-    gc.collect()
+        finally:
+            del ef_temp  # free each cvxpy instance immediately after use
+            gc.collect()
 
     # === Generate Random Portfolios for Visualization ===
     n_assets = len(opt_prices.columns)
