@@ -23,6 +23,8 @@ export interface TickerSearchResult {
   type?: string;
 }
 
+const ALLOWED_QUOTE_TYPES = new Set(['EQUITY', 'ETF', 'CRYPTOCURRENCY']);
+
 @Injectable()
 export class TickerService {
   private readonly logger = new Logger(TickerService.name);
@@ -40,7 +42,6 @@ export class TickerService {
     const sanitizedQuery = query.trim();
     const cacheKey = `ticker:search:${sanitizedQuery.toLowerCase()}`;
 
-    // Try to get from cache
     const cached = await this.cacheManager.get<TickerSearchResult[]>(cacheKey);
     if (cached) {
       this.logger.debug(`Cache HIT: ${cacheKey}`);
@@ -50,14 +51,13 @@ export class TickerService {
     this.logger.debug(`Cache MISS: ${cacheKey}`);
 
     try {
-      // Fetch from Yahoo Finance
-      const results = (await this.yahoo.search(sanitizedQuery)) as YahooFinanceSearchResponse;
-      this.logger.debug('Yahoo Finance search results:', results);
+      // validateResult: false suppresses yahoo-finance2 schema validation errors
+      // which occur when Yahoo Finance changes their API response format
+      const results = (await this.yahoo.search(sanitizedQuery, {}, { validateResult: false })) as YahooFinanceSearchResponse;
 
-      // Filter and transform results
       const filtered: TickerSearchResult[] = results.quotes
-        .filter((q: YahooFinanceQuote) => q.isYahooFinance !== false && q.quoteType === 'EQUITY') // Only stocks from Yahoo Finance
-        .slice(0, 10) // Limit to 10 results
+        .filter((q: YahooFinanceQuote) => q.isYahooFinance !== false && ALLOWED_QUOTE_TYPES.has(q.quoteType ?? ''))
+        .slice(0, 10)
         .map((q: YahooFinanceQuote) => ({
           symbol: q.symbol,
           name: q.longname || q.shortname || q.symbol,
@@ -65,7 +65,6 @@ export class TickerService {
           type: q.quoteType,
         }));
 
-      // Store in cache (TTL from CacheModule config: 1 hour)
       await this.cacheManager.set(cacheKey, filtered);
 
       return filtered;

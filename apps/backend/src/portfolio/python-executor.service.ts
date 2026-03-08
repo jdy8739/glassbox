@@ -78,23 +78,15 @@ export class PythonExecutorService {
       };
 
       // Create promise to handle Python execution
-      // TEMPORARY: Use mock script to avoid Yahoo Finance rate limiting
-      // Change back to 'efficient_frontier.py' when rate limit clears (usually 15-30 min)
       const result = await new Promise<PythonExecutorResult>((resolve, reject) => {
-        const pyshell = new PythonShell('efficient_frontier_mock.py', options);
+        const pyshell = new PythonShell('efficient_frontier.py', options);
 
         // Send input data to Python script via stdin
         pyshell.send(JSON.stringify(input));
-        pyshell.end((err) => {
-          if (err) {
-            this.logger.error('Python script execution error:', err);
-            this.logger.error('Error details:', JSON.stringify(err, null, 2));
-            reject(new Error(`Python script failed: ${err.message || String(err)}`));
-          }
-        });
 
         // Collect output from Python script
         let outputLines: string[] = [];
+        let shellError: Error | null = null;
 
         pyshell.on('message', (message: string) => {
           this.logger.debug('Python output line:', message);
@@ -102,24 +94,33 @@ export class PythonExecutorService {
         });
 
         pyshell.on('stderr', (stderr: string) => {
-          // Log stderr for debugging - these could be warnings or errors
           this.logger.warn('Python stderr:', stderr);
         });
 
+        // Capture shell-level error but don't reject yet —
+        // Python may have printed a JSON error to stdout before exiting.
+        pyshell.end((err) => {
+          if (err) {
+            this.logger.warn('Python process exit error:', err.message);
+            shellError = err;
+          }
+        });
+
+        // All resolution happens here after stdout is fully collected.
         pyshell.on('close', () => {
           if (outputLines.length === 0) {
-            reject(new Error('No output from Python script'));
+            reject(shellError ?? new Error('No output from Python script'));
             return;
           }
 
-          // Join all output lines and try to parse as JSON
           const outputText = outputLines.join('\n');
 
           try {
             const output = JSON.parse(outputText);
 
             if (output.error) {
-              this.logger.error('Python script returned error:', output.error);
+              // Surface the actual Python error message
+              this.logger.error(`Python script error: [${output.type}] ${output.error}`);
               reject(new Error(output.error));
             } else {
               resolve(output);
