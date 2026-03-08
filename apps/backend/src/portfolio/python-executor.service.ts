@@ -78,10 +78,8 @@ export class PythonExecutorService {
       };
 
       // Create promise to handle Python execution
-      // TEMPORARY: Use mock script to avoid Yahoo Finance rate limiting
-      // Change back to 'efficient_frontier.py' when rate limit clears (usually 15-30 min)
       const result = await new Promise<PythonExecutorResult>((resolve, reject) => {
-        const pyshell = new PythonShell('efficient_frontier_mock.py', options);
+        const pyshell = new PythonShell('efficient_frontier.py', options);
 
         // Send input data to Python script via stdin
         pyshell.send(JSON.stringify(input));

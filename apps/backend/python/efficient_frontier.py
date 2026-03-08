@@ -217,7 +217,7 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     return prices
 
 
-def calculate_efficient_frontier(prices, num_portfolios=10000):
+def calculate_efficient_frontier(prices, num_portfolios=500):
     """
     Calculate efficient frontier using PyPortfolioOpt
 
