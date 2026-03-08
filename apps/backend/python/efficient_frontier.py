@@ -299,7 +299,10 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     # the frontier, not at the top. Capping at maxSharpe * 1.2 truncates the curve.
     min_return = gmv_performance[0]
     max_return = float(mu.max())
-    target_returns = np.linspace(min_return, max_return, 50)
+    
+    # MEMORY OPTIMIZATION: Reduce from 50 to 20 points.
+    # cvxpy caches problem matrices and compiling it 50 times in a loop consumes huge memory.
+    target_returns = np.linspace(min_return, max_return, 20)
 
     for target_return in target_returns:
         try:
@@ -312,21 +315,45 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
                 'volatility': float(perf[1]),
                 'sharpeRatio': float(perf[2])
             })
+            del ef_temp # MEMORY OPTIMIZATION: Explicitly free cvxpy instance
         except Exception:
             # Skip if optimization fails for this target return
             continue
+            
+    # MEMORY OPTIMIZATION: Force garbage collection to clean up cvxpy internals 
+    # before allocating memory for random portfolios.
+    import gc
+    gc.collect()
 
     # === Generate Random Portfolios for Visualization ===
-    random_portfolios = []
     n_assets = len(opt_prices.columns)
-
-    for _ in range(num_portfolios):
-        # alpha=0.5 balances between equal-weight concentration (alpha=1)
-        # and corner-spiking (alpha=0.2), giving a natural spread across the simplex.
-        weights = np.random.dirichlet(np.full(n_assets, 0.5))
-
-        metrics = calculate_portfolio_metrics(weights, mu, S, risk_free_rate)
-        random_portfolios.append(metrics)
+    
+    # MEMORY & CPU OPTIMIZATION: Vectorize the generation of random portfolios.
+    # Instead of doing 1000 loop iterations, do matrix multiplications.
+    weights_matrix = np.random.dirichlet(np.full(n_assets, 0.5), size=num_portfolios)
+    
+    # Extract raw numpy arrays to avoid pandas overhead in dot products
+    mu_vals = mu.values if hasattr(mu, 'values') else mu
+    S_vals = S.values if hasattr(S, 'values') else S
+    
+    # Shape: (num_portfolios, n_assets) dot (n_assets,) -> (num_portfolios,)
+    port_returns = weights_matrix.dot(mu_vals)
+    
+    # Variance = diag(W * S * W^T). We can compute this using einsum or sum of hadamard product.
+    port_vars = np.sum(weights_matrix.dot(S_vals) * weights_matrix, axis=1)
+    port_stds = np.sqrt(port_vars)
+    
+    # Calculate Sharpe ratios, safely handling zero volatility
+    port_sharpes = np.where(port_stds > 0, (port_returns - risk_free_rate) / port_stds, 0.0)
+    
+    random_portfolios = [
+        {
+            'return': float(r),
+            'volatility': float(v),
+            'sharpeRatio': float(s)
+        }
+        for r, v, s in zip(port_returns, port_stds, port_sharpes)
+    ]
 
     # Prepare result
     result = {
