@@ -6,6 +6,7 @@ Calculates portfolio optimization metrics using PyPortfolioOpt
 
 import sys
 import json
+import gc
 import time
 import yfinance as yf
 import numpy as np
@@ -19,6 +20,9 @@ TRADING_DAYS_PER_YEAR = 252
 DEFAULT_RISK_FREE_RATE = 0.05
 ES_MULTIPLIER = 50
 MAX_RETRIES = 3
+FRONTIER_POINTS = 30     # Reduced from 50 — cuts EfficientFrontier instances by 40%
+RANDOM_PORTFOLIOS = 500  # Reduced from 1000 — halves random portfolio memory
+SYSTEM_TICKERS = ('SGOV', 'SPY')  # Always added to downloads; excluded from user-facing errors
 
 
 # ==================== Helper Functions ====================
@@ -58,40 +62,58 @@ def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price
         )
 
 
-def fetch_single_ticker(ticker_symbol, start_date, end_date):
+def fetch_all_tickers_batch(tickers, start_date, end_date):
     """
-    Fetch historical price data for a single ticker with retry logic
+    Batch-download historical Close prices for all tickers in one HTTP session.
+
+    Using yf.download() instead of per-ticker yf.Ticker().history() avoids
+    creating N separate HTTP sessions and N full OHLCV DataFrames in memory.
 
     Args:
-        ticker_symbol: Ticker symbol to fetch
+        tickers: List of ticker symbols
         start_date: Start date (datetime)
         end_date: End date (datetime)
 
     Returns:
-        pandas Series of adjusted close prices
+        DataFrame of adjusted Close prices (columns = tickers)
 
     Raises:
-        ValueError if fetch fails after retries
+        ValueError if download fails or any ticker returns no data
     """
     for attempt in range(MAX_RETRIES):
         try:
-            ticker = yf.Ticker(ticker_symbol)
-            hist = ticker.history(start=start_date, end=end_date, auto_adjust=True)
-
-            if hist.empty:
-                if attempt < MAX_RETRIES - 1:
-                    time.sleep(1)
-                    continue
-                raise ValueError(f"No data for {ticker_symbol}")
-
-            return hist['Close']
-
+            raw_data = yf.download(
+                tickers, start=start_date, end=end_date,
+                auto_adjust=True, progress=False
+            )
+            if not raw_data.empty:
+                break
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(1)
+                continue
+            raise ValueError("yf.download() returned empty data")
         except Exception as e:
             if attempt == MAX_RETRIES - 1:
-                raise ValueError(f"Failed to fetch {ticker_symbol}: {str(e)}")
+                raise ValueError(f"Failed to fetch price data: {str(e)}")
             time.sleep(1)
 
-    raise ValueError(f"Failed to fetch {ticker_symbol} after {MAX_RETRIES} attempts")
+    # Extract only Close prices — drop Open/High/Low/Volume immediately
+    if isinstance(raw_data.columns, pd.MultiIndex):
+        prices = raw_data['Close'].copy()
+    else:
+        # Single-ticker edge case: flat columns
+        prices = raw_data[['Close']].copy()
+        prices.columns = tickers
+
+    del raw_data  # free full OHLCV DataFrame immediately
+    gc.collect()
+
+    # Validate each ticker has non-empty data
+    missing = [t for t in tickers if t not in prices.columns or prices[t].isna().all()]
+    if missing:
+        raise ValueError(f"No data returned for: {', '.join(missing)}")
+
+    return prices
 
 
 def calculate_annualized_risk_free_rate(prices, ticker='SGOV'):
@@ -227,30 +249,32 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
             UserWarning
         )
 
-    # Always include SGOV as risk-free asset
-    if 'SGOV' not in tickers:
-        tickers = tickers + ['SGOV']
+    # Always include SGOV (risk-free) and SPY (benchmark) in the batch download.
+    download_tickers = list(tickers)
+    for system_ticker in SYSTEM_TICKERS:
+        if system_ticker not in download_tickers:
+            download_tickers.append(system_ticker)
 
-    # Fetch data for each ticker
-    all_prices = {}
-    for ticker_symbol in tickers:
-        all_prices[ticker_symbol] = fetch_single_ticker(ticker_symbol, start_date, end_date)
+    # Batch download — one HTTP session, one OHLCV DataFrame, extract Close only
+    raw = fetch_all_tickers_batch(download_tickers, start_date, end_date)
 
     # Flaw 1: Detect short-history penalty before silently dropping rows.
     # If one ticker has a shorter history, .dropna() truncates ALL others.
-    raw = pd.DataFrame(all_prices)
     full_rows = len(raw)
+    culprits = [t for t in raw.columns if raw[t].isna().any()]
     prices = raw.dropna()
-    dropped = full_rows - len(prices)
+    del raw  # free intermediate; prices is the final cleaned form
+    gc.collect()
 
+    dropped = full_rows - len(prices)
     if dropped > 0:
-        # Find which ticker(s) caused the truncation
-        culprits = [t for t in raw.columns if raw[t].isna().any()]
         pct = dropped / full_rows * 100
         if pct > 30:
+            # Only show user-provided tickers in the error — system tickers can't be removed.
+            user_culprits = [t for t in culprits if t not in SYSTEM_TICKERS] or culprits
             raise ValueError(
                 f"Data truncation too severe: {dropped}/{full_rows} rows dropped ({pct:.0f}%) "
-                f"due to limited history for: {', '.join(culprits)}. "
+                f"due to limited history for: {', '.join(user_culprits)}. "
                 f"Shorten your date range or remove these tickers."
             )
 
@@ -259,7 +283,7 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     return prices
 
 
-def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=None):
+def calculate_efficient_frontier(prices, num_portfolios=RANDOM_PORTFOLIOS, actual_weights=None):
     """
     Calculate efficient frontier using PyPortfolioOpt
 
@@ -271,11 +295,14 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     Returns:
         dict with GMV, Max Sharpe, efficient frontier points, and optionally myPortfolio
     """
-    # Flaw 4: Exclude SGOV from the optimization universe.
-    # SGOV has non-zero variance/covariance which skews the covariance matrix.
-    # Extract risk-free rate from SGOV first, then drop it from prices.
+    # Flaw 4: Exclude system tickers from the optimization universe.
+    # SGOV has non-zero variance which skews the covariance matrix.
+    # SPY is a benchmark — exclude it unless the user explicitly holds it.
     risk_free_rate = calculate_annualized_risk_free_rate(prices)
-    opt_prices = prices.drop(columns=['SGOV'], errors='ignore')
+    exclude = ['SGOV']
+    if actual_weights is None or actual_weights.get('SPY', 0.0) == 0.0:
+        exclude.append('SPY')
+    opt_prices = prices.drop(columns=exclude, errors='ignore')
 
     mu = expected_returns.mean_historical_return(opt_prices, compounding=False)
     S = risk_models.sample_cov(opt_prices)
@@ -285,12 +312,14 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     ef_gmv.min_volatility()
     gmv_weights = ef_gmv.clean_weights()
     gmv_performance = ef_gmv.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef_gmv
 
     # === Maximum Sharpe Ratio Portfolio ===
     ef_sharpe = EfficientFrontier(mu, S)
     ef_sharpe.max_sharpe(risk_free_rate=risk_free_rate)
     sharpe_weights = ef_sharpe.clean_weights()
     sharpe_performance = ef_sharpe.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef_sharpe
 
     # === Generate Efficient Frontier Points ===
     frontier_points = []
@@ -299,9 +328,10 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
     # the frontier, not at the top. Capping at maxSharpe * 1.2 truncates the curve.
     min_return = gmv_performance[0]
     max_return = float(mu.max())
-    target_returns = np.linspace(min_return, max_return, 50)
+    target_returns = np.linspace(min_return, max_return, FRONTIER_POINTS)
 
     for target_return in target_returns:
+        ef_temp = None
         try:
             ef_temp = EfficientFrontier(mu, S)
             ef_temp.efficient_return(target_return)
@@ -314,7 +344,11 @@ def calculate_efficient_frontier(prices, num_portfolios=1000, actual_weights=Non
             })
         except Exception:
             # Skip if optimization fails for this target return
-            continue
+            pass
+        finally:
+            del ef_temp  # release CVXPY solver object immediately each iteration
+
+    gc.collect()  # sweep any lingering solver internals after the loop
 
     # === Generate Random Portfolios for Visualization ===
     random_portfolios = []
@@ -448,7 +482,7 @@ def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     return portfolio_beta
 
 
-def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price):
+def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price, es_index_price=None):
     """
     Calculate hedge sizing for SPY and ES futures
 
@@ -457,6 +491,7 @@ def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_pri
         target_beta: Target beta (e.g., 0 for market-neutral)
         portfolio_value: Total portfolio value in dollars
         spy_price: Current SPY price
+        es_index_price: Current S&P 500 index level (^GSPC); falls back to spy_price * 10
 
     Returns:
         dict with SPY and ES hedge sizing
@@ -474,14 +509,9 @@ def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_pri
     spy_shares = int(hedge_notional / spy_price)
     spy_notional = spy_shares * spy_price
 
-    # ES futures: fetch actual S&P 500 index level for accurate contract sizing
-    es_multiplier = 50
-    try:
-        gspc_data = yf.Ticker('^GSPC').history(period='1d', auto_adjust=True)
-        es_price = float(gspc_data['Close'].iloc[-1]) if not gspc_data.empty else spy_price * 10
-    except Exception:
-        es_price = spy_price * 10
-    es_contract_value = es_price * es_multiplier
+    # ES futures: use pre-fetched index level to avoid a hidden network call here
+    es_price = es_index_price if es_index_price else spy_price * 10
+    es_contract_value = es_price * ES_MULTIPLIER
 
     # Calculate ES contracts (spy_price validated above, so es_contract_value > 0)
     es_contracts = int(hedge_notional / es_contract_value)
@@ -554,22 +584,21 @@ def main():
         frontier_result = calculate_efficient_frontier(prices, actual_weights=actual_weights)
 
         # Fix 1: Calculate beta for the user's actual portfolio, not Max Sharpe
+        # SPY is already in prices (fetched in the initial batch download)
         portfolio_beta = calculate_portfolio_beta(prices, actual_weights)
 
-        # Get latest SPY price for hedge calculation
-        spy_ticker = yf.Ticker('SPY')
-        spy_data = spy_ticker.history(period='1d', auto_adjust=True)
-
-        if spy_data.empty:
-            raise ValueError(
-                "Failed to fetch current SPY price for hedge calculation. "
-                "This is required to calculate hedge sizing. Please try again later."
-            )
-
-        spy_price = float(spy_data['Close'].iloc[-1])
+        # Fetch current SPY and ^GSPC prices for hedge sizing — must be today's price,
+        # not the historical end_date price from the analysis period.
+        current = yf.download(['SPY', '^GSPC'], period='1d', auto_adjust=True, progress=False)
+        if current.empty or 'SPY' not in current['Close'].columns:
+            raise ValueError("Failed to fetch current SPY price for hedge calculation.")
+        close = current['Close']
+        del current
+        spy_price = float(close['SPY'].iloc[-1])
+        es_index_price = float(close['^GSPC'].iloc[-1]) if '^GSPC' in close.columns else None
 
         # Calculate hedge sizing
-        hedging = calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price)
+        hedging = calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price, es_index_price)
 
         # Combine all results
         result = {
@@ -578,8 +607,8 @@ def main():
             'hedging': hedging
         }
 
-        # Output JSON result to stdout
-        print(json.dumps(result, indent=2))
+        # Output JSON result to stdout (compact — indent=2 doubles string size)
+        print(json.dumps(result))
         sys.exit(0)
 
     except Exception as e:
