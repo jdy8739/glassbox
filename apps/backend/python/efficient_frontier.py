@@ -350,17 +350,24 @@ def calculate_efficient_frontier(prices, num_portfolios=RANDOM_PORTFOLIOS, actua
 
     gc.collect()  # sweep any lingering solver internals after the loop
 
-    # === Generate Random Portfolios for Visualization ===
-    random_portfolios = []
+    # === Generate Random Portfolios for Visualization (vectorized) ===
     n_assets = len(opt_prices.columns)
+    mu_arr = np.asarray(mu)
+    S_arr = np.asarray(S)
 
-    for _ in range(num_portfolios):
-        # alpha=0.5 balances between equal-weight concentration (alpha=1)
-        # and corner-spiking (alpha=0.2), giving a natural spread across the simplex.
-        weights = np.random.dirichlet(np.full(n_assets, 0.5))
+    # Generate all weights at once: (num_portfolios, n_assets)
+    all_weights = np.random.dirichlet(np.full(n_assets, 0.5), size=num_portfolios)
 
-        metrics = calculate_portfolio_metrics(weights, mu, S, risk_free_rate)
-        random_portfolios.append(metrics)
+    # Batch compute stats — eliminates the Python loop entirely
+    rp_returns = all_weights @ mu_arr                                          # (N,)
+    rp_vars    = np.einsum('ij,jk,ik->i', all_weights, S_arr, all_weights)    # (N,)
+    rp_stds    = np.sqrt(np.maximum(rp_vars, 0.0))                            # guard tiny negatives
+    rp_sharpes = np.where(rp_stds > 0, (rp_returns - risk_free_rate) / rp_stds, 0.0)
+
+    random_portfolios = [
+        {'return': float(r), 'volatility': float(s), 'sharpeRatio': float(sh)}
+        for r, s, sh in zip(rp_returns, rp_stds, rp_sharpes)
+    ]
 
     # Prepare result
     result = {
@@ -410,76 +417,45 @@ def calculate_efficient_frontier(prices, num_portfolios=RANDOM_PORTFOLIOS, actua
     return result
 
 
-def fetch_benchmark_prices(prices, benchmark_ticker='SPY'):
-    """
-    Fetch or extract benchmark prices
-
-    Args:
-        prices: DataFrame with portfolio price data
-        benchmark_ticker: Benchmark ticker symbol
-
-    Returns:
-        pandas Series of benchmark prices
-    """
-    if benchmark_ticker in prices.columns:
-        return prices[benchmark_ticker]
-
-    # Fetch benchmark data
-    start_date = prices.index[0]
-    end_date = prices.index[-1]
-    benchmark = yf.Ticker(benchmark_ticker)
-    benchmark_data = benchmark.history(start=start_date, end=end_date, auto_adjust=True)
-
-    if benchmark_data.empty:
-        raise ValueError(f"Failed to fetch benchmark data for {benchmark_ticker}")
-
-    return benchmark_data['Close']
-
-
-
-def calculate_asset_beta(asset_returns, benchmark_returns):
-    """
-    Calculate beta for a single asset using consistent sample covariance.
-
-    Returns float beta, or 0.0 on edge cases.
-    """
-    common = asset_returns.index.intersection(benchmark_returns.index)
-    if len(common) < MIN_DATA_POINTS:
-        return 0.0
-
-    a = asset_returns[common]
-    b = benchmark_returns[common]
-    cov_matrix = np.cov(a, b)
-    cov = cov_matrix[0][1]
-    var = cov_matrix[1][1]
-
-    if np.isnan(cov) or np.isnan(var) or var == 0:
-        return 0.0
-
-    return float(cov / var)
-
-
 def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
     """
     Calculate portfolio beta as weighted sum of individual asset betas.
 
-    Flaw 3 fix: dot-product of current weights × historical returns simulates
-    daily rebalancing (rebalancing drag). Real portfolios drift (buy-and-hold).
-    β_portfolio = Σ w_i × β_i correctly reflects the current snapshot beta
-    without assuming any rebalancing strategy.
+    Vectorized: computes one (N+1)×(N+1) covariance matrix instead of N
+    separate 2×2 matrices. Date alignment is already guaranteed by fetch_price_data's
+    dropna(), so no per-asset index intersection is needed.
+
+    β_portfolio = Σ w_i × β_i reflects the current snapshot beta without
+    assuming daily rebalancing (Flaw 3 fix).
     """
-    benchmark_prices = fetch_benchmark_prices(prices, benchmark_ticker)
-    benchmark_returns = benchmark_prices.pct_change().dropna()
+    if benchmark_ticker not in prices.columns:
+        return 0.0
 
-    portfolio_beta = 0.0
-    for ticker, weight in portfolio_weights.items():
-        if weight <= 0 or ticker not in prices.columns:
-            continue
-        asset_returns = prices[ticker].pct_change().dropna()
-        beta_i = calculate_asset_beta(asset_returns, benchmark_returns)
-        portfolio_beta += weight * beta_i
+    returns_df = prices.pct_change().dropna()
 
-    return portfolio_beta
+    asset_cols = [
+        col for col in returns_df.columns
+        if col != benchmark_ticker and portfolio_weights.get(col, 0.0) > 0
+    ]
+    if not asset_cols:
+        return 0.0
+
+    weights = np.array([portfolio_weights[col] for col in asset_cols])
+
+    # Stack asset returns + benchmark into one matrix, compute covariance once
+    all_returns = np.column_stack([
+        returns_df[asset_cols].values,        # (T, N)
+        returns_df[benchmark_ticker].values,  # (T,)
+    ])  # shape: (T, N+1)
+
+    cov = np.cov(all_returns.T)  # (N+1, N+1)
+    benchmark_var = cov[-1, -1]
+
+    if benchmark_var == 0 or np.isnan(benchmark_var):
+        return 0.0
+
+    betas = cov[:-1, -1] / benchmark_var  # covariance of each asset with benchmark / benchmark variance
+    return float(np.dot(weights, betas))
 
 
 def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price, es_index_price=None):
