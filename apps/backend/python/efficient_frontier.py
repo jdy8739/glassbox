@@ -9,11 +9,18 @@ import sys
 import json
 import gc
 import time
+import requests
 import yfinance as yf
 import numpy as np
 import pandas as pd
 from datetime import datetime
 from pypfopt import EfficientFrontier, risk_models, expected_returns
+
+# Setup session with User-Agent to avoid Yahoo Finance blocking (403/Empty Response)
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+})
 
 # Constants
 MIN_DATA_POINTS = 60
@@ -62,7 +69,7 @@ def fetch_all_tickers_batch(tickers, start_date, end_date):
         try:
             raw_data = yf.download(
                 tickers, start=start_date, end=end_date,
-                auto_adjust=True, progress=False
+                auto_adjust=True, progress=False, session=session
             )
             if not raw_data.empty:
                 break
@@ -329,7 +336,7 @@ def main():
         log("Fetching current market prices for hedging...")
         try:
             # Use 5-day window to ensure we catch the last close even on Sundays/holidays
-            current = yf.download(['SPY', '^GSPC'], period='5d', auto_adjust=True, progress=False)
+            current = yf.download(['SPY', '^GSPC'], period='5d', auto_adjust=True, progress=False, session=session)
             if not current.empty and 'SPY' in current['Close'].columns:
                 close = current['Close'].ffill().iloc[-1]
                 spy_price = float(close['SPY'])
