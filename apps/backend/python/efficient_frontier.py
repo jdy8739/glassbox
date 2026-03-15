@@ -9,18 +9,11 @@ import sys
 import json
 import gc
 import time
-import requests
 import yfinance as yf
 import numpy as np
 import pandas as pd
 from datetime import datetime
 from pypfopt import EfficientFrontier, risk_models, expected_returns
-
-# Setup session with User-Agent to avoid Yahoo Finance blocking (403/Empty Response)
-session = requests.Session()
-session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-})
 
 # Constants
 MIN_DATA_POINTS = 60
@@ -28,9 +21,9 @@ TRADING_DAYS_PER_YEAR = 252
 DEFAULT_RISK_FREE_RATE = 0.05
 ES_MULTIPLIER = 50
 MAX_RETRIES = 3
-FRONTIER_POINTS = 20     # Balanced for resolution and memory
-RANDOM_PORTFOLIOS = 500  # Halved memory footprint for visualization
-SYSTEM_TICKERS = ('SGOV', 'SPY')  # Core infrastructure tickers
+FRONTIER_POINTS = 15     # Minimum for smooth curve
+RANDOM_PORTFOLIOS = 250  # Minimum for representative cloud
+SYSTEM_TICKERS = ('SGOV', 'SPY')
 
 
 # ==================== Helper Functions ====================
@@ -58,45 +51,47 @@ def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price
         )
 
 
+def fetch_single_ticker(ticker_symbol, start_date, end_date):
+    """Fetch single ticker data using Ticker.history() which is more robust than yf.download."""
+    series = pd.Series(dtype='float32')
+    for attempt in range(MAX_RETRIES):
+        try:
+            ticker = yf.Ticker(ticker_symbol)
+            hist = ticker.history(start=start_date, end=end_date, auto_adjust=True)
+            if not hist.empty:
+                series = hist['Close'].astype('float32')
+                del hist
+                del ticker
+                break
+            del ticker
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(1)
+        except Exception as e:
+            if attempt == MAX_RETRIES - 1:
+                log(f"Failed to fetch {ticker_symbol}: {str(e)}")
+            time.sleep(1)
+    gc.collect()
+    return series
+
+
 def fetch_all_tickers_batch(tickers, start_date, end_date):
     """
-    Batch-download historical Close prices in one session.
-    Avoids N separate HTTP connections and reduces memory overhead.
+    Fetch all tickers one by one using Ticker.history.
+    Memory-optimized by clearing each ticker's cache immediately.
     """
     log(f"Fetching {len(tickers)} tickers from {start_date.date()} to {end_date.date()}")
     
-    for attempt in range(MAX_RETRIES):
-        try:
-            raw_data = yf.download(
-                tickers, start=start_date, end=end_date,
-                auto_adjust=True, progress=False, session=session
-            )
-            if not raw_data.empty:
-                break
-            if attempt < MAX_RETRIES - 1:
-                time.sleep(1)
-                continue
-            raise ValueError("yf.download() returned empty data")
-        except Exception as e:
-            if attempt == MAX_RETRIES - 1:
-                raise ValueError(f"Failed to fetch price data: {str(e)}")
-            time.sleep(1)
+    all_prices = {}
+    for t in tickers:
+        series = fetch_single_ticker(t, start_date, end_date)
+        if not series.empty:
+            all_prices[t] = series
+        else:
+            raise ValueError(f"No data returned for ticker: {t}")
 
-    # Extract Close prices; handle MultiIndex if >1 ticker, or flat Series if 1 ticker.
-    if isinstance(raw_data.columns, pd.MultiIndex):
-        prices = raw_data['Close'].copy()
-    else:
-        prices = raw_data[['Close']].copy()
-        prices.columns = tickers
-
-    del raw_data
+    prices = pd.DataFrame(all_prices)
+    all_prices.clear()
     gc.collect()
-
-    # Verify each ticker has data
-    missing = [t for t in tickers if t not in prices.columns or prices[t].isna().all()]
-    if missing:
-        raise ValueError(f"No data returned for: {', '.join(missing)}")
-
     return prices
 
 
@@ -156,13 +151,13 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
         if t not in download_tickers:
             download_tickers.append(t)
 
-    raw = fetch_all_tickers_batch(download_tickers, start_date, end_date)
+    prices_raw = fetch_all_tickers_batch(download_tickers, start_date, end_date)
     
     # Clean data: drop rows where ANY ticker is missing (ensures synchronized returns)
-    full_rows = len(raw)
-    culprits = [t for t in raw.columns if raw[t].isna().any()]
-    prices = raw.dropna()
-    del raw
+    full_rows = len(prices_raw)
+    culprits = [t for t in prices_raw.columns if prices_raw[t].isna().any()]
+    prices = prices_raw.dropna()
+    del prices_raw
     gc.collect()
 
     dropped = full_rows - len(prices)
@@ -336,14 +331,19 @@ def main():
         log("Fetching current market prices for hedging...")
         try:
             # Use 5-day window to ensure we catch the last close even on Sundays/holidays
-            current = yf.download(['SPY', '^GSPC'], period='5d', auto_adjust=True, progress=False, session=session)
-            if not current.empty and 'SPY' in current['Close'].columns:
-                close = current['Close'].ffill().iloc[-1]
-                spy_price = float(close['SPY'])
-                es_index_price = float(close['^GSPC']) if '^GSPC' in close.index else spy_price * 10
+            spy_ticker = yf.Ticker('SPY')
+            spy_hist = spy_ticker.history(period='5d', auto_adjust=True)
+            if not spy_hist.empty:
+                spy_price = float(spy_hist['Close'].iloc[-1])
             else:
-                # Fallback to last known historical price
                 spy_price = float(prices['SPY'].iloc[-1])
+            
+            # For ES index price (^GSPC)
+            gspc_ticker = yf.Ticker('^GSPC')
+            gspc_hist = gspc_ticker.history(period='5d', auto_adjust=True)
+            if not gspc_hist.empty:
+                es_index_price = float(gspc_hist['Close'].iloc[-1])
+            else:
                 es_index_price = spy_price * 10
         except Exception:
             spy_price = float(prices['SPY'].iloc[-1])
