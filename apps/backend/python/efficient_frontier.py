@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Efficient Frontier Calculation Script
-Calculates portfolio optimization metrics using PyPortfolioOpt
+Calculates portfolio optimization metrics using PyPortfolioOpt.
+Optimized for memory-constrained environments (AWS Lightsail) and weekend data gaps.
 """
 
 import sys
@@ -20,23 +21,21 @@ TRADING_DAYS_PER_YEAR = 252
 DEFAULT_RISK_FREE_RATE = 0.05
 ES_MULTIPLIER = 50
 MAX_RETRIES = 3
-FRONTIER_POINTS = 30     # Reduced from 50 — cuts EfficientFrontier instances by 40%
-RANDOM_PORTFOLIOS = 500  # Reduced from 1000 — halves random portfolio memory
-SYSTEM_TICKERS = ('SGOV', 'SPY')  # Always added to downloads; excluded from user-facing errors
+FRONTIER_POINTS = 20     # Balanced for resolution and memory
+RANDOM_PORTFOLIOS = 500  # Halved memory footprint for visualization
+SYSTEM_TICKERS = ('SGOV', 'SPY')  # Core infrastructure tickers
 
 
 # ==================== Helper Functions ====================
 
+def log(message):
+    """Log to stderr for visibility in NestJS logs."""
+    sys.stderr.write(f"[Python] {message}\n")
+    sys.stderr.flush()
+
+
 def parse_date(date_input):
-    """
-    Convert string date to datetime object
-
-    Args:
-        date_input: String (YYYY-MM-DD), datetime, or None
-
-    Returns:
-        datetime object or None
-    """
+    """Convert string date to datetime object."""
     if date_input is None:
         return None
     if isinstance(date_input, str):
@@ -45,17 +44,7 @@ def parse_date(date_input):
 
 
 def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price"):
-    """
-    Validate that we have sufficient data points
-
-    Args:
-        data: DataFrame or Series to validate
-        min_points: Minimum required data points
-        data_type: Description of data for error message
-
-    Raises:
-        ValueError if insufficient data
-    """
+    """Validate sufficient data points."""
     if data.empty or len(data) < min_points:
         raise ValueError(
             f"Insufficient {data_type} data. Need at least {min_points} points, got {len(data)}"
@@ -64,22 +53,11 @@ def validate_data_sufficiency(data, min_points=MIN_DATA_POINTS, data_type="price
 
 def fetch_all_tickers_batch(tickers, start_date, end_date):
     """
-    Batch-download historical Close prices for all tickers in one HTTP session.
-
-    Using yf.download() instead of per-ticker yf.Ticker().history() avoids
-    creating N separate HTTP sessions and N full OHLCV DataFrames in memory.
-
-    Args:
-        tickers: List of ticker symbols
-        start_date: Start date (datetime)
-        end_date: End date (datetime)
-
-    Returns:
-        DataFrame of adjusted Close prices (columns = tickers)
-
-    Raises:
-        ValueError if download fails or any ticker returns no data
+    Batch-download historical Close prices in one session.
+    Avoids N separate HTTP connections and reduces memory overhead.
     """
+    log(f"Fetching {len(tickers)} tickers from {start_date.date()} to {end_date.date()}")
+    
     for attempt in range(MAX_RETRIES):
         try:
             raw_data = yf.download(
@@ -97,18 +75,17 @@ def fetch_all_tickers_batch(tickers, start_date, end_date):
                 raise ValueError(f"Failed to fetch price data: {str(e)}")
             time.sleep(1)
 
-    # Extract only Close prices — drop Open/High/Low/Volume immediately
+    # Extract Close prices; handle MultiIndex if >1 ticker, or flat Series if 1 ticker.
     if isinstance(raw_data.columns, pd.MultiIndex):
         prices = raw_data['Close'].copy()
     else:
-        # Single-ticker edge case: flat columns
         prices = raw_data[['Close']].copy()
         prices.columns = tickers
 
-    del raw_data  # free full OHLCV DataFrame immediately
+    del raw_data
     gc.collect()
 
-    # Validate each ticker has non-empty data
+    # Verify each ticker has data
     missing = [t for t in tickers if t not in prices.columns or prices[t].isna().all()]
     if missing:
         raise ValueError(f"No data returned for: {', '.join(missing)}")
@@ -118,76 +95,25 @@ def fetch_all_tickers_batch(tickers, start_date, end_date):
 
 def calculate_annualized_risk_free_rate(prices, ticker='SGOV'):
     """
-    Calculate annualized risk-free rate from treasury ETF
-
-    Args:
-        prices: DataFrame with price data
-        ticker: Treasury ETF ticker (default: SGOV)
-
-    Returns:
-        Annualized risk-free rate (float)
+    Calculate annualized risk-free rate from treasury ETF.
+    Uses arithmetic annualization for consistency with pypfopt.
     """
     if ticker in prices.columns:
         returns = prices[ticker].pct_change().dropna()
-        return (1 + returns.mean()) ** TRADING_DAYS_PER_YEAR - 1
+        return float(returns.mean() * TRADING_DAYS_PER_YEAR)
     return DEFAULT_RISK_FREE_RATE
 
 
 def calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate):
-    """
-    Calculate Sharpe ratio with zero-volatility handling
-
-    Args:
-        portfolio_return: Expected portfolio return
-        portfolio_std: Portfolio standard deviation
-        risk_free_rate: Risk-free rate
-
-    Returns:
-        Sharpe ratio (float)
-    """
-    if portfolio_std > 0:
+    """Sharpe ratio with safety guard for zero volatility."""
+    if portfolio_std > 1e-6:
         return (portfolio_return - risk_free_rate) / portfolio_std
     return 0.0
 
 
-def calculate_portfolio_metrics(weights, mu, cov_matrix, risk_free_rate):
-    """
-    Calculate portfolio return, volatility, and Sharpe ratio
-
-    Args:
-        weights: Portfolio weights (numpy array)
-        mu: Expected returns vector
-        cov_matrix: Covariance matrix
-        risk_free_rate: Risk-free rate
-
-    Returns:
-        dict with return, volatility, and sharpeRatio
-    """
-    portfolio_return = np.dot(weights, mu)
-    portfolio_std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-    sharpe = calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate)
-
-    return {
-        'return': float(portfolio_return),
-        'volatility': float(portfolio_std),
-        'sharpeRatio': float(sharpe)
-    }
-
-
 def calculate_actual_portfolio_weights(prices, tickers, quantities):
-    """
-    Compute value-weighted portfolio weights from user quantities and latest prices.
-
-    Args:
-        prices: DataFrame with historical prices (all columns including SGOV)
-        tickers: List of user-provided ticker symbols
-        quantities: List of share quantities matching tickers order
-
-    Returns:
-        Tuple of (weights dict keyed by all price columns, total portfolio value)
-    """
+    """Compute value-weighted portfolio weights from user quantities."""
     latest_prices = prices.iloc[-1]
-
     values = {}
     for ticker, qty in zip(tickers, quantities):
         if ticker in latest_prices.index and qty > 0:
@@ -197,108 +123,59 @@ def calculate_actual_portfolio_weights(prices, tickers, quantities):
     if total_value == 0:
         raise ValueError("Portfolio has zero total value — check quantities and tickers")
 
-    # Build weights for all columns in prices (non-user tickers get weight 0)
     weights = {col: values.get(col, 0.0) / total_value for col in prices.columns}
-
     return weights, total_value
 
 
 # ==================== Main Functions ====================
 
 def fetch_price_data(tickers, start_date=None, end_date=None):
-    """
-    Fetch historical adjusted close prices for given tickers
-
-    Args:
-        tickers: List of ticker symbols
-        start_date: Start date (string YYYY-MM-DD or datetime, default: 3 years ago)
-        end_date: End date (string YYYY-MM-DD or datetime, default: today)
-
-    Returns:
-        DataFrame with adjusted close prices
-    """
-    # Parse dates (always provided from frontend)
+    """Fetch and clean historical price data."""
     end_date = parse_date(end_date)
     start_date = parse_date(start_date)
 
-    # Validate date range
     if start_date >= end_date:
-        raise ValueError(
-            f"Start date ({start_date.date()}) must be before end date ({end_date.date()})"
-        )
+        raise ValueError(f"Start date ({start_date.date()}) must be before end date ({end_date.date()})")
 
-    # Check for future dates
     now = datetime.now()
-    today = now.date()
-
     if end_date > now:
         raise ValueError(f"End date ({end_date.date()}) cannot be in the future")
 
-    if start_date > now:
-        raise ValueError(f"Start date ({start_date.date()}) cannot be in the future")
-
-    # Warn if end date is today (market may not be closed yet)
-    if end_date.date() == today:
-        # Note: US markets close at 4 PM EST (9 PM UTC)
-        # Data may be incomplete if analysis runs before market close
-        import warnings
-        warnings.warn(
-            f"End date is today ({today}). Market data may be incomplete if "
-            f"markets are still open or haven't fully updated. "
-            f"Consider using yesterday's date for complete data.",
-            UserWarning
-        )
-
-    # Always include SGOV (risk-free) and SPY (benchmark) in the batch download.
+    # Add system tickers for benchmarking and risk-free rate
     download_tickers = list(tickers)
-    for system_ticker in SYSTEM_TICKERS:
-        if system_ticker not in download_tickers:
-            download_tickers.append(system_ticker)
+    for t in SYSTEM_TICKERS:
+        if t not in download_tickers:
+            download_tickers.append(t)
 
-    # Batch download — one HTTP session, one OHLCV DataFrame, extract Close only
     raw = fetch_all_tickers_batch(download_tickers, start_date, end_date)
-
-    # Flaw 1: Detect short-history penalty before silently dropping rows.
-    # If one ticker has a shorter history, .dropna() truncates ALL others.
+    
+    # Clean data: drop rows where ANY ticker is missing (ensures synchronized returns)
     full_rows = len(raw)
     culprits = [t for t in raw.columns if raw[t].isna().any()]
     prices = raw.dropna()
-    del raw  # free intermediate; prices is the final cleaned form
+    del raw
     gc.collect()
 
     dropped = full_rows - len(prices)
     if dropped > 0:
         pct = dropped / full_rows * 100
         if pct > 30:
-            # Only show user-provided tickers in the error — system tickers can't be removed.
+            # Mask system tickers in error to focus user on their input
             user_culprits = [t for t in culprits if t not in SYSTEM_TICKERS] or culprits
             raise ValueError(
                 f"Data truncation too severe: {dropped}/{full_rows} rows dropped ({pct:.0f}%) "
-                f"due to limited history for: {', '.join(user_culprits)}. "
-                f"Shorten your date range or remove these tickers."
+                f"due to limited history for: {', '.join(user_culprits)}."
             )
 
     validate_data_sufficiency(prices, MIN_DATA_POINTS, "price")
-
     return prices
 
 
 def calculate_efficient_frontier(prices, num_portfolios=RANDOM_PORTFOLIOS, actual_weights=None):
-    """
-    Calculate efficient frontier using PyPortfolioOpt
-
-    Args:
-        prices: DataFrame with historical prices
-        num_portfolios: Number of random portfolios to generate for visualization
-        actual_weights: Optional dict of ticker -> weight for the user's real portfolio
-
-    Returns:
-        dict with GMV, Max Sharpe, efficient frontier points, and optionally myPortfolio
-    """
-    # Flaw 4: Exclude system tickers from the optimization universe.
-    # SGOV has non-zero variance which skews the covariance matrix.
-    # SPY is a benchmark — exclude it unless the user explicitly holds it.
+    """Calculate optimization results and random portfolios."""
     risk_free_rate = calculate_annualized_risk_free_rate(prices)
+    
+    # Isolate risky universe for optimization
     exclude = ['SGOV']
     if actual_weights is None or actual_weights.get('SPY', 0.0) == 0.0:
         exclude.append('SPY')
@@ -307,293 +184,170 @@ def calculate_efficient_frontier(prices, num_portfolios=RANDOM_PORTFOLIOS, actua
     mu = expected_returns.mean_historical_return(opt_prices, compounding=False)
     S = risk_models.sample_cov(opt_prices)
 
-    # === Global Minimum Variance (GMV) Portfolio ===
-    ef_gmv = EfficientFrontier(mu, S)
-    ef_gmv.min_volatility()
-    gmv_weights = ef_gmv.clean_weights()
-    gmv_performance = ef_gmv.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
-    del ef_gmv
+    log("Calculating GMV and Max Sharpe portfolios...")
+    # GMV
+    ef = EfficientFrontier(mu, S)
+    ef.min_volatility()
+    gmv_weights = ef.clean_weights()
+    gmv_perf = ef.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef
+    gc.collect()
 
-    # === Maximum Sharpe Ratio Portfolio ===
-    ef_sharpe = EfficientFrontier(mu, S)
-    ef_sharpe.max_sharpe(risk_free_rate=risk_free_rate)
-    sharpe_weights = ef_sharpe.clean_weights()
-    sharpe_performance = ef_sharpe.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
-    del ef_sharpe
+    # Max Sharpe
+    ef = EfficientFrontier(mu, S)
+    ef.max_sharpe(risk_free_rate=risk_free_rate)
+    sharpe_weights = ef.clean_weights()
+    sharpe_perf = ef.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+    del ef
+    gc.collect()
 
-    # === Generate Efficient Frontier Points ===
+    # Frontier points
+    log("Calculating efficient frontier points...")
+    min_ret, max_ret = gmv_perf[0], float(mu.max())
+    target_returns = np.linspace(min_ret, max_ret, FRONTIER_POINTS)
     frontier_points = []
-
-    # Fix 3: Use mu.max() as the upper bound — Max Sharpe sits in the middle of
-    # the frontier, not at the top. Capping at maxSharpe * 1.2 truncates the curve.
-    min_return = gmv_performance[0]
-    max_return = float(mu.max())
-    target_returns = np.linspace(min_return, max_return, FRONTIER_POINTS)
-
-    for target_return in target_returns:
-        ef_temp = None
+    
+    for tr in target_returns:
         try:
             ef_temp = EfficientFrontier(mu, S)
-            ef_temp.efficient_return(target_return)
-            perf = ef_temp.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
-
-            frontier_points.append({
-                'return': float(perf[0]),
-                'volatility': float(perf[1]),
-                'sharpeRatio': float(perf[2])
-            })
+            ef_temp.efficient_return(tr)
+            p = ef_temp.portfolio_performance(verbose=False, risk_free_rate=risk_free_rate)
+            frontier_points.append({'return': float(p[0]), 'volatility': float(p[1]), 'sharpeRatio': float(p[2])})
         except Exception:
-            # Skip if optimization fails for this target return
-            pass
+            continue
         finally:
-            del ef_temp  # release CVXPY solver object immediately each iteration
+            del ef_temp
+            gc.collect()
 
-    gc.collect()  # sweep any lingering solver internals after the loop
-
-    # === Generate Random Portfolios for Visualization (vectorized) ===
+    # Vectorized Random Portfolios
     n_assets = len(opt_prices.columns)
-    mu_arr = np.asarray(mu)
-    S_arr = np.asarray(S)
-
-    # Generate all weights at once: (num_portfolios, n_assets)
-    all_weights = np.random.dirichlet(np.full(n_assets, 0.5), size=num_portfolios)
-
-    # Batch compute stats — eliminates the Python loop entirely
-    rp_returns = all_weights @ mu_arr                                          # (N,)
-    rp_vars    = np.einsum('ij,jk,ik->i', all_weights, S_arr, all_weights)    # (N,)
-    rp_stds    = np.sqrt(np.maximum(rp_vars, 0.0))                            # guard tiny negatives
-    rp_sharpes = np.where(rp_stds > 0, (rp_returns - risk_free_rate) / rp_stds, 0.0)
+    mu_arr, S_arr = np.asarray(mu), np.asarray(S)
+    w_matrix = np.random.dirichlet(np.full(n_assets, 0.5), size=num_portfolios)
+    
+    rp_returns = w_matrix @ mu_arr
+    rp_vars = np.einsum('ij,jk,ik->i', w_matrix, S_arr, w_matrix)
+    rp_stds = np.sqrt(np.maximum(rp_vars, 0.0))
+    rp_sharpes = np.where(rp_stds > 1e-6, (rp_returns - risk_free_rate) / rp_stds, 0.0)
 
     random_portfolios = [
         {'return': float(r), 'volatility': float(s), 'sharpeRatio': float(sh)}
         for r, s, sh in zip(rp_returns, rp_stds, rp_sharpes)
     ]
 
-    # Prepare result
     result = {
-        'gmv': {
-            'weights': {k: float(v) for k, v in gmv_weights.items()},
-            'stats': {
-                'return': float(gmv_performance[0]),
-                'volatility': float(gmv_performance[1]),
-                'sharpe': float(gmv_performance[2])
-            }
-        },
-        'maxSharpe': {
-            'weights': {k: float(v) for k, v in sharpe_weights.items()},
-            'stats': {
-                'return': float(sharpe_performance[0]),
-                'volatility': float(sharpe_performance[1]),
-                'sharpe': float(sharpe_performance[2])
-            }
-        },
+        'gmv': {'weights': {k: float(v) for k, v in gmv_weights.items()},
+                'stats': {'return': float(gmv_perf[0]), 'volatility': float(gmv_perf[1]), 'sharpe': float(gmv_perf[2])}},
+        'maxSharpe': {'weights': {k: float(v) for k, v in sharpe_weights.items()},
+                      'stats': {'return': float(sharpe_perf[0]), 'volatility': float(sharpe_perf[1]), 'sharpe': float(sharpe_perf[2])}},
         'efficientFrontier': frontier_points,
         'randomPortfolios': random_portfolios,
         'riskFreeRate': float(risk_free_rate)
     }
 
-    if actual_weights is not None:
-        actual_weights_array = np.array([actual_weights.get(col, 0.0) for col in opt_prices.columns])
-        cash_weight = actual_weights.get('SGOV', 0.0)
+    if actual_weights:
+        w_arr = np.array([actual_weights.get(col, 0.0) for col in opt_prices.columns])
+        cash_w = actual_weights.get('SGOV', 0.0)
+        p_std = np.sqrt(np.dot(w_arr.T, np.dot(S, w_arr)))
+        p_ret = np.dot(w_arr, mu) + (cash_w * risk_free_rate)
         
-        # Calculate risk/volatility using only the risky assets
-        portfolio_std = np.sqrt(np.dot(actual_weights_array.T, np.dot(S, actual_weights_array)))
-        
-        # Expected return = (risky assets return) + (cash return)
-        portfolio_return = np.dot(actual_weights_array, mu) + (cash_weight * risk_free_rate)
-        
-        # Calculate true Sharpe Ratio
-        sharpe = calculate_sharpe_ratio(portfolio_return, portfolio_std, risk_free_rate)
-
         result['myPortfolio'] = {
             'weights': {k: v for k, v in actual_weights.items() if v > 0},
-            'stats': {
-                'return': float(portfolio_return),
-                'volatility': float(portfolio_std),
-                'sharpeRatio': float(sharpe)
-            }
+            'stats': {'return': float(p_ret), 'volatility': float(p_std), 'sharpeRatio': float(calculate_sharpe_ratio(p_ret, p_std, risk_free_rate))}
         }
 
     return result
 
 
 def calculate_portfolio_beta(prices, portfolio_weights, benchmark_ticker='SPY'):
-    """
-    Calculate portfolio beta as weighted sum of individual asset betas.
-
-    Vectorized: computes one (N+1)×(N+1) covariance matrix instead of N
-    separate 2×2 matrices. Date alignment is already guaranteed by fetch_price_data's
-    dropna(), so no per-asset index intersection is needed.
-
-    β_portfolio = Σ w_i × β_i reflects the current snapshot beta without
-    assuming daily rebalancing (Flaw 3 fix).
-    """
+    """Vectorized portfolio beta calculation."""
     if benchmark_ticker not in prices.columns:
         return 0.0
 
     returns_df = prices.pct_change().dropna()
-
-    asset_cols = [
-        col for col in returns_df.columns
-        if col != benchmark_ticker and portfolio_weights.get(col, 0.0) > 0
-    ]
+    # Exclude benchmark from covariance matrix; we'll add its contribution manually
+    asset_cols = [c for c in returns_df.columns if c != benchmark_ticker and portfolio_weights.get(c, 0.0) > 0]
+    
     if not asset_cols:
-        return 0.0
+        return float(portfolio_weights.get(benchmark_ticker, 0.0) * 1.0)
 
-    weights = np.array([portfolio_weights[col] for col in asset_cols])
-
-    # Stack asset returns + benchmark into one matrix, compute covariance once
-    all_returns = np.column_stack([
-        returns_df[asset_cols].values,        # (T, N)
-        returns_df[benchmark_ticker].values,  # (T,)
-    ])  # shape: (T, N+1)
-
-    cov = np.cov(all_returns.T)  # (N+1, N+1)
+    weights = np.array([portfolio_weights[c] for c in asset_cols])
+    all_rets = np.column_stack([returns_df[asset_cols].values, returns_df[benchmark_ticker].values])
+    
+    cov = np.cov(all_rets.T)
     benchmark_var = cov[-1, -1]
-
-    if benchmark_var == 0 or np.isnan(benchmark_var):
+    
+    if benchmark_var < 1e-9:
         return 0.0
 
-    betas = cov[:-1, -1] / benchmark_var  # covariance of each asset with benchmark / benchmark variance
-    return float(np.dot(weights, betas))
+    betas = cov[:-1, -1] / benchmark_var
+    asset_beta = np.dot(weights, betas)
+    benchmark_beta = portfolio_weights.get(benchmark_ticker, 0.0) * 1.0
+    
+    return float(asset_beta + benchmark_beta)
 
 
 def calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price, es_index_price=None):
-    """
-    Calculate hedge sizing for SPY and ES futures
-
-    Args:
-        portfolio_beta: Current portfolio beta
-        target_beta: Target beta (e.g., 0 for market-neutral)
-        portfolio_value: Total portfolio value in dollars
-        spy_price: Current SPY price
-        es_index_price: Current S&P 500 index level (^GSPC); falls back to spy_price * 10
-
-    Returns:
-        dict with SPY and ES hedge sizing
-    """
-    # Validate SPY price
+    """Calculate required SPY and ES hedge sizes."""
     if spy_price <= 0:
-        raise ValueError(
-            f"Invalid SPY price: {spy_price}. Cannot calculate hedge sizing with zero or negative price."
-        )
+        raise ValueError("Invalid SPY price for hedging.")
 
-    # Calculate required hedge notional
     hedge_notional = (portfolio_beta - target_beta) * portfolio_value
-
-    # SPY shares to short
     spy_shares = int(hedge_notional / spy_price)
-    spy_notional = spy_shares * spy_price
-
-    # ES futures: use pre-fetched index level to avoid a hidden network call here
+    
     es_price = es_index_price if es_index_price else spy_price * 10
-    es_contract_value = es_price * ES_MULTIPLIER
-
-    # Calculate ES contracts (spy_price validated above, so es_contract_value > 0)
-    es_contracts = int(hedge_notional / es_contract_value)
-    es_notional = es_contracts * es_contract_value
+    es_contract_val = es_price * ES_MULTIPLIER
+    es_contracts = int(hedge_notional / es_contract_val)
 
     return {
         'spyShares': spy_shares,
-        'spyNotional': float(spy_notional),
+        'spyNotional': float(spy_shares * spy_price),
         'esContracts': es_contracts,
-        'esNotional': float(es_notional)
+        'esNotional': float(es_contracts * es_contract_val)
     }
 
 
 def main():
-    """
-    Main function - expects JSON input from stdin
-    Expected input format:
-    {
-        "tickers": ["AAPL", "MSFT", "NVDA"],
-        "quantities": [10, 20, 15],
-        "portfolioValue": 100000,
-        "targetBeta": 0,
-        "startDate": "2023-01-01",
-        "endDate": "2024-12-31"
-    }
-    """
+    """Main execution entry point."""
     try:
-        # Read input from stdin
         input_data = json.loads(sys.stdin.read())
-
-        tickers = input_data.get('tickers', [])
-        quantities = input_data.get('quantities', [])
-        portfolio_value = input_data.get('portfolioValue', 100000)
+        tickers, quantities = input_data.get('tickers', []), input_data.get('quantities', [])
         target_beta = input_data.get('targetBeta', 0)
-        start_date = input_data['startDate']  # Required
-        end_date = input_data['endDate']  # Required
+        start_date, end_date = input_data['startDate'], input_data['endDate']
 
-        # Validate input
-        if not tickers:
-            raise ValueError("No tickers provided")
+        if not tickers or len(tickers) != len(quantities):
+            raise ValueError("Invalid tickers or quantities input.")
 
-        if len(tickers) != len(quantities):
-            raise ValueError(
-                f"Tickers and quantities must have same length. "
-                f"Got {len(tickers)} tickers and {len(quantities)} quantities"
-            )
-
-        # Check for duplicate tickers
-        if len(tickers) != len(set(tickers)):
-            duplicates = [t for t in tickers if tickers.count(t) > 1]
-            raise ValueError(f"Duplicate tickers detected: {', '.join(set(duplicates))}")
-
-        # Validate quantities
-        if any(q < 0 for q in quantities):
-            raise ValueError("Quantities must be non-negative")
-
-        if all(q == 0 for q in quantities):
-            raise ValueError("At least one asset must have positive quantity")
-
-        # Fetch price data
         prices = fetch_price_data(tickers, start_date=start_date, end_date=end_date)
-
-        # Fix 1: Compute user's actual portfolio weights from quantities and latest prices
-        actual_weights, computed_portfolio_value = calculate_actual_portfolio_weights(
-            prices, tickers, quantities
-        )
-        portfolio_value = computed_portfolio_value  # override the input default
-
-        # Calculate efficient frontier, passing actual weights to include myPortfolio
+        actual_weights, portfolio_value = calculate_actual_portfolio_weights(prices, tickers, quantities)
+        
         frontier_result = calculate_efficient_frontier(prices, actual_weights=actual_weights)
-
-        # Fix 1: Calculate beta for the user's actual portfolio, not Max Sharpe
-        # SPY is already in prices (fetched in the initial batch download)
         portfolio_beta = calculate_portfolio_beta(prices, actual_weights)
 
-        # Fetch current SPY and ^GSPC prices for hedge sizing — must be today's price,
-        # not the historical end_date price from the analysis period.
-        current = yf.download(['SPY', '^GSPC'], period='1d', auto_adjust=True, progress=False)
-        if current.empty or 'SPY' not in current['Close'].columns:
-            raise ValueError("Failed to fetch current SPY price for hedge calculation.")
-        close = current['Close']
-        del current
-        spy_price = float(close['SPY'].iloc[-1])
-        es_index_price = float(close['^GSPC'].iloc[-1]) if '^GSPC' in close.columns else None
+        # Robust current price fetching (handles weekends/holidays)
+        log("Fetching current market prices for hedging...")
+        try:
+            # Use 5-day window to ensure we catch the last close even on Sundays/holidays
+            current = yf.download(['SPY', '^GSPC'], period='5d', auto_adjust=True, progress=False)
+            if not current.empty and 'SPY' in current['Close'].columns:
+                close = current['Close'].ffill().iloc[-1]
+                spy_price = float(close['SPY'])
+                es_index_price = float(close['^GSPC']) if '^GSPC' in close.index else spy_price * 10
+            else:
+                # Fallback to last known historical price
+                spy_price = float(prices['SPY'].iloc[-1])
+                es_index_price = spy_price * 10
+        except Exception:
+            spy_price = float(prices['SPY'].iloc[-1])
+            es_index_price = spy_price * 10
 
-        # Calculate hedge sizing
         hedging = calculate_hedge_sizing(portfolio_beta, target_beta, portfolio_value, spy_price, es_index_price)
 
-        # Combine all results
-        result = {
-            **frontier_result,
-            'portfolioBeta': portfolio_beta,
-            'hedging': hedging
-        }
-
-        # Output JSON result to stdout (compact — indent=2 doubles string size)
+        result = {**frontier_result, 'portfolioBeta': portfolio_beta, 'hedging': hedging}
         print(json.dumps(result))
         sys.exit(0)
 
     except Exception as e:
-        # Output error as JSON
-        error_result = {
-            'error': str(e),
-            'type': type(e).__name__
-        }
-        print(json.dumps(error_result, indent=2))
+        print(json.dumps({'error': str(e), 'type': type(e).__name__}, indent=2))
         sys.exit(1)
 
 
