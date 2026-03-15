@@ -134,6 +134,8 @@ def fetch_price_data(tickers, start_date=None, end_date=None):
     end_date = parse_date(end_date)
     start_date = parse_date(start_date)
 
+    log(f"Date range for fetch: {start_date.date()} to {end_date.date()}")
+
     if start_date >= end_date:
         raise ValueError(f"Start date ({start_date.date()}) must be before end date ({end_date.date()})")
 
